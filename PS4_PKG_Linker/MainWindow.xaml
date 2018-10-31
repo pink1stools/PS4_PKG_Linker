@@ -1,0 +1,680 @@
+﻿<Controls:MetroWindow x:Class="PS4_PKG_Linker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PS4_PKG_Linker"
+        mc:Ignorable="d"
+                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        Title="PS4 Linker" Loaded="MetroWindow_Loaded" Height="450" Width="800"  >
+    <Controls:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <Grid Width="{TemplateBinding Width}"
+                 Height="{TemplateBinding Height}"
+                 Margin="4"
+                 Background="Transparent"
+                 RenderOptions.EdgeMode="Aliased"
+                 RenderOptions.BitmapScalingMode="HighQuality">
+                <Rectangle>
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{StaticResource appbar_box}" />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Grid>
+        </DataTemplate>
+    </Controls:MetroWindow.IconTemplate>
+    <Window.Resources>
+
+        <ContextMenu x:Key="NotifierContextMenu" Loaded="ContextMenu_Loaded" MouseLeave="ContextMenu_MouseLeave" Placement="MousePoint" StaysOpen="False">
+
+
+            <MenuItem Header="Add Link" Click="MenuItem_Click">
+                <MenuItem.Icon>
+                    <Rectangle DockPanel.Dock="Left" Width="16" Height="16" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_add}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+
+
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Open Settings" >
+                <MenuItem.Icon>
+                    <Rectangle DockPanel.Dock="Left" Width="16" Height="16" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_settings}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </MenuItem.Icon>
+            </MenuItem>
+
+
+        </ContextMenu>
+
+    </Window.Resources>
+
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Content="Start Server" Click="Button_Click"/>
+
+            <Button Height="23" Name="button21t" Width="120">
+
+                <DockPanel LastChildFill="True">
+                    <!--  <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{iconPacks:Material Kind=CubeSend}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>-->
+
+                    <TextBox Width="120" Name="textBox1" mah:TextBoxHelper.Watermark="PS4 IP" mah:TextBoxHelper.AutoWatermark="True" TextChanged="textBox1_TextChanged"/>
+
+                </DockPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+
+    <Grid>
+
+        <Controls:MetroAnimatedSingleRowTabControl Background="Transparent" Visibility="Visible" x:Name="metroAnimatedTabControl" >
+            <TabItem Header="PKG List">
+                <TabItem.HeaderTemplate>
+                    <DataTemplate>
+                        <DockPanel LastChildFill="True">
+                            <Rectangle DockPanel.Dock="Left" Width="20" Height="20" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_box}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <Label Padding="5"
+                                       Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}"
+                                       FontSize="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.FontSize)}"
+                                       >
+                                PKG List
+                            </Label>
+
+                        </DockPanel>
+                    </DataTemplate>
+                </TabItem.HeaderTemplate>
+
+                <Grid Visibility="Visible">
+                    <Grid.Background>
+
+                        <VisualBrush>
+                            <VisualBrush.Visual>
+                                <Grid ClipToBounds="True">
+                                    <!-- <Image Source="tools/PS3GBS.png">
+                                        <Image.Effect>
+                                            <BlurEffect Radius="0"/>
+                                        </Image.Effect>
+                                    </Image>-->
+                                </Grid>
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Grid.Background>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" BorderThickness="1"  BorderBrush="{DynamicResource AccentColorBrush}">
+                        <ListBox Name="lbtest" Grid.Column="0" SelectionChanged="lbtest_SelectionChanged"   Width="200" 
+                      ItemsSource="{Binding}" HorizontalAlignment="Left" FlowDirection="RightToLeft" Background="Transparent" BorderThickness="0" >
+
+
+
+                            <ListBox.ItemContainerStyle>
+                                <!--<Style TargetType="ListBoxItem">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.SelectedForegroundBrush), Mode=OneWay}" />
+                                        <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.SelectedBackgroundBrush), Mode=OneWay}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource HighlightBrush}" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="True" />
+                                            <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.ActiveSelectionForegroundBrush), Mode=OneWay}" />
+                                        <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.ActiveSelectionBackgroundBrush), Mode=OneWay}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource HighlightBrush}" />
+                                    </MultiTrigger>
+
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="True" />
+                                            <Condition Property="IsSelected" Value="True" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.HoverSelectedBackgroundBrush), Mode=OneWay}" />
+                                    </MultiTrigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="True" />
+                                            <Condition Property="IsSelected" Value="False" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.HoverBackgroundBrush), Mode=OneWay}" />
+                                    </MultiTrigger>
+
+                                </Style.Triggers>
+                                </Style>-->
+
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="Background" Value="{DynamicResource AccentColorBrush}" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Controls:ItemHelper.ActiveSelectionBackgroundBrush" Value="{DynamicResource AccentColorBrush}" />
+                                    <Setter Property="Controls:ItemHelper.ActiveSelectionForegroundBrush" Value="{DynamicResource AccentSelectedColorBrush}" />
+                                    <Setter Property="Controls:ItemHelper.DisabledForegroundBrush" Value="{DynamicResource GrayNormalBrush}" />
+                                    <Setter Property="Controls:ItemHelper.DisabledSelectedBackgroundBrush" Value="{DynamicResource GrayBrush7}" />
+                                    <Setter Property="Controls:ItemHelper.DisabledSelectedForegroundBrush" Value="{DynamicResource AccentSelectedColorBrush}" />
+                                    <Setter Property="Controls:ItemHelper.HoverBackgroundBrush" Value="{DynamicResource AccentColorBrush3}" />
+                                    <Setter Property="Controls:ItemHelper.HoverSelectedBackgroundBrush" Value="{DynamicResource AccentColorBrush}" />
+                                    <Setter Property="Controls:ItemHelper.SelectedBackgroundBrush" Value="{DynamicResource AccentColorBrush2}" />
+                                    <Setter Property="Controls:ItemHelper.SelectedForegroundBrush" Value="{DynamicResource AccentSelectedColorBrush}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="Margin" Value="0" />
+                                    <Setter Property="MinHeight" Value="25" />
+                                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                <Border x:Name="Border"
+                                               Background="Transparent"
+                                               BorderBrush="{TemplateBinding  BorderBrush}"
+                                               BorderThickness="{TemplateBinding BorderThickness}"
+                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                                                    <Grid>
+                                                        <GridViewRowPresenter x:Name="PART_RowPresenter"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                        <ContentPresenter x:Name="PART_ContentPresenter"
+                                              Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              Visibility="Collapsed" />
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="GridView.ColumnCollection" Value="{x:Null}">
+                                                        <Setter TargetName="PART_ContentPresenter" Property="Visibility" Value="Visible" />
+                                                        <Setter TargetName="PART_RowPresenter" Property="Visibility" Value="Collapsed" />
+                                                    </Trigger>
+
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.SelectedForegroundBrush), Mode=OneWay}" />
+                                                        <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.SelectedBackgroundBrush), Mode=OneWay}" />
+                                                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource HighlightBrush}" />
+                                                    </Trigger>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="True" />
+                                                            <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.ActiveSelectionForegroundBrush), Mode=OneWay}" />
+                                                        <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.ActiveSelectionBackgroundBrush), Mode=OneWay}" />
+                                                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource HighlightBrush}" />
+                                                    </MultiTrigger>
+
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsMouseOver" Value="True" />
+                                                            <Condition Property="IsSelected" Value="True" />
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.HoverSelectedBackgroundBrush), Mode=OneWay}" />
+                                                    </MultiTrigger>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsMouseOver" Value="True" />
+                                                            <Condition Property="IsSelected" Value="False" />
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.HoverBackgroundBrush), Mode=OneWay}" />
+                                                    </MultiTrigger>
+
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.DisabledForegroundBrush), Mode=OneWay}" />
+                                                        <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.DisabledBackgroundBrush), Mode=OneWay}" />
+                                                    </Trigger>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsEnabled" Value="False" />
+                                                            <Condition Property="IsSelected" Value="True" />
+                                                        </MultiTrigger.Conditions>
+                                                        <MultiTrigger.Setters>
+                                                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.DisabledSelectedForegroundBrush), Mode=OneWay}" />
+                                                            <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.DisabledSelectedBackgroundBrush), Mode=OneWay}" />
+                                                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource GrayBrush7}" />
+                                                        </MultiTrigger.Setters>
+                                                    </MultiTrigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+
+
+                            <ListBox.ItemTemplate >
+                                <DataTemplate>
+
+                                    <Border MouseEnter="plist_MouseEnter" MouseLeave="plist_MouseExit">
+
+                                        <StackPanel x:Name="plist"  ToolTip="{Binding tool }">
+                                            <!--<mah:Badged MouseDoubleClick="Badged_MouseDoubleClick"  BadgePlacementMode="Left"   Badge="{Binding text1s}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" Margin="0" >
+                                            -->
+                                                <Image Height="100"  Width="100"  Source="{Binding icon}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <!--</mah:Badged>-->
+                                            <TextBlock  Width="180" TextWrapping="Wrap" Text="{Binding Name}" Grid.Row="2" FontSize="12" Name="txtScrolling">
+                                                
+                                            </TextBlock>
+
+                                            <!-- <TextBox Width="180" Text="{Binding CID}" BorderThickness="0" Background="Transparent" IsReadOnly="True"/>
+                            -->
+                                        </StackPanel>
+                                    </Border>
+
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+                    <Border BorderThickness="1" Name="button_list" Visibility="Hidden" BorderBrush="{DynamicResource AccentColorBrush}" Grid.Column="1">
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="50"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBox x:Name="textBoxtid" MinWidth="100" IsReadOnly="True" Grid.Row="0" HorizontalAlignment="Left" Height="23" Margin="10,0,0,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.Watermark="Title ID" mah:TextBoxHelper.AutoWatermark="True" HorizontalContentAlignment="Center"/>
+                            <TextBox x:Name="textBoxcid" MinWidth="120" IsReadOnly="True" Grid.Row="0" HorizontalAlignment="Left" Height="23" Margin="120,0,0,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Content ID" HorizontalContentAlignment="Center"/>
+                            <TextBox x:Name="textBoxtask" MinWidth="120" IsReadOnly="True" Grid.Row="0" HorizontalAlignment="Right" Height="23" Margin="0,0,20,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.Watermark="Task ID" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.WatermarkAlignment="Center" HorizontalContentAlignment="Center"/>
+                            <TextBox x:Name="textBoxname" Visibility="Collapsed" MinWidth="120" IsReadOnly="True" Grid.Row="0" HorizontalAlignment="Right" Height="23" Margin="0,0,20,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.Watermark="Task ID" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.WatermarkAlignment="Center" HorizontalContentAlignment="Center"/>
+
+
+                            <ListBox Background="Transparent" Grid.Row="1" HorizontalContentAlignment="Stretch" Margin="0" VerticalContentAlignment="Stretch">
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+
+                                </ListBox.ItemContainerStyle>
+
+                                <UniformGrid Columns="1">
+
+
+                                    <Button x:Name="button_1"  Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Check if app exists"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+                                </UniformGrid>
+
+
+                                <UniformGrid Name="UgInstall" Columns="2" Margin="0,20,0,0">
+
+                                    <Button x:Name="button_2"  Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Install Package"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+                                    <Button x:Name="button_3" Visibility="Collapsed" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Install main package from CDN"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+                                    <Button x:Name="button_4"  Visibility="Collapsed" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Install patch package"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+                                    <Button x:Name="button_5" Visibility="Collapsed" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Install additional content"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+
+                                    <Button x:Name="button_6"  Visibility="Collapsed" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Install theme"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+                                </UniformGrid>
+
+
+
+                                <UniformGrid Name="UgUninstall" Columns="2" Margin="0,20,0,0">
+
+                                    <Button x:Name="button_7"  Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Uninstall game"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+                                    <Button x:Name="button_8" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Uninstall patch"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+                                    <Button x:Name="button_9" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Uninstall additional content"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+                                    <Button x:Name="button_10" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Uninstall theme"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+
+                                </UniformGrid>
+
+
+                                <UniformGrid Name="UgTask" Visibility="Collapsed" Columns="2" Margin="0,20,0,0">
+
+                                    <Button x:Name="button_11" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Start task"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+                                    <Button x:Name="button_12" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Stop task"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+                                    <Button x:Name="button_13" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Pause task"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+                                    <Button x:Name="button_14" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Resuming task"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+                                    <Button x:Name="button_15" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                        <DockPanel LastChildFill="True">
+                                            <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                            <TextBlock VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                                       ><Run Text="Remove task"/></TextBlock>
+
+                                        </DockPanel>
+                                    </Button>
+
+
+                                </UniformGrid>
+
+                            </ListBox>
+                            <mah:MetroProgressBar HorizontalAlignment="Center" Grid.Row="2" Height="20" Margin="0,0,0,0" VerticalAlignment="Center" Width="500"/>
+
+                        </Grid>
+                    </Border>
+                    <GroupBox x:Name="groupBox2" Visibility="Hidden" Grid.Column="1" Margin="0,0,0,0"/>
+                    <GroupBox x:Name="groupBox3" Visibility="Hidden" Grid.Column="1" Margin="0,0,0,0"/>
+                    <GroupBox x:Name="groupBox4" Visibility="Hidden" Grid.Column="1" Margin="0,0,0,0"/>
+
+
+                </Grid>
+
+
+
+            </TabItem>
+            <TabItem Header="Tools">
+                <TabItem.HeaderTemplate>
+                    <DataTemplate>
+                        <DockPanel LastChildFill="True">
+                            <Rectangle DockPanel.Dock="Left" Width="20" Height="20" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_tools}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <Label Padding="5"
+                                       Foreground="{Binding (TextElement.Foreground), RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}"
+                                       FontSize="{Binding (TextElement.FontSize), RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}"
+                                       Content="Tools"
+                                       />
+                        </DockPanel>
+                    </DataTemplate>
+                </TabItem.HeaderTemplate>
+                <Border BorderThickness="1"  BorderBrush="{DynamicResource AccentColorBrush}">
+
+                    <Grid>
+                        <!--<Grid.Background>
+                        <VisualBrush>
+                            <VisualBrush.Visual>
+                                <Grid ClipToBounds="True">
+                                    <Image Source="tools/PS3GBS.png">
+                                        <Image.Effect>
+                                            <BlurEffect Radius="0"/>
+                                        </Image.Effect>
+                                    </Image>
+                                </Grid>
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Grid.Background>-->
+
+                        <GroupBox Header="gui color" Height="280" HorizontalAlignment="Right" Margin="0,10,10,0" Name="groupBoxtheme" VerticalAlignment="Top" Width="138">
+                            <GroupBox.HeaderTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <!--<Rectangle DockPanel.Dock="Left" Width="20" Height="20" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{iconPacks:Octicons Kind=Paintcan}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                        <Label Padding="0"
+                                       Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}"
+                                       FontSize="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.FontSize)}"
+                                       >
+                                            Theme Settings
+                                        </Label>
+
+                                    </DockPanel>
+                                </DataTemplate>
+                            </GroupBox.HeaderTemplate>
+                            <Grid>
+                                <ListBox Height="206" Background="Transparent" FontSize="16" HorizontalAlignment="Left" Name="listBox1" VerticalAlignment="Top" Width="120" SelectionChanged="ListBoxItem_Selected">
+                                    <ListBoxItem Content="Red" Foreground="Red"  Background="Transparent"/>
+                                    <ListBoxItem Content="Green" Foreground="Green" Background="Transparent" />
+                                    <ListBoxItem Content="Blue" Foreground="Blue" Background="Transparent" />
+                                    <ListBoxItem Content="Purple" Foreground="Purple" Background="Transparent" />
+                                    <ListBoxItem Content="Orange" Foreground="Orange" Background="Transparent" />
+                                    <ListBoxItem Content="Lime" Foreground="Lime" Background="Transparent" />
+                                    <ListBoxItem Content="Emerald" Foreground="#FF077517" Background="Transparent" />
+                                    <ListBoxItem Content="Teal" Foreground="Teal" Background="Transparent" />
+                                    <ListBoxItem Content="Cyan" Foreground="Cyan" Background="Transparent" />
+                                    <ListBoxItem Content="Cobalt" Foreground="#FF0747C6" Background="Transparent" />
+                                    <ListBoxItem Content="Indigo" Foreground="Indigo" Background="Transparent" />
+                                    <ListBoxItem Content="Violet" Foreground="Violet" Background="Transparent" />
+                                    <ListBoxItem Content="Pink" Foreground="Pink" Background="Transparent" />
+                                    <ListBoxItem Content="Magenta" Foreground="Magenta" Background="Transparent" />
+                                    <ListBoxItem Content="Crimson" Foreground="Crimson" Background="Transparent" />
+                                    <ListBoxItem Content="Amber" Foreground="#FFC7890F" Background="Transparent" />
+                                    <ListBoxItem Content="Yellow" Foreground="Yellow" Background="Transparent" />
+                                    <ListBoxItem Content="Brown" Foreground="Brown" Background="Transparent" />
+                                    <ListBoxItem Content="Olive" Foreground="Olive" Background="Transparent" />
+                                    <ListBoxItem Content="Steel" Foreground="#FF576573" Background="Transparent" />
+                                    <ListBoxItem Content="Mauve" Foreground="#FF655475" Background="Transparent" />
+                                    <ListBoxItem Content="Taupe" Foreground="#FF736845" Background="Transparent" />
+                                    <ListBoxItem Content="Sienna" Foreground="Sienna" Background="Transparent" />
+                                </ListBox>
+                                <Button Height="30" Style="{StaticResource AccentedSquareButtonStyle}" ToolTip="Change Theme" HorizontalAlignment="Center" Margin="0,215,0,0" Name="button7" VerticalAlignment="Center" Width="120" Click="button7_Click" mah:ControlsHelper.ContentCharacterCasing="Normal" >
+                                    <DockPanel LastChildFill="True">
+                                        <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                        <TextBlock Name="b7tb1" VerticalAlignment="Center" Padding="5"
+                                       Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                       FontSize="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=FontSize}"
+                                       >
+                                        Light Theme
+                                        </TextBlock>
+
+                                    </DockPanel>
+                                </Button>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox x:Name="groupBox" Header="Web Links" HorizontalAlignment="Left" Height="287" Margin="10,10,0,0" VerticalAlignment="Top" Width="411">
+                            <DataGrid x:Name="dataGrid"/>
+
+                        </GroupBox>
+
+
+                    </Grid>
+                </Border>
+
+            </TabItem>
+        </Controls:MetroAnimatedSingleRowTabControl>
+
+    </Grid>
+</Controls:MetroWindow>
