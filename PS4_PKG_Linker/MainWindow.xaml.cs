@@ -28,24 +28,17 @@ namespace PS4_PKG_Linker
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        DataTable dtpkg = new DataTable();
         DataTable dtpkg2 = new DataTable();
-        DataTable dt2 = new DataTable();
-        int i = 0;
-        static string s = null;
-        static string scid = null;
-        string pkg;
-        string pkg_directory;
-        FileInfo[] Files;
-        FileInfo[] Files2;
-        string[] directories;
-        DirectoryInfo dinfo;
+        DataTable dtlinks = new DataTable();
+        //DataTable dt2 = new DataTable();
+
 
         string color;
         string ctheme = "BaseDark";
 
 
         string appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;//System.Windows.Shapes.Path.GetDirectoryName(Application.ExecutablePath.);
+
         static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 
         public MainWindow()
@@ -56,13 +49,6 @@ namespace PS4_PKG_Linker
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-           
-
-            dtpkg.Columns.Add("IsSelected");
-            dtpkg.Columns.Add("Name");
-            dtpkg.Columns.Add("CID");
-            dtpkg.Columns.Add("type");
-            dtpkg.Columns.Add("Size");
 
             dtpkg2.Columns.Add("Name");
             dtpkg2.Columns.Add("CID");
@@ -81,11 +67,16 @@ namespace PS4_PKG_Linker
             dtpkg2.Columns.Add("text1s");
             dtpkg2.Columns.Add("text2s");
 
+            dtlinks.Columns.Add("CID");
+            dtlinks.Columns.Add("Name");
+            dtlinks.Columns.Add("link");
+            dtlinks.Columns.Add("icon");
 
-            appPath = appPath.Replace("PS3gbs.exe", "");
-            
-            pkg_folder();
-            
+            appPath = appPath.Replace("PS4_PKG_Linker.exe", "");
+
+            Add_pkg();
+            Load_Links();
+
             //this.child01.IsOpen = true;
         }
 
@@ -152,7 +143,7 @@ namespace PS4_PKG_Linker
             else
             {
                 //button7.Content = "Dark Theme";
-               // b7tb1.Text = "Dark Theme";
+                // b7tb1.Text = "Dark Theme";
                 //ctheme = "BaseDark";
             }
             // get the theme from the window
@@ -168,8 +159,8 @@ namespace PS4_PKG_Linker
 
                                         ThemeManager.GetAppTheme(ctheme));
 
-           // Properties.Settings.Default.color = color;
-           // Properties.Settings.Default.Save();
+            // Properties.Settings.Default.color = color;
+            // Properties.Settings.Default.Save();
 
         }
 
@@ -211,7 +202,7 @@ namespace PS4_PKG_Linker
                     //lvpkginfo.Items.Add(t1[n] + t);
                     n++;
                 }
-                textBoxtid.Text= items2[7].ToString();
+                textBoxtid.Text = items2[7].ToString();
                 textBoxcid.Text = items2[1].ToString();
                 textBoxname.Text = items2[0].ToString();
                 button_list.Visibility = Visibility.Visible;
@@ -447,49 +438,39 @@ namespace PS4_PKG_Linker
 
         #endregion<<downloads>>
 
-        private void pkg_folder()
+
+        private void Add_pkg()
         {
+            DirectoryInfo dinfo;
+            DirectoryInfo split_dinfo;
+            FileInfo[] pkgs;
+            FileInfo[] jsons;
+            FileInfo[] spkgs;
+            int i = 0;
+            string s = null;
+            string scid = null;
+
             try
             {
-
-
-                i = 0;
-
-                dt2.Rows.Clear();
-                //should be wise to do this
                 dtpkg2.Clear();
-                dtpkg.Clear();
-                /*xDPx*/
-                //clean data context each time
+                
                 System.Windows.Application.Current.Dispatcher.Invoke(
                 DispatcherPriority.Normal,
     (ThreadStart)delegate
     {
         lbtest.DataContext = null;
-
+        dataGrid.DataContext = null;
     });
 
-
-
-
-
-                appPath = appPath.Replace("PS4_PKG_Linker.exe", "");
-                pkg = appPath;
-               
-                
-
                 dinfo = new DirectoryInfo(appPath);
-                Files = dinfo.GetFiles("*.pkg");
+                split_dinfo = new DirectoryInfo(appPath + "Split");
+                pkgs = dinfo.GetFiles("*.pkg");
+                jsons = dinfo.GetFiles("*.json");
 
-
-
-                foreach (FileInfo file in Files)
+                foreach (FileInfo file in pkgs)
                 {
                     try
                     {
-
-                        string tname = file.Name.Replace(".pkg", "");
-                       
                         FileStream pkgFilehead = File.Open(file.FullName, FileMode.Open);
                         byte[] testmagic = new byte[0x04];
                         pkgFilehead.Read(testmagic, 0, 0x04);
@@ -500,18 +481,6 @@ namespace PS4_PKG_Linker
                         if (isretail == true)
                         {
                             pkgtype = "Retail";
-                        }
-
-                        else
-                        {
-                            pkgtype = "";
-
-                        }
-
-                        
-
-                        if (pkgtype != "")
-                        {
 
                             FileStream pkgFile = File.Open(file.FullName, FileMode.Open);
                             byte[] cid = new byte[0x24];
@@ -527,16 +496,6 @@ namespace PS4_PKG_Linker
                             string sz = SizeSuffix(file.Length);
                             s = file.ToString();
 
-                            if (s != "")
-                            {
-                                DataRow dr1 = dtpkg.NewRow();
-                                dr1["IsSelected"] = false;
-                                dr1["Name"] = s;
-                                dr1["CID"] = scid;
-                                dr1["type"] = pkgtype;
-                                dr1["Size"] = sz;
-                                dtpkg.Rows.Add(dr1);
-                            }
 
                             string iconpath = appPath + "tools/icons/" + stid + ".png";
 
@@ -549,7 +508,7 @@ namespace PS4_PKG_Linker
                             {
                                 iconpath = appPath + "tools/resources/default.png";
                             }
-                            
+
                             DataRow dr = dtpkg2.NewRow();
                             dr["Name"] = s;
                             dr["CID"] = scid;
@@ -565,19 +524,286 @@ namespace PS4_PKG_Linker
                             dr["column2w"] = "650";
                             dr["roww"] = "25";
                             dr["imags"] = "50";
+                            dr["text1s"] = "pkg";
                             dr["text2s"] = "true";
-                            
+
                             dtpkg2.Rows.Add(dr);
                             i++;
-                            
+
                         }
                     }
                     catch (Exception ex)
                     {
                         //invalid pkg or invalid item 
                     }
+                }
+
+                foreach (FileInfo file in jsons)
+                {
+                    try
+                    {
+                        string stid = "";
+                        string text;
+                        long fsz = 0;
+                        var fileStream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
+                        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                        {
+                            text = streamReader.ReadToEnd();
+                        }
+                        fileStream.Close();
+
+                        var json = _serialized_json_data<JSON>(text);
+                        Piece[] new1 = json.pieces;
+                        if (new1 != null)
+                        {
+                            string newl = new1[0].url;
+                            Uri uri = new Uri(newl);
+                            string filename = System.IO.Path.GetFileName(uri.LocalPath); scid = filename.Remove(0x24, filename.Length - 0x24);
+
+                            stid = scid.Remove(0, 7);
+                            stid = stid.Remove(12, stid.Length - 12);
+                            fsz = json.originalFileSize;
+
+                        }
+
+                        string sz = SizeSuffix(fsz);
+                        s = file.ToString();
 
 
+
+                        string iconpath = appPath + "tools/icons/" + stid + ".png";
+
+                        if (!File.Exists(iconpath))
+                        {
+                            Download_Icon(stid);
+                        }
+
+                        if (!File.Exists(iconpath))
+                        {
+                            iconpath = appPath + "tools/resources/default.png";
+                        }
+
+                        DataRow dr = dtpkg2.NewRow();
+                        dr["Name"] = s;
+                        dr["CID"] = scid;
+                        dr["type"] = "JSON";
+                        dr["size"] = sz;
+                        dr["icon"] = iconpath;
+                        dr["tool"] = "  " + s + "  " + scid;
+                        dr["count"] = i;
+                        dr["bl"] = stid;
+                        dr["tileh"] = "50";
+                        dr["tilew"] = "800";
+                        dr["column1w"] = "150";
+                        dr["column2w"] = "650";
+                        dr["roww"] = "25";
+                        dr["imags"] = "50";
+                        dr["text1s"] = "json";
+                        dr["text2s"] = "true";
+
+                        dtpkg2.Rows.Add(dr);
+                        i++;
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        /*added a try catch for this enitire method as well as something is causing it to fall over on some of the pkg's i tested */
+                    }
+                }
+
+                if (Directory.Exists(appPath + "Split"))
+                {
+                    spkgs = split_dinfo.GetFiles("*.pkg");
+                    foreach (FileInfo file in spkgs)
+                    {
+                        s = file.ToString();
+                        int starti = s.LastIndexOf("_");
+
+                        string pname = s.Remove(starti, s.Length - starti);
+                        string pnum = s.Remove(0, starti + 1);
+                        int endi = pnum.LastIndexOf(".");
+                        pnum = pnum.Remove(endi, 4);
+                        if (pnum == "0" && File.Exists("Split/" + pname + "_1.pkg"))
+                        {
+                            try
+                            {
+                                FileStream pkgFilehead = File.Open(file.FullName, FileMode.Open);
+                                byte[] testmagic = new byte[0x04];
+                                pkgFilehead.Read(testmagic, 0, 0x04);
+                                pkgFilehead.Close();
+                                byte[] magic = new byte[] { 0x7F, 0x43, 0x4E, 0x54 };
+                                string pkgtype;
+                                bool isretail = testmagic.SequenceEqual(magic);
+                                if (isretail == true)
+                                {
+                                    pkgtype = "Split";
+
+                                    FileStream pkgFile = File.Open(file.FullName, FileMode.Open);
+                                    byte[] cid = new byte[0x24];
+                                    pkgFile.Seek(0x40, SeekOrigin.Begin);
+                                    pkgFile.Read(cid, 0, 0x24);
+                                    scid = Encoding.ASCII.GetString(cid);
+                                    byte[] tid = new byte[0x0C];
+                                    pkgFile.Seek(0x47, SeekOrigin.Begin);
+                                    pkgFile.Read(tid, 0, 0x0C);
+                                    pkgFile.Close();
+                                    string stid = Encoding.ASCII.GetString(tid);
+                                    long fLength = file.Length;
+
+                                    bool next = true;
+                                    int q = 1;
+                                    while (next == true)
+                                    {
+                                        if (File.Exists("Split/" + pname + "_" + q + " .pkg"))
+                                        {
+                                            fLength = fLength + File.Open("Split/" + pname + "_" + q + " .pkg", FileMode.Open).Length;
+                                            q++;
+                                        }
+                                        if (!File.Exists("Split/" + pname + "_" + q + " .pkg"))
+                                        {
+                                            next = false;
+                                        }
+                                    }
+
+                                    string sz = SizeSuffix(fLength);
+
+                                    string iconpath = appPath + "tools/icons/" + stid + ".png";
+
+                                    if (!File.Exists(iconpath))
+                                    {
+                                        Download_Icon(stid);
+                                    }
+
+                                    if (!File.Exists(iconpath))
+                                    {
+                                        iconpath = appPath + "tools/resources/default.png";
+                                    }
+
+
+                                    DataRow dr = dtpkg2.NewRow();
+                                    dr["Name"] = s;
+                                    dr["CID"] = scid;
+                                    dr["type"] = pkgtype;
+                                    dr["size"] = sz;
+                                    dr["icon"] = iconpath;
+                                    dr["tool"] = "  " + s + "  " + scid + "  " + sz;
+                                    dr["count"] = i;
+                                    dr["bl"] = stid;
+                                    dr["tileh"] = "50";
+                                    dr["tilew"] = "800";
+                                    dr["column1w"] = "150";
+                                    dr["column2w"] = "650";
+                                    dr["roww"] = "25";
+                                    dr["imags"] = "50";
+                                    dr["text1s"] = "split";
+                                    dr["text2s"] = "true";
+
+                                    dtpkg2.Rows.Add(dr);
+                                    i++;
+
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                //invalid pkg or invalid item 
+                            }
+                        }
+                    }
+                }
+
+                if (File.Exists("Links.txt"))
+                {
+                    try
+                    {
+                        string stid = "";
+                        string text;
+                        var fileStream = new FileStream("Links.txt", FileMode.Open, FileAccess.Read);
+                        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                        {
+                            text = streamReader.ReadToEnd();
+                        }
+                        fileStream.Close();
+
+                        var json = _serialized_json_data<LINKS>(text);
+                        Plink[] new1 = json.plinks;
+                        if (new1 != null)
+                        {
+                            foreach (Plink link in new1)
+                            {
+                                scid = link.content_id;
+                                stid = scid.Remove(0, 7);
+                                stid = stid.Remove(12, stid.Length - 12);
+
+                                string iconlink = link.icon_link;
+                                string filelink = link.link;
+                                s = link.name;
+
+                                string sz = GetFileSize(filelink);
+                                //SizeSuffix(0);
+
+                                string iconpath = appPath + "tools/icons/" + stid + ".png";
+
+                                if (iconlink != "")
+                                {
+
+
+                                    if (!File.Exists(iconpath))
+                                    {
+                                        Download_Icon(stid);
+                                    }
+
+                                    if (!File.Exists(iconpath))
+                                    {
+                                        iconpath = appPath + "tools/resources/default.png";
+                                    }
+                                }
+                                else
+                                {
+                                    if (new1 != null)
+                                    {
+                                        WebClient webClient = new WebClient();
+                                        webClient.DownloadFile(iconlink, "tools/icons/" + stid + ".png");
+                                    }
+                                    else
+                                    {
+                                        File.Copy("tools/resources/default.png", "tools/icons/" + stid + ".png");
+                                    }
+                                }
+
+
+                                DataRow dr = dtpkg2.NewRow();
+                                dr["Name"] = s;
+                                dr["CID"] = scid;
+                                dr["type"] = "Link";
+                                dr["size"] = sz;
+                                dr["icon"] = iconpath;
+                                dr["tool"] = "  " + s + "  " + scid;
+                                dr["count"] = i;
+                                dr["bl"] = stid;
+                                dr["tileh"] = "50";
+                                dr["tilew"] = "800";
+                                dr["column1w"] = "150";
+                                dr["column2w"] = "650";
+                                dr["roww"] = "25";
+                                dr["imags"] = "50";
+                                dr["text1s"] = "json";
+                                dr["text2s"] = "true";
+
+                                dtpkg2.Rows.Add(dr);
+                                i++;
+
+
+                            }
+                        }
+
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        /*added a try catch for this enitire method as well as something is causing it to fall over on some of the pkg's i tested */
+                    }
                 }
 
                 System.Windows.Application.Current.Dispatcher.Invoke(
@@ -586,21 +812,17 @@ namespace PS4_PKG_Linker
                                {
                                    try
                                    {
-                                       //i think its a safer bet to remove data context before adding into to it
-                                       //VisitPlanItems.DataContext = null;
+
                                        lbtest.DataContext = null;
-                                       //lvpkginfo.DataContext = null;
-
-                                       //VisitPlanItems.DataContext = dtpkg2.DefaultView;
                                        lbtest.DataContext = dtpkg2.DefaultView;
-                                       //lvpkginfo.DataContext = dtpkg2.DefaultView;
 
-                                       /*Add a refresh item 
-                                         Since we are running another thread call the refresh method
-                                        */
-                                       //VisitPlanItems.Items.Refresh();
                                        lbtest.Items.Refresh();
-                                       //lvpkginfo.Items.Refresh();
+
+                                       dataGrid.DataContext = null;
+                                       dataGrid.DataContext = dtpkg2.DefaultView;
+
+                                       dataGrid.Items.Refresh();
+
                                    }
                                    catch (Exception ex)
                                    {
@@ -614,6 +836,143 @@ namespace PS4_PKG_Linker
             catch (Exception ex)
             {
                 /*added a try catch for this enitire method as well as something is causing it to fall over on some of the pkg's i tested */
+            }
+        }
+
+        private void Load_Links()
+        {
+
+            if (File.Exists("Links.txt"))
+            {
+                try
+                {
+                    string stid = "";
+                    string text;
+                    var fileStream = new FileStream("Links.txt", FileMode.Open, FileAccess.Read);
+                    using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                    {
+                        text = streamReader.ReadToEnd();
+                    }
+                    fileStream.Close();
+
+                    var json = _serialized_json_data<LINKS>(text);
+                    Plink[] new1 = json.plinks;
+                    if (new1 != null)
+                    {
+                        int i = 0;
+                        foreach (Plink link in new1)
+                        {
+                            string cid = link.content_id;
+                            stid = cid.Remove(0, 7);
+                            stid = stid.Remove(12, stid.Length - 12);
+
+                            string iconlink = link.icon_link;
+                            string filelink = link.link;
+                            string s = link.name;
+
+                            string sz = GetFileSize(filelink);
+                            //SizeSuffix(0);
+
+                            string iconpath = link.icon_link;
+
+
+
+                            DataRow dr = dtlinks.NewRow();
+                            dr["Name"] = s;
+                            dr["CID"] = cid;
+                            dr["link"] = filelink;
+                            dr["icon"] = iconpath;
+
+
+                            dtlinks.Rows.Add(dr);
+                            i++;
+
+                            try
+                            {
+
+                                lvpkgsfo.DataContext = null;
+                                lvpkgsfo.DataContext = dtlinks.DefaultView;
+
+                                lvpkgsfo.Items.Refresh();
+
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+
+                        }
+                    }
+
+
+
+                }
+                catch (Exception ex)
+                {
+                    /*added a try catch for this enitire method as well as something is causing it to fall over on some of the pkg's i tested */
+                }
+            }
+
+        }
+
+        private static T _serialized_json_data<T>(string url) where T : new()
+        {
+
+            var json_data = string.Empty;
+            // attempt to download JSON data as a string
+            try
+            {
+                json_data = url;
+            }
+            catch (Exception) { }
+            // if string with JSON data is not empty, deserialize it to class and return its instance 
+            try
+            {
+                return !string.IsNullOrEmpty(json_data) ? JsonConvert.DeserializeObject<T>(json_data) : new T();
+
+            }
+            catch (Exception)
+            {
+                return new T();
+            }
+
+        }
+
+        private static string GetFileSize(string uriPath)
+        {
+            var webRequest = HttpWebRequest.Create(uriPath);
+            webRequest.Method = "HEAD";
+
+            using (var webResponse = webRequest.GetResponse())
+            {
+
+                var fileSize = webResponse.Headers.Get("Content-Length");
+                string sz = SizeSuffix(Convert.ToInt64(fileSize));
+                //var fileSizeInMegaByte = Math.Round(Convert.ToDouble(fileSize) / 1024.0 / 1024.0, 2);
+                return sz;
+            }
+        }
+
+        private void lvpkgsfo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            DataRowView item1 = this.lvpkgsfo.SelectedItem as DataRowView;
+
+            if (item1 != null)
+            {
+               
+                Object[] items2 = item1.Row.ItemArray;
+
+                //this.label4.Content = items2[0].ToString();
+                //lvpkginfo.Items.Clear();
+                new_cid.Text = items2[0].ToString();
+                new_name.Text = items2[1].ToString();
+                new_link.Text = items2[2].ToString();
+                new_icon.Text = items2[3].ToString();
+
+                //button_list.Visibility = Visibility.Visible;
+                /*Please note you can always do this another methid just get the sfo somehow so we can work with it*/
+
             }
         }
 

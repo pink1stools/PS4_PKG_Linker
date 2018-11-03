@@ -25,36 +25,7 @@
             </Grid>
         </DataTemplate>
     </Controls:MetroWindow.IconTemplate>
-    <Window.Resources>
 
-        <ContextMenu x:Key="NotifierContextMenu" Loaded="ContextMenu_Loaded" MouseLeave="ContextMenu_MouseLeave" Placement="MousePoint" StaysOpen="False">
-
-
-            <MenuItem Header="Add Link" Click="MenuItem_Click">
-                <MenuItem.Icon>
-                    <Rectangle DockPanel.Dock="Left" Width="16" Height="16" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_add}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-
-
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="Open Settings" >
-                <MenuItem.Icon>
-                    <Rectangle DockPanel.Dock="Left" Width="16" Height="16" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_settings}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </MenuItem.Icon>
-            </MenuItem>
-
-
-        </ContextMenu>
-
-    </Window.Resources>
 
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
@@ -105,11 +76,11 @@
                         <VisualBrush>
                             <VisualBrush.Visual>
                                 <Grid ClipToBounds="True">
-                                    <!-- <Image Source="tools/PS3GBS.png">
+                                    <Image Source="tools/resources/PS3GBS.png">
                                         <Image.Effect>
                                             <BlurEffect Radius="0"/>
                                         </Image.Effect>
-                                    </Image>-->
+                                    </Image>
                                 </Grid>
                             </VisualBrush.Visual>
                         </VisualBrush>
@@ -120,8 +91,8 @@
                     </Grid.ColumnDefinitions>
 
                     <Border Grid.Column="0" BorderThickness="1"  BorderBrush="{DynamicResource AccentColorBrush}">
-                        <ListBox Name="lbtest" Grid.Column="0" SelectionChanged="lbtest_SelectionChanged"   Width="200" 
-                      ItemsSource="{Binding}" HorizontalAlignment="Left" FlowDirection="RightToLeft" Background="Transparent" BorderThickness="0" >
+                        <ListBox Name="lbtest" Grid.Column="0" SelectionChanged="lbtest_SelectionChanged" Width="200" 
+                      ItemsSource="{Binding}" HorizontalAlignment="Left" FlowDirection="RightToLeft" Background="Transparent" HorizontalContentAlignment="Left" >
 
 
 
@@ -261,23 +232,15 @@
 
                             <ListBox.ItemTemplate >
                                 <DataTemplate>
+                                    <Border>
+                                        <StackPanel x:Name="plist"  ToolTip="{Binding tool }" HorizontalAlignment="Left">
 
-                                    <Border MouseEnter="plist_MouseEnter" MouseLeave="plist_MouseExit">
+                                            <Image Height="100"  Width="100"  Source="{Binding icon}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                                        <StackPanel x:Name="plist"  ToolTip="{Binding tool }">
-                                            <!--<mah:Badged MouseDoubleClick="Badged_MouseDoubleClick"  BadgePlacementMode="Left"   Badge="{Binding text1s}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" Margin="0" >
-                                            -->
-                                                <Image Height="100"  Width="100"  Source="{Binding icon}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            <!--</mah:Badged>-->
-                                            <TextBlock  Width="180" TextWrapping="Wrap" Text="{Binding Name}" Grid.Row="2" FontSize="12" Name="txtScrolling">
-                                                
-                                            </TextBlock>
+                                            <TextBlock  Width="180" TextWrapping="Wrap" Text="{Binding Name}" FontSize="12" Name="txtScrolling" HorizontalAlignment="Left"/>
 
-                                            <!-- <TextBox Width="180" Text="{Binding CID}" BorderThickness="0" Background="Transparent" IsReadOnly="True"/>
-                            -->
                                         </StackPanel>
                                     </Border>
-
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
@@ -587,29 +550,29 @@
                 <Border BorderThickness="1"  BorderBrush="{DynamicResource AccentColorBrush}">
 
                     <Grid>
-                        <!--<Grid.Background>
-                        <VisualBrush>
-                            <VisualBrush.Visual>
-                                <Grid ClipToBounds="True">
-                                    <Image Source="tools/PS3GBS.png">
-                                        <Image.Effect>
-                                            <BlurEffect Radius="0"/>
-                                        </Image.Effect>
-                                    </Image>
-                                </Grid>
-                            </VisualBrush.Visual>
-                        </VisualBrush>
-                    </Grid.Background>-->
+                        <Grid.Background>
+                            <VisualBrush>
+                                <VisualBrush.Visual>
+                                    <Grid ClipToBounds="True">
+                                        <Image Source="tools/resources/PS3GBS.png">
+                                            <Image.Effect>
+                                                <BlurEffect Radius="0"/>
+                                            </Image.Effect>
+                                        </Image>
+                                    </Grid>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Grid.Background>
 
-                        <GroupBox Header="gui color" Height="280" HorizontalAlignment="Right" Margin="0,10,10,0" Name="groupBoxtheme" VerticalAlignment="Top" Width="138">
+                        <!--<GroupBox Header="gui color" Height="280" HorizontalAlignment="Right" Margin="0,10,10,0" Name="groupBoxtheme" VerticalAlignment="Top" Width="138">
                             <GroupBox.HeaderTemplate>
                                 <DataTemplate>
                                     <DockPanel LastChildFill="True">
-                                        <!--<Rectangle DockPanel.Dock="Left" Width="20" Height="20" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
+                                        <Rectangle DockPanel.Dock="Left" Width="20" Height="20" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
                                         <Rectangle.OpacityMask>
                                             <VisualBrush Stretch="Fill" Visual="{iconPacks:Octicons Kind=Paintcan}" />
                                         </Rectangle.OpacityMask>
-                                    </Rectangle>-->
+                                    </Rectangle>
                                         <Label Padding="0"
                                        Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}"
                                        FontSize="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.FontSize)}"
@@ -621,6 +584,7 @@
                                 </DataTemplate>
                             </GroupBox.HeaderTemplate>
                             <Grid>
+                                
                                 <ListBox Height="206" Background="Transparent" FontSize="16" HorizontalAlignment="Left" Name="listBox1" VerticalAlignment="Top" Width="120" SelectionChanged="ListBoxItem_Selected">
                                     <ListBoxItem Content="Red" Foreground="Red"  Background="Transparent"/>
                                     <ListBoxItem Content="Green" Foreground="Green" Background="Transparent" />
@@ -648,12 +612,12 @@
                                 </ListBox>
                                 <Button Height="30" Style="{StaticResource AccentedSquareButtonStyle}" ToolTip="Change Theme" HorizontalAlignment="Center" Margin="0,215,0,0" Name="button7" VerticalAlignment="Center" Width="120" Click="button7_Click" mah:ControlsHelper.ContentCharacterCasing="Normal" >
                                     <DockPanel LastChildFill="True">
-                                        <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                    <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
                                             <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
                                         </Rectangle.OpacityMask>
-                                    </Rectangle>-->
-                                        <TextBlock Name="b7tb1" VerticalAlignment="Center" Padding="5"
+                                    </Rectangle>
+                                    <TextBlock Name="b7tb1" VerticalAlignment="Center" Padding="5"
                                        Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                        FontSize="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=FontSize}"
                                        >
@@ -662,13 +626,291 @@
 
                                     </DockPanel>
                                 </Button>
+                           
                             </Grid>
-                        </GroupBox>
-                        <GroupBox x:Name="groupBox" Header="Web Links" HorizontalAlignment="Left" Height="287" Margin="10,10,0,0" VerticalAlignment="Top" Width="411">
-                            <DataGrid x:Name="dataGrid"/>
+                        </GroupBox>-->
 
-                        </GroupBox>
+                        
+                            <Controls:MetroAnimatedSingleRowTabControl Background="Transparent" Visibility="Visible" x:Name="settingsTabControl">
+                            <TabItem Header="Links" mah:ControlsHelper.HeaderFontSize="20" Margin="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="250" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
+                                        <Border BorderThickness="1"  BorderBrush="{DynamicResource AccentColorBrush}" Grid.Column="0">
+
+                                            <ListBox Name="lvpkgsfo" SelectionChanged="lvpkgsfo_SelectionChanged" ItemsSource="{Binding}" Background="Transparent"  >
+                                            <ListBox.ItemContainerStyle>
+                                                <!--<Style TargetType="ListBoxItem">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.SelectedForegroundBrush), Mode=OneWay}" />
+                                        <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.SelectedBackgroundBrush), Mode=OneWay}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource HighlightBrush}" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="True" />
+                                            <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.ActiveSelectionForegroundBrush), Mode=OneWay}" />
+                                        <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.ActiveSelectionBackgroundBrush), Mode=OneWay}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource HighlightBrush}" />
+                                    </MultiTrigger>
+
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="True" />
+                                            <Condition Property="IsSelected" Value="True" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.HoverSelectedBackgroundBrush), Mode=OneWay}" />
+                                    </MultiTrigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="True" />
+                                            <Condition Property="IsSelected" Value="False" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.HoverBackgroundBrush), Mode=OneWay}" />
+                                    </MultiTrigger>
+
+                                </Style.Triggers>
+                                </Style>-->
+
+                                                <Style TargetType="{x:Type ListBoxItem}">
+                                                    <Setter Property="Background" Value="{DynamicResource AccentColorBrush}" />
+                                                    <Setter Property="BorderThickness" Value="0" />
+                                                    <Setter Property="Controls:ItemHelper.ActiveSelectionBackgroundBrush" Value="{DynamicResource AccentColorBrush}" />
+                                                    <Setter Property="Controls:ItemHelper.ActiveSelectionForegroundBrush" Value="{DynamicResource AccentSelectedColorBrush}" />
+                                                    <Setter Property="Controls:ItemHelper.DisabledForegroundBrush" Value="{DynamicResource GrayNormalBrush}" />
+                                                    <Setter Property="Controls:ItemHelper.DisabledSelectedBackgroundBrush" Value="{DynamicResource GrayBrush7}" />
+                                                    <Setter Property="Controls:ItemHelper.DisabledSelectedForegroundBrush" Value="{DynamicResource AccentSelectedColorBrush}" />
+                                                    <Setter Property="Controls:ItemHelper.HoverBackgroundBrush" Value="{DynamicResource AccentColorBrush3}" />
+                                                    <Setter Property="Controls:ItemHelper.HoverSelectedBackgroundBrush" Value="{DynamicResource AccentColorBrush}" />
+                                                    <Setter Property="Controls:ItemHelper.SelectedBackgroundBrush" Value="{DynamicResource AccentColorBrush2}" />
+                                                    <Setter Property="Controls:ItemHelper.SelectedForegroundBrush" Value="{DynamicResource AccentSelectedColorBrush}" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+                                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                    <Setter Property="Margin" Value="0" />
+                                                    <Setter Property="MinHeight" Value="25" />
+                                                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                                <Border x:Name="Border"
+                                               Background="Transparent"
+                                               BorderBrush="{TemplateBinding  BorderBrush}"
+                                               BorderThickness="{TemplateBinding BorderThickness}"
+                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                                                                    <Grid>
+                                                                        <GridViewRowPresenter x:Name="PART_RowPresenter"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                                        <ContentPresenter x:Name="PART_ContentPresenter"
+                                              Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              Visibility="Collapsed" />
+                                                                    </Grid>
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="GridView.ColumnCollection" Value="{x:Null}">
+                                                                        <Setter TargetName="PART_ContentPresenter" Property="Visibility" Value="Visible" />
+                                                                        <Setter TargetName="PART_RowPresenter" Property="Visibility" Value="Collapsed" />
+                                                                    </Trigger>
+
+                                                                    <Trigger Property="IsSelected" Value="True">
+                                                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.SelectedForegroundBrush), Mode=OneWay}" />
+                                                                        <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.SelectedBackgroundBrush), Mode=OneWay}" />
+                                                                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource HighlightBrush}" />
+                                                                    </Trigger>
+                                                                    <MultiTrigger>
+                                                                        <MultiTrigger.Conditions>
+                                                                            <Condition Property="IsSelected" Value="True" />
+                                                                            <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                                                        </MultiTrigger.Conditions>
+                                                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.ActiveSelectionForegroundBrush), Mode=OneWay}" />
+                                                                        <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.ActiveSelectionBackgroundBrush), Mode=OneWay}" />
+                                                                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource HighlightBrush}" />
+                                                                    </MultiTrigger>
+
+                                                                    <MultiTrigger>
+                                                                        <MultiTrigger.Conditions>
+                                                                            <Condition Property="IsMouseOver" Value="True" />
+                                                                            <Condition Property="IsSelected" Value="True" />
+                                                                        </MultiTrigger.Conditions>
+                                                                        <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.HoverSelectedBackgroundBrush), Mode=OneWay}" />
+                                                                    </MultiTrigger>
+                                                                    <MultiTrigger>
+                                                                        <MultiTrigger.Conditions>
+                                                                            <Condition Property="IsMouseOver" Value="True" />
+                                                                            <Condition Property="IsSelected" Value="False" />
+                                                                        </MultiTrigger.Conditions>
+                                                                        <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ItemHelper.HoverBackgroundBrush), Mode=OneWay}" />
+                                                                    </MultiTrigger>
+
+                                                                    <Trigger Property="IsEnabled" Value="False">
+                                                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.DisabledForegroundBrush), Mode=OneWay}" />
+                                                                        <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.DisabledBackgroundBrush), Mode=OneWay}" />
+                                                                    </Trigger>
+                                                                    <MultiTrigger>
+                                                                        <MultiTrigger.Conditions>
+                                                                            <Condition Property="IsEnabled" Value="False" />
+                                                                            <Condition Property="IsSelected" Value="True" />
+                                                                        </MultiTrigger.Conditions>
+                                                                        <MultiTrigger.Setters>
+                                                                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.DisabledSelectedForegroundBrush), Mode=OneWay}" />
+                                                                            <Setter TargetName="Border" Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Controls:ItemHelper.DisabledSelectedBackgroundBrush), Mode=OneWay}" />
+                                                                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource GrayBrush7}" />
+                                                                        </MultiTrigger.Setters>
+                                                                    </MultiTrigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+
+                                            <ListBox.ItemTemplate >
+                                                <DataTemplate>
+                                                    <Border>
+                                                        <StackPanel x:Name="linklist">
+                                                            <TextBlock Text="{Binding Name}" TextWrapping="Wrap" FontSize="12"/>
+                                                        </StackPanel>
+                                                    </Border>
+
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </Border>
+                                    <StackPanel Grid.Column="1">
+
+                                            <Label Content="Content ID" Foreground="{DynamicResource AccentColorBrush}" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+                                        <TextBox Name="new_cid" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="300" HorizontalContentAlignment="Center"/>
+
+                                            <Label Content="Name" Foreground="{DynamicResource AccentColorBrush}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="16"/>
+                                        <TextBox Name="new_name" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="300"/>
+
+                                            <Label Content="Link" Foreground="{DynamicResource AccentColorBrush}" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+                                        <TextBox Name="new_link" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="300"/>
+
+                                            <Label Content="Icon Link" Foreground="{DynamicResource AccentColorBrush}" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+                                        <TextBox Name="new_icon" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="300"/>
+                                        <Label Content="" FontSize="10"/>
+                                        <UniformGrid>
+                                            <Button Name="add_link" Content="New" Style="{StaticResource AccentedSquareButtonStyle}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Width="180" HorizontalAlignment="Center" Margin="75,0,0,0"   />
+                                        
+                                            <Button  Name="save" Content="Save" Style="{StaticResource AccentedSquareButtonStyle}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Width="180" HorizontalAlignment="Center" Margin="0,0,75,0"   />
+                                            </UniformGrid>
+                                    </StackPanel>
+                                     </Grid>
+                            </TabItem>
+                            <TabItem Header="Batch Install" mah:ControlsHelper.HeaderFontSize="20" >
+                                <Grid>
+                                    <DataGrid x:Name="dataGrid"  Background="Transparent" HeadersVisibility="Column" ItemsSource="{Binding}" CanUserSortColumns="False"  AutoGenerateColumns="False" GridLinesVisibility="None" CanUserResizeColumns="False" CanUserReorderColumns="False" SelectionUnit="Cell" CanUserResizeRows="False" CanUserAddRows="false">
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="DataGridRow">
+                                                <Setter Property="FontSize" Value="14"/>
+                                                <Setter Property="FontFamily" Value="Arial"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                
+                                                <Setter Property="Background" Value="Transparent"/>
+
+
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.Columns>
+
+                                            <DataGridTextColumn  Binding="{Binding text1s}" MaxWidth="0"  />
+                                            <DataGridCheckBoxColumn Header="Selected"  Binding="{Binding text2s}" IsReadOnly="False" CanUserResize="False" MinWidth="0"/>
+                                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" MinWidth="0" IsReadOnly="True"  >
+                                                    <DataGridTextColumn.CellStyle>
+                                                        <Style TargetType="DataGridCell">
+                                                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                            <Setter Property="ToolTip">
+                                                                <Setter.Value>
+                                                                    <TextBlock FontSize='12'
+
+                                                            Text="" />
+                                                                </Setter.Value>
+                                                            </Setter>
+
+                                                        </Style>
+                                                    </DataGridTextColumn.CellStyle>
+                                                </DataGridTextColumn>
+                                            </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </TabItem>
+                                <TabItem Header="Theme Settings" mah:ControlsHelper.HeaderFontSize="20" >
+                                    
+                                        <Grid>
+                                        <Border BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}"  HorizontalAlignment="Left"  Margin="50,10,0,10" Width="150" Height="300" VerticalAlignment="Bottom">
+                                            <StackPanel>
+                                                <Label Content="Theme Color" Foreground="{DynamicResource AccentColorBrush}" HorizontalAlignment="Center" FontSize="20" VerticalAlignment="Top"/>
+
+                                            <ListBox  Background="Transparent" FontSize="16" Name="listBox1" VerticalAlignment="Top" SelectionChanged="ListBoxItem_Selected" Padding="0" HorizontalContentAlignment="Center" Margin="0" Height="250">
+                                            <ListBoxItem Content="Red" Foreground="Red"  Background="Transparent"/>
+                                            <ListBoxItem Content="Green" Foreground="Green" Background="Transparent" />
+                                            <ListBoxItem Content="Blue" Foreground="Blue" Background="Transparent" />
+                                            <ListBoxItem Content="Purple" Foreground="Purple" Background="Transparent" />
+                                            <ListBoxItem Content="Orange" Foreground="Orange" Background="Transparent" />
+                                            <ListBoxItem Content="Lime" Foreground="Lime" Background="Transparent" />
+                                            <ListBoxItem Content="Emerald" Foreground="#FF077517" Background="Transparent" />
+                                            <ListBoxItem Content="Teal" Foreground="Teal" Background="Transparent" />
+                                            <ListBoxItem Content="Cyan" Foreground="Cyan" Background="Transparent" />
+                                            <ListBoxItem Content="Cobalt" Foreground="#FF0747C6" Background="Transparent" />
+                                            <ListBoxItem Content="Indigo" Foreground="Indigo" Background="Transparent" />
+                                            <ListBoxItem Content="Violet" Foreground="Violet" Background="Transparent" />
+                                            <ListBoxItem Content="Pink" Foreground="Pink" Background="Transparent" />
+                                            <ListBoxItem Content="Magenta" Foreground="Magenta" Background="Transparent" />
+                                            <ListBoxItem Content="Crimson" Foreground="Crimson" Background="Transparent" />
+                                            <ListBoxItem Content="Amber" Foreground="#FFC7890F" Background="Transparent" />
+                                            <ListBoxItem Content="Yellow" Foreground="Yellow" Background="Transparent" />
+                                            <ListBoxItem Content="Brown" Foreground="Brown" Background="Transparent" />
+                                            <ListBoxItem Content="Olive" Foreground="Olive" Background="Transparent" />
+                                            <ListBoxItem Content="Steel" Foreground="#FF576573" Background="Transparent" />
+                                            <ListBoxItem Content="Mauve" Foreground="#FF655475" Background="Transparent" />
+                                            <ListBoxItem Content="Taupe" Foreground="#FF736845" Background="Transparent" />
+                                            <ListBoxItem Content="Sienna" Foreground="Sienna" Background="Transparent" />
+                                                </ListBox>
+                                            </StackPanel>
+                                        </Border>
+                                    <Button Height="30" Style="{StaticResource AccentedSquareButtonStyle}" ToolTip="Change Theme" HorizontalAlignment="Center" Margin="0,0,200,10" Name="button7" VerticalAlignment="Bottom" Width="120" Click="button7_Click" mah:ControlsHelper.ContentCharacterCasing="Normal" >
+                                            <DockPanel LastChildFill="True">
+                                                <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill" Visual="{StaticResource ThemeLightDark}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>-->
+                                                <TextBlock Name="b7tb1" VerticalAlignment="Center" Padding="5"
+                                       Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                       FontSize="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=FontSize}"
+                                       >
+                                        Light Theme
+                                                </TextBlock>
+
+                                            </DockPanel>
+                                        </Button>
+
+
+                                        </Grid>
+                                    
+                                </TabItem>
+                            <TabItem Visibility="Collapsed" Header="Batch Install" mah:ControlsHelper.HeaderFontSize="20" >
+                                <Grid>
+                                    
+                                </Grid>
+                            </TabItem>
+
+
+                        </Controls:MetroAnimatedSingleRowTabControl>
+                        
 
                     </Grid>
                 </Border>
