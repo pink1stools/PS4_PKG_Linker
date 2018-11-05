@@ -28,6 +28,7 @@ namespace PS4_PKG_Linker
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        DataTable[] dtpkg = new DataTable[1];
         DataTable dtpkg2 = new DataTable();
         DataTable dtlinks = new DataTable();
         //DataTable dt2 = new DataTable();
@@ -67,6 +68,8 @@ namespace PS4_PKG_Linker
             dtpkg2.Columns.Add("text1s");
             dtpkg2.Columns.Add("text2s");
 
+            dtpkg2.Columns.Add("plinks");
+
             dtlinks.Columns.Add("CID");
             dtlinks.Columns.Add("Name");
             dtlinks.Columns.Add("link");
@@ -76,7 +79,7 @@ namespace PS4_PKG_Linker
 
             Add_pkg();
             Load_Links();
-
+            Wjson();
             //this.child01.IsOpen = true;
         }
 
@@ -136,12 +139,18 @@ namespace PS4_PKG_Linker
 
             if (ctheme == "BaseDark")
             {
+
+                color2.Background = Brushes.White;
+                head_icon.Foreground = Brushes.White;
                 //button7.Content = "Light Theme";
                 //b7tb1.Text = "Light Theme";
                 //ctheme = "BaseLight";
             }
             else
             {
+                color2.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
+                head_icon.Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
+
                 //button7.Content = "Dark Theme";
                 // b7tb1.Text = "Dark Theme";
                 //ctheme = "BaseDark";
@@ -372,7 +381,41 @@ namespace PS4_PKG_Linker
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            //if (button1.Content.ToString() == "Start Server")
+            if (b1tb1.Text == "Start Server")
+            {
+                /*port = textBox2.Text;
+                textBox3.Text = comboBox1.Text;
+                ip = textBox3.Text;
 
+                textBox1.Text = ip;
+                w_settings();
+                w_s_conf();*/
+
+                //b1tb1.Content = "Stop Server";
+                b1tb1.Text = "Stop Server";
+
+                //start_server();
+                // MyNotifyIcon.Visible = true;
+                Server_Running.BadgeBackground = Brushes.Green;
+                Server_Running.BadgeForeground = Brushes.Green;
+                //MyNotifyIcon.ShowBalloonTip(10000, "Server Started", "Server Started", System.Windows.Forms.ToolTipIcon.Info);
+                // MyNotifyIcon.Visible = false;
+            }
+            else
+            {
+                //button1.Content = "Start Server";
+                //b1tb1.Text = "Start Server";
+                b1tb1.Text = "Start Server";
+                //stop_server();
+                //MyNotifyIcon.Visible = true;
+                // b1tb1.Text = "Start Server";
+                //dispatcherTimer2.Stop();
+                //MyNotifyIcon.ShowBalloonTip(10000, "Server Stopped", "Server Stopped", System.Windows.Forms.ToolTipIcon.Info);
+                // MyNotifyIcon.Visible = false;
+                Server_Running.BadgeBackground = Brushes.Red;
+                Server_Running.BadgeForeground = Brushes.Red;
+            }
         }
 
         private void ContextMenu_Loaded(object sender, RoutedEventArgs e)
@@ -453,7 +496,7 @@ namespace PS4_PKG_Linker
             try
             {
                 dtpkg2.Clear();
-                
+
                 System.Windows.Application.Current.Dispatcher.Invoke(
                 DispatcherPriority.Normal,
     (ThreadStart)delegate
@@ -480,7 +523,7 @@ namespace PS4_PKG_Linker
                         bool isretail = testmagic.SequenceEqual(magic);
                         if (isretail == true)
                         {
-                            pkgtype = "Retail";
+                            pkgtype = "PKG";
 
                             FileStream pkgFile = File.Open(file.FullName, FileMode.Open);
                             byte[] cid = new byte[0x24];
@@ -787,7 +830,7 @@ namespace PS4_PKG_Linker
                                 dr["column2w"] = "650";
                                 dr["roww"] = "25";
                                 dr["imags"] = "50";
-                                dr["text1s"] = "json";
+                                dr["text1s"] = filelink;
                                 dr["text2s"] = "true";
 
                                 dtpkg2.Rows.Add(dr);
@@ -960,7 +1003,7 @@ namespace PS4_PKG_Linker
 
             if (item1 != null)
             {
-               
+
                 Object[] items2 = item1.Row.ItemArray;
 
                 //this.label4.Content = items2[0].ToString();
@@ -976,5 +1019,177 @@ namespace PS4_PKG_Linker
             }
         }
 
+        private void Wjson()
+        {
+            DataSet dataSet = new DataSet("dataSet");
+            dataSet.Namespace = "NetFrameWork";
+            DataTable table = new DataTable("plinks");
+            //DataColumn idColumn = new DataColumn("id", typeof(int));
+            // idColumn.AutoIncrement = true;
+
+            DataColumn itemColumn1 = new DataColumn("content_id");
+            DataColumn itemColumn2 = new DataColumn("name");
+            DataColumn itemColumn3 = new DataColumn("link");
+            DataColumn itemColumn4 = new DataColumn("icon_link");
+            //table.Columns.Add(idColumn);
+            table.Columns.Add(itemColumn1);
+            table.Columns.Add(itemColumn2);
+            table.Columns.Add(itemColumn3);
+            table.Columns.Add(itemColumn4);
+            dataSet.Tables.Add(table);
+
+
+            foreach (DataRow row in dtlinks.Rows)
+            {
+                ///Console.WriteLine("--- Row ---");
+
+                DataRow newRow = table.NewRow();
+                newRow["content_id"] = row.ItemArray[0];
+                newRow["name"] = row.ItemArray[1];
+                newRow["link"] = row.ItemArray[2];
+                newRow["icon_link"] = row.ItemArray[3];
+                table.Rows.Add(newRow);
+
+            }
+
+            dataSet.AcceptChanges();
+
+            string json = JsonConvert.SerializeObject(dataSet, Formatting.None);
+
+            /*
+                        string json;
+                        json = JsonConvert.SerializeObject(dtlinks);
+                        dtpkg[0] = dtlinks;
+
+                        json = JsonConvert.SerializeObject(dtpkg, Formatting.Undented);
+                        JsonConvert.SerializeObject<LINKS>(json);
+                        */
+            using (StreamWriter writer = new StreamWriter("Links.txt"))
+            {
+                writer.Write(json);
+
+            }
+        }
+
+        private void Add_Link()
+        {
+            if (new_name.Text != "" && new_cid.Text != "" && new_link.Text != "")
+            {
+                DataRow dr = dtlinks.NewRow();
+                dr["Name"] = new_name.Text;
+                dr["CID"] = new_cid.Text;
+                dr["link"] = new_link.Text;
+                dr["icon"] = new_icon.Text;
+
+                dtlinks.Rows.Add(dr);
+                try
+                {
+
+                    lvpkgsfo.DataContext = null;
+                    lvpkgsfo.DataContext = dtlinks.DefaultView;
+
+                    lvpkgsfo.Items.Refresh();
+
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+        }
+
+        private void Clear_Link()
+        {
+            new_name.Text = "";
+            new_cid.Text = "";
+            new_link.Text = "";
+            new_icon.Text = "";
+
+            this.lvpkgsfo.SelectedIndex = -1;
+        }
+
+        private void save_Click(object sender, RoutedEventArgs e)
+        {
+            if (new_name.Text != "" && new_cid.Text != "" && new_link.Text != "")
+            {
+                Add_Link();
+                Wjson();
+                Add_pkg();
+
+                this.lvpkgsfo.SelectedIndex = this.lvpkgsfo.Items.Count - 1;
+            }
+            //Load_Links();
+        }
+
+        private void clear_Click(object sender, RoutedEventArgs e)
+        {
+            Clear_Link();
+        }
+
+        private void delete_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                dtlinks.Rows.RemoveAt(this.lvpkgsfo.SelectedIndex);
+
+                Wjson();
+                Clear_Link();
+                Add_pkg();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void batch_Click(object sender, RoutedEventArgs e)
+        {
+            //dataGrid
+            foreach(DataRow row in dtpkg2.Rows)
+            {
+                if(row.ItemArray[15].ToString() == "true")
+                {
+                    string link_name = row.ItemArray[0].ToString();
+                    string file_type = row.ItemArray[14].ToString();
+                    string link_type = row.ItemArray[2].ToString();
+
+                    Send_File(link_name, link_type, file_type);
+                }
+            }
+        }
+
+        private void Send_File(string link_name, string link_type, string file_type)
+        {
+            if(link_type == "PKG")
+            {
+                //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
+
+            }
+            else if (link_type == "JSON")
+            {
+                //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
+
+            }
+            else if (link_type == "Split")
+            {
+                //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_0.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_1.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_2.pkg"]}'
+
+            }
+            else if (link_type == "Link")
+            {
+                bool endsInJSON = file_type.EndsWith(".json") || file_type.EndsWith(".JSON");
+                bool endsInPKG = file_type.EndsWith(".pkg") || file_type.EndsWith(".PKG");
+                if(endsInJSON == true)
+                {
+                    //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
+
+                }
+                else if (endsInPKG == true)
+                {
+                    //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
+
+                }
+            }
+        }
     }
 }

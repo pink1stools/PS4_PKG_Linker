@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("PS4_PKG_Linker")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("pink1")]
 [assembly: AssemblyProduct("PS4_PKG_Linker")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
