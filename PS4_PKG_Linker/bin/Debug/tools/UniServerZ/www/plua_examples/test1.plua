@@ -1,0 +1,15 @@
+<html>
+ <body>
+   <?lua
+    local params = parseGet();
+    if (params) then
+        name1 = params['name'] or "unknown person"; -- Add a default
+        name2 = params['name'];
+    end
+   ?>
+
+   <h1>Hello1, <?lua echo(name1) ?>!</h1>
+   <h1>Hello2, <?lua echo(name2) ?>!</h1>
+
+ </body>
+</html>

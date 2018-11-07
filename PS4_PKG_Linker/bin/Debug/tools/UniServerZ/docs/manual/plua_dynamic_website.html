@@ -1,0 +1,768 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>pLua simple dynamic website</title>
+  <meta name="Description" content="The Uniform Server Zero." />
+  <meta name="Keywords" content="The Uniform Server, MPG, Mike Gleaves, Ric, UniServer, Olajide, BobS " />
+  <link href="common/css/main.css" rel="stylesheet" type="text/css">
+  <link href="common/css/menu.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="p1330">
+<!-- Start header -->
+  <script language="javascript" src="common/header.js"></script>
+<!-- End header -->
+
+<table id="main" >
+<tr valign="top">
+
+<td id="td_menu">
+  <script language="javascript" src="common/lua_plua_main_defined.js"></script>
+  <script language="javascript" src="common/lua_plua_top_menu.js"></script>
+  <script language="javascript" src="common/top_menu.js"></script>
+  <script language="javascript" src="common/plua_sub_menu.js"></script>
+</td>
+
+<td id="td_spacer" ></td >
+
+<td id="td_content" >
+<!-- ============ Start Content ========== -->
+
+<table >
+<tr>
+ <td>
+  <img src="common/images/zero_logo4.png" alt="Zero logo" />
+ </td>
+ <td>
+<h1>pLua simple dynamic website</h1>
+</tr>
+</table>
+
+
+<p>Static website pages by their very nature are fast to download. There are no overheads such as retrieving data from a database or being processed by third party server-side scripting language such as PHP or Perl. For a designer or site maintainer static sites have a significant disadvantage, for example to change a single item in the header or main menu requires updating every single page. This is one reason why server-side scripting languages are used, they can update every page from a single source. </p>
+
+<p>Lua is both compact and very fast making it an ideal server-side scripting language. pLua is a third party Apache module (mod_pLua) specifically designed for creating dynamic websites with a syntax similar to PHP it allows mixed HTML and Lua code. Hence is ideal for serving basic websites such as the above. The following covers using pLua to create simple dynamic websites.</p>
+
+
+<div id="page_links_menu_shadow" >
+ <div id="page_links_menu" >
+  <ul>
+   <li><a href="#Preliminary" >Preliminary</a></li>
+   <li><a href="#Website page design" >Website page design</a></li>
+   <li><a href="#Dynamic part" >Dynamic part</a></li>
+   <li><a href="#Content selection" >Content selection</a></li>
+   <li><a href="#Complete main index.lua page" >Complete main index.lua page</a></li>
+   <li><a href="#mod_rewrite pretty links" >&nbsp;&nbsp;mod_rewrite pretty links</a></li>
+   <li><a href="#Cosmetics – CSS" >Cosmetics – CSS</a></li>
+   <li><a href="#Menu and navigation links" >Menu and navigation links</a></li>
+   <li><a href="#Complete tutorial code" >Complete tutorial code</a></li>
+
+   </ul>
+ </div>
+</div>
+
+
+<a name="Preliminary"></a>
+<h2>Preliminary</h2>
+
+<p>This is a complete how-to for creating a dynamic website from scratch. For this tutorial extract a new Uniform Server Zero as follows:</p>
+
+<ul>
+  <li>Create a new folder c:\<b>lua_dynamic_site</b> or a folder of your choice.  </li>
+  <li>Download  ZeroXI_controller_1_2_0.exe save this to folder c:\<b>lua_dynamic_site</b>.  </li>
+  <li>Extract the controller by double clicking on file ZeroXI_controller_1_2_0.exe </li>
+  <li>Download ZeroXI_apache_2_4_12.exe and  Zero_lua_1_0_1.exe  </li>
+  <li>Copy these to folder  c:\lua_dynamic_site\UniServerZ  </li>
+  <li>Extract Apache by double clicking on file ZeroXI_apache_2_4_12.exe  allow over write.</li>
+  <li>Extract Lua support and documentation by double clicking on file Zero_lua_1_0_1.exe  allow over write.</li>
+  <li>If you wish delete files ZeroXI_apache_2_4_12.exe and  Zero_lua_1_0_1.exe  </li>
+</ul>
+
+
+<p><b>Test server</b></p>
+<p>Confirm Apache and controller is working as follows:</p>
+
+<ul>
+  <li>Start controller, double click on <b>UniController.exe</b>  </li>
+  <li>Click <b>Start Apache</b> button, if challenged allow Internet access.  </li>
+  <li>Uniform Server Splash and index page displayed in browser confirms correct operation.  </li>
+  <li>Disable displaying these annoying pages as follows: </li>
+    <ul>
+       <li>Apache &gt; Start-up Pages &gt; Display page1 at start-up </li>
+       <li>Apache &gt; Start-up Pages &gt; Display page2 at start-up </li>
+    </ul>
+  <li>Stop Apache by clicking the <b>Stop Apache</b> button. </li>
+</ul>
+
+
+<p><b>Clean Server</b></p>
+
+<p>For this tutorial we start with a clean server.<br />
+With the exception of file <b>.htaccess</b>, folder <b>css</b> and folder <b>images</b> delete the contents of folder C:\plua_dynamic_site\UniServerZ\<b>www</b></p>
+
+
+<table>
+<tr valign="top">
+<td>
+<b>Enable pLua Module</b>
+<p>A default installation of Uniform Server Zero has pLua disabled enable the pLua module as follows:</p>
+
+<p class="access">Apache &gt; Edit Basic and Modules &gt; Edit Basic Configuration</p>
+<ul>
+  <li>7) Ensure <b>pLua Module</b> is enabled (default disabled) from the drop-down menu.</li>
+  <li>9) Click <b>Update Configuration</b> button, applies the changes.</li>
+  <li>Note: The new settings become effective when Apache server is restarted.</li>
+</ul>
+<p>Web pages with the file extension <b>.plua</b> are passed to the Lua engine for processing. </p>
+
+
+</td>
+<td>
+   <img src="images/C11_apache_basic_config_1.gif" alt="Apache basic config">
+</td>
+</tr>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Website page design"></a>
+<h2>Website page design</h2>
+
+<p>First task is to either design a new page (reference page) that will be used throughout the site or take an existing page and use that for the design. In either case this page is split into three templates header, content and footer. </p>
+
+<table>
+ <tr valign="top">
+  <td>
+<p><b><i>Templates</i>:</b></p>
+
+<p>The reference page is split as shown on the right.</p>
+  <ul>
+   <li>Top section is the <b>header</b></li>
+   <li>Middle section the page <b>content</b></li>
+   <li>Bottom section is the <b>footer</b>.</li>
+  </ul>
+
+ <p>Each template (section) is saved to a separate file and named header.plua, xxx.plua and footer.plua respectively.</p>
+
+ <p><b>Note:</b> For a complete website there is only one header and footer file however there will be several content pages (xxx.plua) each with a different name for example index.plua, about.plua, contact.plua and others.plua      </p>
+  </td>
+
+  <td>
+<p><b>Reference page</b></p>
+<pre>
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;UniServer Zero website&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="header"&gt;
+        &lt;img src="logo.png" alt="Main logo" /&gt;
+    &lt;/div&gt;
+    &lt;div id="content"&gt;
+</pre>
+
+<pre>
+&lt;p&gt;Page content goes here&lt;/p&gt;
+</pre>
+
+<pre>
+    &lt;/div&gt;
+    &lt;div id="footer"&gt;
+        &lt;p&gt;Uniform Server Copyright 2013 Test Site.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  </td>
+ </tr>
+</table>
+
+<p>The template pages are shown below. Create a new folder C:\plua_dynamic_site\UniServerZ\www\<b>plua_templates</b> and save the three template files to it.</p>
+
+<table>
+<tr valign="top">
+ <td>
+
+<p><b>header.plua</b></p>
+<pre>
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;UniServer Zero website&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="header"&gt;
+        &lt;img src="logo.png" alt="Main logo" /&gt;
+    &lt;/div&gt;
+    &lt;div id="content"&gt;
+</pre>
+ </td>
+
+
+ <td>
+<p><b>index.plua</b></p>
+<pre>
+&lt;p&gt;INDEX Page content goes here&lt;/p&gt;
+
+
+
+
+
+
+
+
+</pre>
+ </td>
+
+ <td>
+<p><b>footer.plua</b></p>
+<pre>
+    &lt;/div&gt;
+    &lt;div id="footer"&gt;
+        &lt;p&gt;Uniform Server Copyright 2013 Test Site.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+
+
+</pre>
+ </td>
+</tr>
+
+<tr valign="top">
+ <td>
+
+<p><b>Additional content pages</b></p>
+<p>Create two additional content pages about.plua and contact.plua save these to folder plua_templates.</p>
+ </td>
+
+
+ <td>
+<p><b>about.plua</b></p>
+<pre>
+&lt;p&gt;ABOUT page content goes here&lt;/p&gt;
+
+
+</pre>
+ </td>
+
+ <td>
+<p><b>contact.plua</b></p>
+<pre>
+&lt;p&gt;CONTACT page content goes here&lt;/p&gt;
+
+
+</pre>
+ </td>
+</tr>
+
+</table>
+
+<p><b><i>Note</i>:</b> If you are converting an existing site you need to split all of your pages as outlined above. All you need for these pages is the files content, you don't need their header/footer any more. For each content page (xxx.plua) remember to save the file with its original file name with a <b>.plua</b> file extension.</p>
+
+
+<p><b><i>Note</i>:</b> The first content page xxx.plua is generally named index.plua as shown above.</p>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Dynamic part"></a>
+<h2>Dynamic part</h2>
+<p>With the templates in place your website is complete. When a user requests a web page all that is required is to assemble these as appropriate into a complete web page.</p>
+
+<p>This is accomplished by assembling the three template files in order, first the header, then the content (index.plua), and finally the footer. This is achieved with code shown on the right.</p>
+
+<table>
+ <tr valign="top">
+   <td>
+<b>Complete web page</b>
+
+ <ul>
+   <li>The code is saved as index.plua and placed in the root folder www </li>
+   <li>Page is run by typing the following http://localhost/index.plua into browser address bar</li>
+   <li>Users browser displays the complete web page.</li>
+ </ul>
+
+
+</td>
+
+<td>
+<b>Assemble templates</b>
+<pre>
+&lt;?lua
+ -- Load pages using include
+ include("plua_templates/header.plua");
+ include("plua_templates/index.plua");
+ include("plua_templates/footer.plua");
+?&gt;
+
+</pre>
+</td>
+</tr>
+
+ <tr valign="top">
+  <td>
+<b>Page displayed</b>
+<p>Page displayed is shown on the right (image not shown).<br />
+ Admittedly nothing fantastic however it is a working dynamic Lua page. </p>
+  </td>
+  <td>
+
+<pre>
+Main logo
+
+INDEX Page content goes here
+
+Uniform Server Copyright 2013 Test Site.
+
+</pre>
+ </td>
+
+  </td>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Content selection"></a>
+<h2>Content selection</h2>
+<p>The index page currently creates (assembles) a single web page. What is required is a mechanism to select different page content. This is achieved by adding a parameter to the end of the index.plua page address. For example the new address will have the following format http://localhost/index.plua<b>?action=about</b> the ?action=about informs the server script you want to display the about page.</p>
+
+<p>The <b>action</b> part of (?action=about) is just a variable name you can use a name that suites your application. This variable is assigned the value of a page to display for example <b>about</b>, currently we have three pages (content) index, about and contact.</p>
+
+<p>Messages are sent to a server using either the GET or POST methods. The above description describes the GET method, which we are using.  </p>
+
+<p><b>Valid page request:</b></p> 
+<p>Content selection requires a page requested to be valid, for all invalid requests a default page (index content) is returned. Every page requested runs the same code this is placed in a function (valid_page). The following list valid and invalid conditions:</p>
+
+ <ul>
+    <li>Request Method is <b>Get</b></li>
+    <li>The variable <b>action</b> must exist.</li>
+    <li>The action variables value must exist.</li>
+    <li>The action variables value contains only alphanumeric characters.</li>
+    <li>The requested page content file must exist.</li>
+ </ul>
+
+
+<table>
+
+<tr valign="top">
+ <td>
+<b>Basic function:</b>
+<p>The <b>valid_page</b> function structure is shown on the right. The default return value <b>ret</b> assumes the requested page is valid. </p> 
+ </td>
+
+ <td>
+<pre>
+  function valid_page()
+    local ret = true; -- Assume valid
+
+    return ret;
+  end
+
+</pre>
+ </td>
+</tr>
+
+
+<tr valign="top">
+<td>
+<b>Complete valid page function:</b> 
+<ul>
+   <li>1) Check data sent was with the method GET obtained using parseGet()</li>
+      <ul>
+      <li>If the function parseGet() is empty no values sent.</li>
+      </ul>
+   <li>2) Check variable <b>action</b> exists.</li>
+      <ul>
+      <li>All parameters sent by GET are obtained using function parseGet().</li>
+      <li>A parameter exists if it returns a value for example <b>params['action']</b></li>
+      </ul>
+   <li>3) Check value returned is not blank.</li>
+</ul>
+
+<p>We now have the variable <b>action</b> value available to select our content template page. However this is un-trusted data from a user, if we were to use this directly a carefully crafted piece of code could be injected.
+
+ <ul>
+   <li>4) The data is sanitised</li>
+    <ul>
+      <li>Only allow alphanumeric, "_" and "-" characters</li>
+      <li>Using the  function <b>string.match</b>.</li> 
+    </ul>
+   <li>5) Remove requested pages header and footer these are not valid contents.</li>
+   <li>6) Check file exists using function file_exists(f) </li>
+ </ul>
+<b><i>Common function</i>:</b>
+<p>The function <b>valid_page2()</b> is common to every page request and is placed in a seperate file.<br />
+C:\plua_dynamic_site\UniServerZ\www\plua_templates\<b>plua_functions.lua</b> </p>
+
+<p>This file is load using dofile("plua_templates/plua_functions.plua") advantage of using a common function file is to keep the index.plua code clean and easier to read.</p>
+
+</td>
+
+<td>
+<pre>
+-- Fuction valid page
+  function valid_page2()
+    local ret = true; -- Assume valid
+    params = parseGet();          -- Get parameters
+    if params then;               -- 1) Valid GET
+     if params['action'] then;    -- 2) action set
+     action = params['action']    -- save valuecontains a value
+       if action ~="" then        -- 3) contains a value
+        -- 4) Sanitise
+        local patt = "^[%w_-]+$"  -- Set pattern
+        if string.match (action,patt) then
+        -- 5)Exclude header and footer content
+         if action=='header' or action=='footer'  then
+          ret = false
+         else
+           -- 6) Check file exists
+           if (file.exists("plua_templates/"..action..".plua")) then
+            ret = true;   -- File exists
+           else
+            ret = false;  -- File does not exist
+           end
+         end
+        else --Invalid characters
+          ret = false;
+        end
+       else --No value blank returned
+         ret = false;
+       end
+     else --No parameter action
+      ret = false;
+     end
+    else --No GET parameters
+      ret = false;
+    end
+    return ret;
+  end
+--End Fuction valid page
+</pre>
+</td>
+
+</tr>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Complete main index.lua page"></a>
+<h2>Complete main index.lua page</h2>
+<p>We now have a basic working dynamic website admittedly rough around the edges which will be addressed later.</p>
+
+<p>The complete pLua index page is shown on the right. Update your page to match and try it out.</p>
+<table>
+ <tr valign="top">
+   <td>
+<b>Complete page:</b>
+
+<p>Visit each page by typing the following into your browser:</p>
+
+ <ul>
+   <li>http://localhost/index.lua</li>
+   <li>http://localhost/index.lua?action=index</li>
+   <li>http://localhost/index.lua?action=about</li>
+   <li>http://localhost/index.lua?action=contact</li>
+ </ul>
+
+<a name="mod_rewrite pretty links"></a>
+<b><i>mod_rewrite pretty links</i>:</b>
+<p>From a users point of view the above links look messy and are difficult to remember. Using the .htaccess file and mod_rewrite these links are transformed into the following which are more pleasing on the eye:</p>
+
+ <ul>
+   <li>http://localhost/</li>
+   <li>http://localhost/index</li>
+   <li>http://localhost/about</li>
+   <li>http://localhost/contact</li>
+ </ul>
+
+   </td>
+   <td>
+<b>index.plua</b>
+<pre>
+&lt;?lua
+ -- Load valid page function
+ dofile("plua_templates/plua_functions.plua")
+
+ --Output header
+ include("plua_templates/header.plua");
+
+ --Output requested or default index page
+ if valid_page2() then           -- Output reqested
+   params = parseGet();          -- Get parameters
+   action = params['action'];    -- Get action
+   include("plua_templates/"..action..".plua");
+ else                            -- Output default
+   include("plua_templates/index.plua");
+ end
+
+ --Output footer
+ include("plua_templates/footer.plua");
+?&gt;
+
+
+
+</pre>
+   </td>
+ </tr>
+
+
+<tr valign="top">
+ <td>
+<b>Edit .htaccess</b>
+<p>Edit file C:\plua_dynamic_site\UniServerZ\www<b>.htaccess</b> at the end of this file add the code shown on the right.</p>
+<p>Test: Start Apache type above new links into your browser.</p>
+
+</td>
+
+<td>
+<b>.htaccess</b>
+<pre>
+Options +FollowSymLinks
+RewriteEngine On
+RewriteRule ^$          index.plua?action=index [L] #No index page or trailing /
+RewriteRule ^([a-z]+)$  index.plua?action=$1    [L] #Pick-up page name
+</pre>
+</td>
+
+</tr>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Cosmetics – CSS"></a>
+<h2>Cosmetics – CSS</h2>
+<p>Currently our site structure is very basic however with a little CSS the site can be transformed.</p>
+
+<table>
+  <tr valign="top">
+   <td>
+<b>Cosmetics</b>
+<p>The css on the right is an example purely to show how easy a css file is to integrate into your dynamic website.</p>
+
+<ul>
+  <li>Edit existing file C:\plua_dynamic_site\UniServerZ\www\css\<b>style.css</b> delete its content and add that shown on the right. Save the file.</li>
+
+  <li>Adding this css file to your site requires modifying a single file.<br />
+ Edit  file C:\plua_dynamic_site\UniServerZ\www\plua_templates <b>header.plua</b> add<br />
+ the line &lt;link href="css/style.css" rel="stylesheet" type="text/css"&gt;<br />
+ shown below:</li>
+</ul>
+<b>header.plua</b>
+<pre>
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;UniServer Zero website&lt;/title&gt;
+  &lt;link href="css/style.css" rel="stylesheet" type="text/css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="header"&gt;
+        &lt;img src="images/logo.png" alt="Main logo" /&gt;
+    &lt;/div&gt;
+    &lt;div id="content"&gt;
+</pre>
+
+<p>Adding that single line of code to the header file produces a dramatic effect.  Viewing the website clearly shows this dramatic change.</p>
+
+<p>Note: The following paths in the above example are identical to a static site hence converting an existing site requires no changes to relative paths if the original folder structure remains unchanged:</p>
+
+<pre>
+src="images/logo.png"
+url(../images/branding_bg.png)
+</pre>
+
+
+   </td>
+   <td>
+<b>style.css</b>
+<pre>
+
+body {
+  font: .8em "Lucida Sans", "Trebuchet MS", Verdana;
+  background-color : #4f4f97;
+}
+
+#header, #content, #footer {
+  width:800px;
+  margin:auto;
+  margin-bottom:10px;
+  color: #ffffff;
+  background-color : #4f4f97;
+  padding: 10px;
+  border:1px solid black;  
+}
+
+#header {
+  height : 93px;
+  text-align:left;
+  margin-top: 5px;
+  padding: 0px;
+  padding-right:20px;
+  background-image : url(../images/branding_bg.png);
+  background-repeat:repeat-x;
+}
+
+#content {
+  text-align:left;
+}
+
+#footer {
+  text-align:center;
+  font: .8em Verdana;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+</pre>
+   </td>
+  </tr>
+</table>
+ 
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Menu and navigation links"></a>
+<h2>Menu and navigation links</h2>
+
+<table>
+  <tr valign="top">
+   <td>
+<b><i>Navigation</i>:</b>
+
+<p>Other than typing page addresses into a browser there currently is no way to navigate our new website.  Adding navigation (menu) to every page requires editing only the header file and including an additional css file to provide cosmetics.</p>
+
+
+<b>Navigation cosmetics</b>
+<p>Create a new CSS file C:\plua_dynamic_site\UniServerZ\www\<b>menu.css</b><br />
+Add code to match your website, for now use code shown on the right.</p>
+
+
+<b><i>Add the CSS file to your site</i>:</b>
+ <ul>
+   <li>Edit  file C:\plua_dynamic_site\UniServerZ\www\plua_templates <b>header.lua</b> </li>
+   <li>Add line &lt;link href="css/menu.css" rel="stylesheet" type="text/css"&gt;</li>
+   <li>See header.lua below right for details.</li>
+  </ul>
+
+
+<p><i>Note</i>: You are not restricted to using a separate file for the menu CSS. If you wish this could be included in the main CSS file alternatively use in-line CSS.</p>
+
+</td>
+
+<td>
+<b>menu.css</b>
+<pre>
+/* Menu style */
+
+#menu {
+  width:800px;
+  margin:auto;
+  margin-bottom:10px;
+  color: #ffffff;
+  background-color : #4f4f97;
+  padding-right: 20px;
+}
+
+#menu a:link, #menu a:visited {
+  text-decoration: none;
+  background-color:  #4F4F96;
+  color: #eeeeee;
+  padding-left:5px;
+  padding-right:5px;
+}
+
+#menu a:hover {
+  color: #ffffff;
+  background-color:  #2F2F76;
+}
+</pre>
+   </td>
+  </tr>
+
+
+ <tr valign="top">
+   <td>
+
+<b>Add navigation</b>
+<p>You have a choice of using either pretty links or raw links. For comparison the following example includes both.</p>
+
+<p>Adding a menu bar is nothing more complicated than adding a div with links to the header file as shown below:</p>
+
+<pre>
+&lt;div id="menu"&gt;
+ &lt;a href="index"&gt;Home&lt;/a&gt;
+ &lt;a href="contact"&gt;Contact&lt;/a&gt;
+ &lt;a href="about"&gt;About&lt;/a&gt;
+
+ &lt;a href="index.plua?action=index"&gt;Home&lt;/a&gt;
+ &lt;a href="index.plua?action=contact"&gt;Contact&lt;/a&gt;
+ &lt;a href="index.plua?action=about"&gt;About&lt;/a&gt;
+&lt;/div&gt;
+</pre>
+
+<p>That completes the dynamic website, it provide a working example which you can use as a template and modify to suite your own requirements.</p>
+
+   </td>
+
+ <td>
+<b>header.lua</b>
+
+
+
+<pre>
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;UniServer Zero website&lt;/title&gt;
+  &lt;link href="css/style.css" rel="stylesheet" type="text/css"&gt;
+  &lt;link href="css/menu.css" rel="stylesheet" type="text/css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="header"&gt;
+        &lt;img src="images/logo.png" alt="Main logo" /&gt;
+    &lt;/div&gt;
+
+&lt;div id="menu"&gt;
+ &lt;a href="index"&gt;Home&lt;/a&gt;
+ &lt;a href="contact"&gt;Contact&lt;/a&gt;
+ &lt;a href="about"&gt;About&lt;/a&gt;
+
+ &lt;a href="index.plua?action=index"&gt;Home&lt;/a&gt;
+ &lt;a href="index.plua?action=contact"&gt;Contact&lt;/a&gt;
+ &lt;a href="index.plua?action=about"&gt;About&lt;/a&gt;
+&lt;/div&gt;
+    &lt;div id="content"&gt;
+</pre>
+</td>
+</tr>
+</table>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Complete tutorial code"></a>
+<h2>Complete tutorial code</h2>
+<p>If you wish to skip this tutorial and view the complete example proceed as follows:</p>
+
+<ul>
+  <li>Create a clean server see <a href="plua_dynamic_website.html#Preliminary">preliminary</a> section for details.</li>
+  <li>Instead of following the "Clean Server" instructions perform the following:</li>
+    <ul>
+      <li>Delete folder www</li>
+      <li>Copy file C:\plua_dynamic_site\UniServerZ\docs\manual\code_examples\<b>plua_dynamic_website_example.exe</b> to folder <b>UniServerZ</b></li>
+      <li>Start extraction process double click <b>plua_dynamic_website_example.exe</b>.</li>
+    </ul>
+  <li>Start Apache server and enter http://locahost/index.lua into your browser</li>
+</ul>
+
+<hr>
+<div align="center">--oOo--</div>
+
+
+<script language="javascript" src="common/top.js"></script>
+<!-- ============ End Content ============ -->
+</td>
+</tr>
+</table>
+
+<!-- Start footer -->
+  <script language="javascript" src="common/footer.js"></script>
+<!-- End footer -->
+
+</body>
+</html>

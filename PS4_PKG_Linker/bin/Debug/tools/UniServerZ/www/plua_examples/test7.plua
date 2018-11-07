@@ -1,0 +1,6 @@
+<?lua
+include("include_header.plua");
+echo("Contents goes here");
+include("include_html.html"); 
+include("include_footer.plua"); 
+?>

@@ -1,0 +1,1001 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>LuaSQL SQLite3</title>
+  <meta name="Description" content="The Uniform Server Zero." />
+  <meta name="Keywords" content="The Uniform Server, MPG, Mike Gleaves, Ric, UniServer, Olajide, BobS " />
+  <link href="common/css/main.css" rel="stylesheet" type="text/css">
+  <link href="common/css/menu.css" rel="stylesheet" type="text/css">
+</head>
+
+<style>
+.prewrap {
+ white-space: pre-wrap;
+}
+</style>
+
+<body id="p1250">
+<!-- Start header -->
+  <script language="javascript" src="common/header.js"></script>
+<!-- End header -->
+
+<table id="main" >
+<tr valign="top">
+
+<td id="td_menu">
+  <script language="javascript" src="common/lua_plua_main_defined.js"></script>
+  <script language="javascript" src="common/lua_plua_top_menu.js"></script>
+  <script language="javascript" src="common/top_menu.js"></script>
+  <script language="javascript" src="common/lua_sub_menu.js"></script>
+</td>
+
+<td id="td_spacer" ></td >
+
+<td id="td_content" >
+<!-- ============ Start Content ========== -->
+
+<table >
+<tr>
+ <td>
+  <img src="common/images/zero_logo4.png" alt="Zero logo" />
+ </td>
+ <td>
+<h1>LuaSQL SQLite3</h1>
+</tr>
+</table>
+
+<p>Unlike static web pages a dynamic web site allows you to change page content based on information stored in a database, commonly referred to as a database driven web-site. If data changes, a web page connected to the database will change accordingly. This type of web-site can be created with Lua, it requires the LuaSQL interface and a suitable database management system. LuaSQL interfaces to a number of database management systems such as PostgreSQL, ODBC, MySQL, SQLite, Oracle, and ADO. This page covers a basic guest book that  uses SQLite3 to create and manage the guest book database. </p>
+
+<p>Note: ZeroXI_lua_1_0_1.exe module installs both LuaSQL and SQLite3.</p>
+
+<div id="page_links_menu_shadow" >
+ <div id="page_links_menu" >
+  <ul>
+   <li><a href="#Preliminary" >Preliminary</a></li>
+   <li><a href="#Functions" >Functions</a></li>
+   <li><a href="#Function file_exists(file_name)" >&nbsp;&nbsp;Function file_exists(file_name)</a></li>
+   <li><a href="#Function db_init(db_file)" >&nbsp;&nbsp;Function db_init(db_file)</a></li>
+   <li><a href="#Function db_add_data(name,message)" >&nbsp;&nbsp;Function db_add_data(name,message)</a></li>
+   <li><a href="#Function db_get_entries()" >&nbsp;&nbsp;Function db_get_entries()</a></li>
+   <li><a href="#Function split(s, delimiter)" >&nbsp;&nbsp;Function split(s, delimiter)</a></li>
+   <li><a href="#Function clean_html(str)" >&nbsp;&nbsp;Function clean_html(str)</a></li>
+   <li><a href="#Main Function" >Main Function</a></li>
+
+   <li><a href="#Initialisation" >&nbsp;&nbsp;Initialisation</a></li>
+   <li><a href="#Get form data" >&nbsp;&nbsp;Get form data</a></li>
+   <li><a href="#Set database pointer" >&nbsp;&nbsp;Set database pointer</a></li>
+   <li><a href="#Add content input from form" >&nbsp;&nbsp;Add content input from form</a></li>
+   <li><a href="#Display gestbook content" >&nbsp;&nbsp;Display gestbook content</a></li>
+   <li><a href="#Display form" >&nbsp;&nbsp;Display form</a></li>
+
+   <li><a href="#Guest book code" >Guest book code</a> - css, lua script and screen shot</li>
+   <li><a href="#Tools" >Tools</a></li>
+   </ul>
+ </div>
+</div>
+
+
+<a name="Preliminary"></a>
+<h2>Preliminary</h2>
+
+<p>This basic guest book demonstrates the use of Lua to access a database. The guest book example includes basic security features to prevent code injection and covers user abuse. Although not definitive it does provide a starting point. The following provides an outline specification for the guest book:</p>
+
+
+<ul>
+  <li>Guest book single Lua page</li>
+  <li>Form to enter a user name and comment.</li>
+  <li>Button to save data entered.</li>
+  <li>Buttons up and down to view saved entries.</li>
+  <li>Draconian allow only ASCII text for name and comment. </li>
+  <li>Display entries in blocks of three.</li>
+  <li>Limit comments to a maximum of three lines.</li>
+  <li>Limit user name and comment line lengths.
+</ul>
+
+<p>The above provides a skeleton guest book you can add refinements as required. </p>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Database path"></a>
+<h2>Database path</h2>
+<p>The guest book script starts by defining a global variable <b>db_file</b>. This is assigned a database name (in this example <b>gb_db.sqlite</b>) including its full path. </p>
+
+<table>
+<tr valign="top">
+<td>
+<p>A suitable location, is path of the guest book script.<br />
+The file name <b>gb_db.sqlite</b> is appended to this path.</p>
+</td>
+<td>
+<pre>
+db_file = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] .. 'gb_db.sqlite' -- database
+</pre>
+</td>
+</tr>
+</table>
+
+<p><i>Note</i>: A default instalation of Uniform Server the path is: C:\UniServerZ\www\lua_examples\guest_book\<b>gb_db.sqlite</b></p>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Functions"></a>
+<h2>Functions</h2>
+
+<p>Our guest book requires a number of functions, these are defined after any global variables. The following functions are used in the guest book:</p>
+
+<table>
+<tr valign="top">
+ <td>
+<a name="Function file_exists(file_name)"></a>
+<p><b>Function file_exists(file_name)</b></p>
+<p>This function uses the standard input/output to open a named file (file_name) for reading. If the file cannot be opened io.open returns a nil, we assume the file does not exists and return false. If the return io.open value is not nil the file was open for reading, the file handle is closed before returning true.</p>
+ </td>
+ <td>
+  <pre>
+-- Check a file exists
+function file_exists(file_name)            -- Function: Check file exists
+  local file_found=io.open(file_name, "r") -- Note: Full path. With forward slashes
+  if file_found==nil then
+    return false -- File Not Found
+  else
+    io.close(file_found)
+    return true -- File Found
+  end
+end
+</pre>
+ </td>
+</tr>
+</table>
+
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Function db_init(db_file)"></a>
+<p><b>Function db_init(db_file)</b></p>
+
+<p>Every time the guest book script is run this function is executed. It ensures the database file exists, if not it is created along with the guestbook table. Every database access requires the appropriate driver (luasql.sqlite3) to be loaded. Once loaded an environment <b>env</b> object is created providing an interface to the database. A connection <b>conn</b> is made to the database, if the database does not exist it is created.</p>
+
+  <pre  class="prewrap">
+-- Create database if it does not exist
+-- This will be run once only if the db does not exists 
+function db_init(db_file) 
+ if not file_exists(db_file) then           -- DB does not exist create it
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect/create to data source
+  assert(conn:execute("create table if not exists guestbook(id INTEGER PRIMARY KEY, name TEXT NOT NULL, tim TEXT DEFAULT CURRENT_TIMESTAMP, msg TEXT NOT NULL)"))
+  conn:close() -- close everything
+  env:close()
+ end
+end
+  </pre>
+
+<p> With a connection established SQL commands are executed using <b>conn:execute</b> function.<br />
+ If table <b>gestbook</b>  does not exists it is created along with the following columns:</p>
+
+<ul>
+  <li><b>id</b> Internal database id integer.</li>
+  <li><b>name</b> Users full name.</li>
+  <li><b>tim</b> Time entry was created.</li>
+  <li><b>msg</b> Comment (message) entered by user. </li> 
+</ul>
+
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Function db_add_data(name,message)"></a>
+<p><b>Function db_add_data(name,message)</b></p>
+
+<p>This function first ensures the database file exists, if not it returns. After confirming database file exists, appropriate driver (luasql.sqlite3) is loaded, environment <b>env</b> object created and connection <b>conn</b> made to the database. </p>
+
+  <pre  class="prewrap">
+-- Insert into database.
+function db_add_data(name,message) 
+ if file_exists(db_file) then              -- DB exists add data
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect/create to data source
+  assert(conn:execute("insert into guestbook (name,msg) values(" .. "'" .. name .. "'" .. "," .. "'" .. message .. "'" .. ")"))
+  conn:close() -- close everything
+  env:close()
+ end
+end
+  </pre>
+
+<p> With a connection established SQL commands are executed using <b>conn:execute</b> function.<br />
+The name and message passed to the function are written to the database using the SQL insert command.<br />
+ The connection <b>conn</b> and environment <b>env</b> are closed before returning.</p>
+
+<script language="javascript" src="common/top.js"></script>
+
+<table>
+<tr valign="top">
+ <td>
+<a name="Function db_get_entries()"></a>
+<p><b>Function db_get_entries()</b></p>
+<p>In order to navigate up and down the database, total number of entries in the database is required. This function returns the number of entries.</p>
+
+<ul>
+  <li>A cursor object is created, this selects all id entries in the database.</li>
+  <li>The cursor:fetch returns all entries selected <b>a</b> the resulting table will have alphanumerical indices.  </li>
+  <li> The while loop fetches each row in turn and the <b>entries</b> variable keeps track of the number of rows (entries).  </li>
+  <li> The while loop is exited when there are no more rows to read. </li>
+  <li> The cursor, conn and env are closed and the number of entries returned.</li>
+</ul>
+
+ </td>
+ <td>
+  <pre >
+-- Get number of entries in database
+function db_get_entries()
+ local entries = 0  -- set initial value
+ if file_exists(db_file) then              -- Assumes guestbook DB exists
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect to data source
+
+  local cursor = conn:execute "SELECT id FROM guestbook"
+  local row = cursor:fetch ({}, "a")
+  while row do
+   entries = entries + 1
+   row = cursor:fetch (row, "a")
+  end
+
+  cursor:close() -- close everything
+  conn:close()
+  env:close()
+ end
+ return entries -- Return total number of entries
+end
+  </pre>
+ </td>
+</tr>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+
+<table>
+<tr valign="top">
+ <td>
+<a name="Function split(s, delimiter)"></a>
+<p><b>Function split(s, delimiter)</b></p>
+
+<p>This function splits the string<b> s</b> at the character specified by the <b>delimiter</b>  variable. The resulting lines are stored in local table <b>result</b> on completion this is returned.</p>
+ </td>
+ <td>
+  <pre>
+function split(s, delimiter) -- Split string at delimiter return table of strings
+    result = {};
+    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match);
+    end
+    return result;
+end
+  </pre>
+ </td>
+</tr>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+
+<table>
+<tr valign="top">
+ <td>
+<a name="Function clean_html(str)"></a>
+<p><b>Function clean_html(str)</b></p>
+
+<p>This function takes as parameter the string to be cleaned. Table <b>cleaner</b> contains a list of search and replace patterns. The content can be tailored to search and replace other patterns as required.</p>
+
+<p>This function takes as parameter the string to be cleaned. A list of search and replace patterns is contained in table <b>cleaner</b>. Table content can be tailored to search and replace other patterns as required.</p>
+
+<p>The for loop scans each element of the array starting from 1 to the array length #cleaner.
+Within the loop all search patterns cleans[1] are replace with cleans[2] and the new string assigned to variable t.</p>
+
+<p>On completing the loop the cleaned string t is returned.</p>  
+ </td>
+ <td>
+  <pre  >
+-- Remove html code
+function clean_html(str)            
+  local t = str          -- Set local var
+  local cleaner = {      -- list of strings to replace (the order is important to avoid conflicts)
+  { "&lt;!--", "" },        -- Comment
+  { "&amp;amp;", "" },       -- decode ampersands
+  { "&amp;#151;", "" },      -- em dash
+  { "&amp;#146;", "" },      -- right single quote
+  { "&amp;#147;", "" },      -- left double quote
+  { "&amp;#148;", "" },      -- right double quote
+  { "&amp;#150;", "" },      -- en dash
+  { "&amp;#160;", "" },      -- non-breaking space
+  { "&lt;br ?/?&gt;", "" },    -- all &lt;br&gt; tags whether terminated or not (&lt;br&gt; &lt;br/&gt; &lt;br /&gt;) become new lines
+  { "&lt;/p&gt;", "" },        -- ends of paragraphs become new lines
+  { "(%b&lt;&gt;)", "" },      -- all other html elements are completely removed (must be done last)
+  { "\r", "\n" },        -- return carriage become new lines
+  { "[\n\n]+", "\n" },   -- reduce all multiple new lines with a single new line
+  { "[\n]+", "&lt;br /&gt;" }, -- reduce all multiple new lines with a single new line
+  { "^\n*", "" },        -- trim new lines from the start...
+  { "\n*$", "" },        -- ... and end
+  }
+   
+  for i=1, #cleaner do           -- clean html from the string
+   local cleans = cleaner[i]
+   t = string.gsub( t, cleans[1], cleans[2] )
+  end
+ return t -- Return cleaned string
+end 
+  </pre>
+ </td>
+</tr>
+</table>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Main Function"></a>
+<h2>Main Function</h2>
+<p>The main function creates the guestbook page. It displays an initial page of guestbook entries and a user input form. This page is updated in response to user input for example adding a new guest book entry or viewing entries using the up and down buttons. The following describes each section of the main function: </p>
+
+
+<table>
+<tr valign="top">
+ <td>
+<a name="Initialisation"></a>
+<p><b>Initialisation</b></p>
+
+<p>To confirm a database file exists the main function runs db_init(db_file). If it does not exists it is created. The page content r.content is set to text/html.</p>
+
+<p>The html page beginning is output using  r:puts, this outputs opening tags for html, body and div. In addition outputs head and title html tag pairs. It also outputs a style sheet link to file style.css<p>
+
+ 
+ </td>
+ <td>
+  <pre  >
+ db_init(db_file)           -- Create database if it does not exist
+
+ r.content_type = "text/html"
+
+r:puts [[
+ &lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Guest book&lt;/title&gt;&lt;/head&gt;
+  &lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+  &lt;body&gt;
+  &lt;div id="main"&gt;
+]]
+  </pre>
+ </td>
+</tr>
+</table>
+
+<script language="javascript" src="common/top.js"></script>
+<table>
+<tr valign="top">
+ <td>
+<a name="Get form data"></a>
+<p><b>Get form data</b></p>
+
+<p>Variables are assigned initial values</p>
+
+<p>If this is an initial page request it is processed as if the form was filled in and submitted by a user. Data sent using post method is saved to the parsbody in name/value pairs. This array is scanned using a for loop.</p>
+
+<p>Each entry in the parsbody is tested for a named form element. On finding a match its value is either assigned to a corresponding variable (name, msg or pointer) or sets a binary variable (add_comment, uo or down) to true as appropriate.</p>
+ 
+<p>We are going to take a draconian stand and allow only alpha numeric characters. Using the following two lines:</p>
+<pre>
+   name = name:gsub('[^A-Za-z0-9 ]','')  -- Clean name
+   msg  = msg:gsub('[^A-Za-z0-9\n ]','') -- Clean message
+</pre>
+
+<p>A new line character is allowed in the message. The message is split into an array (msg_array) of  lines.</p>
+
+<p>A user can enter very long message lines and even a long user name. This technique is one method used for breaking a guest book. Again a draconian action is required, limit name length to 30 characters and limit message line lengths to 80 characters.</p>
+
+<pre>
+  --Limit name and msg line lengths
+  name_length = 30 -- Mamimum number of characters
+  msg_length  = 80 -- Mamimum number of characters
+
+  if #name &gt;= name_length then              -- Check name length
+    name = string.sub(name, 1,name_length)  -- Extract shorter length
+  end
+
+  for i=1, #msg_arry do                     -- Scan message array
+   if #msg_arry[i] &gt;= msg_length then       -- Check msg line length
+     msg_arry[i] = string.sub(msg_arry[i], 1,msg_length)
+   end
+  end 
+</pre>
+
+<p>We need to limit number of lines, maximum of three lines is allowed. The variable <b>max</b> is set to 0,1,2 or 3 depending on what a user entered. This  variable is used to extract up to three lines from the message array. Each line is concatenated and saved to variable msg_lines.</p>
+
+<p>The message line, msg_lines is further cleaned and /n replaced with &lt;br /&gt; using function clean_html(msg_lines). </p>
+ </td>
+ <td>
+  <pre  >
+-- Get form data 
+   -- Set initial values
+   name        = ''     -- Set initial values
+   msg         = ''     -- Assumes form was initial request
+   add_comment = false  -- Button pressed true default false
+   up          = false  -- Button pressed true default false
+   down        = false  -- Button pressed true default false
+   pointer     = 0      -- Current database location
+
+   for k, v in pairs(r:parsebody()) do -- Read data from form body.
+      if k=='comment_f' then
+         msg=v                 -- message
+      elseif k=='name_f' then
+         name=v                -- user name
+      elseif k=='add_comment_f' then
+         add_comment=true      -- button pressed
+      elseif k=='up_f' then
+         up=true               -- button pressed
+      elseif k=='down_f' then
+         down=true             -- button pressed
+      elseif k=='pointer_f' then
+         pointer=v             -- Hidden pointer number
+      end
+   end
+
+   name = name:gsub('[^A-Za-z0-9 ]','')  -- Clean name
+   msg  = msg:gsub('[^A-Za-z0-9\n ]','') -- Clean message
+   msg_arry = split(msg, '\n') -- Split string on \n
+
+  --Limit name and msg line lengths
+  name_length = 30 -- Mamimum number of characters
+  msg_length  = 80 -- Mamimum number of characters
+
+  if #name &gt;= name_length then              -- Check name length
+    name = string.sub(name, 1,name_length)  -- Extract shorter length
+  end
+
+  for i=1, #msg_arry do                     -- Scan message array
+   if #msg_arry[i] &gt;= msg_length then       -- Check msg line length
+     msg_arry[i] = string.sub(msg_arry[i], 1,msg_length)
+   end
+  end  
+
+
+  -- Limit number of lines
+  lines = 3 -- Mamimum number of lines
+  msg_lines = ''
+  max = 0
+  if #msg_arry &lt;= lines then
+    max = #msg_arry
+  else
+    max = lines
+  end
+
+  for i=1, max do    -- Build string limited to max lines
+   msg_lines = msg_lines .. msg_arry[i] .. '\n'
+  end
+  -- END Limit lines
+
+   msg = clean_html(msg_lines) -- Clean and replace /n with &lt;br /&gt;
+  </pre>
+ </td>
+</tr>
+</table>
+
+
+
+<script language="javascript" src="common/top.js"></script>
+<table>
+<tr valign="top">
+ <td>
+<p><b>Set database pointer</b></p>
+
+<p>The database pointer tracks last guest book entry made to the database. It is used when displaying guest book content. The current value is saved  between page downloads in a hidden form element.</p>
+
+<p>Pointer is modified when a new entry is made or when a user clicks the up or down form buttons.</p>
+
+<p>Clicking either the up or down button increments or decrements the pointer by 3 respectively. The resulting pointer is checked for a valid value and adjusted if out of range.</p>
+
+
+ </td>
+ <td>
+  <pre  >
+   -- Set database pointer initial value. Reads data from this lcation
+   if (not add_comment and not up and not down) then
+     pointer = db_get_entries() -- Set current value
+   end
+
+   -- Adjust pointer value depending on up or down button
+   if up then                -- Up button clicked
+    pointer = pointer + 3    -- Increment
+    max = db_get_entries()
+    if pointer &gt;= max then   -- Cannot be greater
+      pointer = max          -- Hence set max
+    end
+   end
+
+   if down then              -- Down button clicked
+    pointer = pointer - 3    -- Decrement
+    if pointer &lt;= 1 then     -- Cannot be negative
+      pointer = 3            -- Hence set it to zero
+    end
+   end
+  </pre>
+ </td>
+</tr>
+</table>
+
+<script language="javascript" src="common/top.js"></script>
+<table>
+<tr valign="top">
+ <td>
+<a name="Add content input from form"></a>
+<p><b>Add content input from form</b></p>
+<p>If the add comment button was clicked name and message are added to the database. The pointer is set to match the current entries in the database.</p>
+ </td>
+ <td>
+  <pre  >
+-- Add content input from form
+ if add_comment then
+   db_add_data(name,msg)      -- Insert data into database
+   pointer = db_get_entries() -- Get new entries count
+ end
+
+  </pre>
+ </td>
+</tr>
+</table>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Display gestbook content"></a>
+<p><b>Display gestbook content</b></p>
+
+<p>To display guest book content first check database file exists. On confirmation connect to the database.</p>
+
+<p>Guest book entries are displayed in blocks of three using the pointer as reference. For each entry the following items are display id, name, time entry created and message.</p>
+
+<p>To extract this information an SQL query is made to SELECT id, name, tim and msg from the database table named guestbook. WHERE statement restricts data returned, we use this to retrieve all values with a id less than or equal to the pointer. Data returned is further restricted using LIMIT set to 3 (returns three database entries). The returned data is ordered by its id in a descending order ready for displaying.</p>
+
+  <pre  class="prewrap">
+-- Display gestbook content
+ if file_exists(db_file) then              -- Assumes guestbook DB exists
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect to data source
+
+  local cursor = conn:execute ("SELECT id, name, tim, msg FROM guestbook WHERE id &lt;= " .. "'" .. pointer .. "' ORDER BY id DESC LIMIT 3 ")
+
+  local row = cursor:fetch ({}, "a")
+
+  while row do
+
+   r:puts("\n&lt;fieldset&gt;")
+   r:puts("\n&lt;legend&gt;" .. row.id .. "&lt;/legend&gt;")
+   r:puts("\n&lt;span class='lin1'&gt;Posted by:&lt;/span&gt;&lt;span class='lin2'&gt; " .. row.name .. "&lt;/span&gt;&lt;span class='lin3'&gt; On: &lt;/span&gt;&lt;span class='lin4'&gt;" .. row.tim .. "&lt;/span&gt;&lt;br /&gt;")
+   r:puts(row.msg)
+   r:puts("\n&lt;/fieldset&gt;")
+
+    row = cursor:fetch (row, "a")
+  end
+
+  cursor:close() -- close everything
+  conn:close()
+  env:close()
+ end
+-- END Display gestbook content
+
+  </pre>
+
+<p>A while loop extracts items from each line returned and displays them in appropriate html format using the r:puts function.</p>
+
+<p>Note: The new line character \n is not a requirement, its included to make viewing the resulting page source code easier to read.</p>
+
+
+
+<script language="javascript" src="common/top.js"></script>
+<table>
+<tr valign="top">
+ <td>
+<a name="Display form"></a>
+<p><b>Display form</b></p>
+
+<p>After displaying guest book entries the user input form is displayed.</p>
+
+<p>The form method used is post, this prevents data being displayed in a browsers address bar.</p>
+
+<p>The current pointer value is set as a hidden input field named pointer_f.</p>
+
+<p>Finally after outputting the user form html closing  tags (&lt;/div&gt;,  &lt;/body&gt; and &lt;/html&gt;) are sent.</p>
+
+
+
+ </td>
+ <td>
+  <pre  >
+-- Display form
+r:puts [[
+
+&lt;h2&gt;Add a comment!&lt;/h2&gt;
+    &lt;form method="post" action=""&gt;
+        &lt;textarea name="comment_f" rows="5" style="width:100%"&gt;&lt;/textarea&gt;&lt;br /&gt;
+        Posted By: &lt;input type="text" name="name_f"&gt;
+        &lt;input class="submit" type="submit" name="add_comment_f" value="Add Comment"&gt;
+        &nbsp;&nbsp;Scroll entries: 
+        &lt;input class="submit" type="submit" name="up_f" value="Up"&gt;
+        &lt;input class="submit" type="submit" name="down_f" value="Down"&gt;
+]]
+
+r:puts("&lt;input type='hidden' name='pointer_f' value='" .. pointer .. "' /&gt;")
+
+r:puts [[
+    &lt;/form&gt;
+]]
+
+
+r:puts [[
+&lt;/div&gt;  &lt;/body&gt;&lt;/html&gt;
+]]
+
+
+end
+</pre>
+</body>
+</html>
+
+
+  </pre>
+ </td>
+</tr>
+</table>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Guest book code"></a>
+<h2>Guest book code</h2>
+
+<p>Complete guest book code is shown below including the css file. These files and the database are located in  lua_examples\guest_book folder.</p>
+
+<p>Full paths for a defaul install of Uniform Server:<br />
+C:\UniServerZ\www\lua_examples\guest_book\gb.lua <br />
+C:\UniServerZ\www\lua_examples\guest_book\style.css </p>
+
+<p>Run the guest book script by typing the following into a browser:<br />
+http://localhost/lua_examples/guest_book/gb.lua</p>
+
+<p>Alternatively run Lua example index page by typing the following in to a browser and selecting test11 menu item:<br /> 
+http://localhost/lua_examples/ </p>
+
+<p>Note: After running the guest book script database gb_db.sqlite file is created:<br />
+C:\UniServerZ\www\lua_examples\guest_book\gb_db.sqlite</p>
+
+<table>
+ <tr valign="top">
+  <td>
+    <p><b>style.css</b></p>
+<p>The css file is shown on the right. You change this to blend in with your own web site design.</p>
+
+<p>Classes .lin1 to lin4 set font size for Posted by:, User name, On:date and comment respectively.</p>
+
+<p>The fieldset tag, groups each database entry output. A standards compliant browser will display rounded corners. Legend tag displays the id entry number.</p>
+
+<p>On the far right is a guest book screen shot.</p>
+  </td>
+
+ <td>
+<pre>
+#main {
+ width: 80%;
+ margin-left: 10%;
+ margin-right: 10%;
+}
+
+.lin1{ font-size: 80%;}
+.lin2{ font-size: 95%;}
+.lin3{
+ font-size: 80%;
+ padding-left:20px;
+}
+
+.lin4{ font-size: 95%;}
+
+legend {  font-size: 80%;}
+
+fieldset {
+    display: block;
+    margin-left: 2px;
+    margin-right: 2px;
+    padding-top: 0.35em;
+    padding-bottom: 0.625em;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    border: 2px groove (internal value);
+    border-radius: 8px;
+}
+</pre>
+  </td>
+
+<td>
+ <img src="images/guest_book_1.gif" alt="guest book screen shot">
+</td>
+
+
+ </tr>
+</table>
+
+
+
+<p><b>gb.lua</b><br />
+The complete guest book script is shown below:</p>
+<table>
+<tr valign="top">
+<td>
+</td>
+
+<td>
+<pre class="prewrap">
+-- Full path to database
+db_file = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] .. 'gb_db.sqlite' -- database
+
+-- Check a file exists
+function file_exists(file_name)            -- Function: Check file exists
+  local file_found=io.open(file_name, "r") -- Note: Full path. With forward slashes     
+  if file_found==nil then
+    return false -- File Not Found
+  else
+    return true -- File Found
+  end
+end
+
+-- Create database if it does not exist
+-- This will be run once only if the db does not exists 
+function db_init(db_file) 
+ if not file_exists(db_file) then           -- DB does not exist create it
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect/create to data source
+  assert(conn:execute("create table if not exists guestbook(id INTEGER PRIMARY KEY, name TEXT NOT NULL, tim TEXT DEFAULT CURRENT_TIMESTAMP, msg TEXT NOT NULL)"))
+  conn:close() -- close everything
+  env:close()
+ end
+end
+
+-- Insert into database.
+function db_add_data(name,message) 
+ if file_exists(db_file) then              -- DB exists add data
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect/create to data source
+  assert(conn:execute("insert into guestbook (name,msg) values(" .. "'" .. name .. "'" .. "," .. "'" .. message .. "'" .. ")"))
+  conn:close() -- close everything
+  env:close()
+ end
+end
+
+-- Get number of entries in database
+function db_get_entries()
+ local entries = 0  -- set initial value
+ if file_exists(db_file) then              -- Assumes guestbook DB exists
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect to data source
+
+  local cursor = conn:execute "SELECT id FROM guestbook"
+  local row = cursor:fetch ({}, "a")
+  while row do
+   entries = entries + 1
+   row = cursor:fetch (row, "a")
+  end
+
+  cursor:close() -- close everything
+  conn:close()
+  env:close()
+ end
+ return entries -- Return total number of entries
+end
+
+
+function split(s, delimiter) -- Split string at delimiter return table of strings
+    result = {};
+    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match);
+    end
+    return result;
+end
+
+-- Remove html code
+function clean_html(str)            
+  local t = str          -- Set local var
+  local cleaner = {      -- list of strings to replace (the order is important to avoid conflicts)
+  { "&lt;!--", "" },        -- Comment
+  { "&amp;", "" },       -- decode ampersands
+  { "&amp;#151;", "" },      -- em dash
+  { "&amp;#146;", "" },      -- right single quote
+  { "&amp;#147;", "" },      -- left double quote
+  { "&amp;#148;", "" },      -- right double quote
+  { "&amp;#150;", "" },      -- en dash
+  { "&amp;#160;", "" },      -- non-breaking space
+  { "&lt;br ?/?&gt;", "" },    -- all &lt;br&gt; tags whether terminated or not (&lt;br&gt; &lt;br/&gt; &lt;br /&gt;) become new lines
+  { "&lt;/p&gt;", "" },        -- ends of paragraphs become new lines
+  { "(%b&lt;&gt;)", "" },      -- all other html elements are completely removed (must be done last)
+  { "\r", "\n" },        -- return carriage become new lines
+  { "[\n\n]+", "\n" },   -- reduce all multiple new lines with a single new line
+  { "[\n]+", "&lt;br /&gt;" }, -- reduce all multiple new lines with a single new line
+  { "^\n*", "" },        -- trim new lines from the start...
+  { "\n*$", "" },        -- ... and end
+  }
+   
+  for i=1, #cleaner do           -- clean html from the string
+   local cleans = cleaner[i]
+   t = string.gsub( t, cleans[1], cleans[2] )
+  end
+ return t -- Return cleaned string
+end 
+
+-- ##### Main Function #########
+function handle(r)
+
+ db_init(db_file)           -- Create database if it does not exist
+
+ r.content_type = "text/html"
+
+r:puts [[
+ &lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Guest book&lt;/title&gt;&lt;/head&gt;
+  &lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+  &lt;body&gt;
+  &lt;div id="main"&gt;
+]]
+
+-- Get form data 
+   -- Set initial values
+   name        = ''     -- Set initial values
+   msg         = ''     -- Assumes form was initial request
+   add_comment = false  -- Button pressed true default false
+   up          = false  -- Button pressed true default false
+   down        = false  -- Button pressed true default false
+   pointer     = 0      -- Current database location
+
+   for k, v in pairs(r:parsebody()) do -- Read data from form body.
+      if k=='comment_f' then
+         msg=v                 -- message
+      elseif k=='name_f' then
+         name=v                -- user name
+      elseif k=='add_comment_f' then
+         add_comment=true      -- button pressed
+      elseif k=='up_f' then
+         up=true               -- button pressed
+      elseif k=='down_f' then
+         down=true             -- button pressed
+      elseif k=='pointer_f' then
+         pointer=v             -- Hidden pointer number
+      end
+   end
+
+   name = name:gsub('[^A-Za-z0-9 ]','')  -- Clean name
+   msg  = msg:gsub('[^A-Za-z0-9\n ]','') -- Clean message
+   msg_arry = split(msg, '\n') -- Split string on \n
+
+  -- Limit lines
+  lines = 3 -- Mamimum number of lines
+  msg_lines = ''
+  max = 0
+  if #msg_arry &lt;= lines then
+    max = #msg_arry
+  else
+    max = lines
+  end
+
+  for i=1, max do    -- Build string limited to max lines
+   msg_lines = msg_lines .. msg_arry[i] .. '\n'
+  end
+  -- END Limit lines
+
+   msg = clean_html(msg_lines) -- Clean and replace /n with &lt;br /&gt;
+
+
+   -- Set database pointer initial value. Reads data from this lcation
+   if (not add_comment and not up and not down) then
+     pointer = db_get_entries() -- Set current value
+   end
+
+   -- Adjust pointer value depending on up or down button
+   if up then                -- Up button clicked
+    pointer = pointer + 3    -- Increment
+    max = db_get_entries()
+    if pointer &gt;= max then   -- Cannot be greater
+      pointer = max          -- Hence set max
+    end
+   end
+
+   if down then              -- Down button clicked
+    pointer = pointer - 3    -- Decrement
+    if pointer &lt;= 1 then     -- Cannot be negative
+      pointer = 3            -- Hence set it to zero
+    end
+   end
+
+-- Add content input from form
+ if add_comment then
+   db_add_data(name,msg)      -- Insert data into database
+   pointer = db_get_entries() -- Get new entries count
+ end
+
+
+-- Display gestbook content
+ if file_exists(db_file) then              -- Assumes guestbook DB exists
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect to data source
+
+  local cursor = conn:execute ("SELECT id, name, tim, msg FROM guestbook WHERE id &lt;= " .. "'" .. pointer .. "' ORDER BY id DESC LIMIT 3 ")
+
+  local row = cursor:fetch ({}, "a")
+
+  while row do
+
+   r:puts("\n&lt;fieldset&gt;")
+   r:puts("\n&lt;legend&gt;" .. row.id .. "&lt;/legend&gt;")
+   r:puts("\n&lt;span class='lin1'&gt;Posted by:&lt;/span&gt;&lt;span class='lin2'&gt; " .. row.name .. "&lt;/span&gt;&lt;span class='lin3'&gt; On: &lt;/span&gt;&lt;span class='lin4'&gt;" .. row.tim .. "&lt;/span&gt;&lt;br /&gt;")
+   r:puts(row.msg)
+   r:puts("\n&lt;/fieldset&gt;")
+
+    row = cursor:fetch (row, "a")
+  end
+
+
+  cursor:close() -- close everything
+  conn:close()
+  env:close()
+ end
+-- END Display gestbook content
+
+
+-- Display form
+r:puts [[
+
+&lt;h2&gt;Add a comment!&lt;/h2&gt;
+    &lt;form method="post" action=""&gt;
+        &lt;textarea name="comment_f" rows="5" style="width:100%"&gt;&lt;/textarea&gt;&lt;br /&gt;
+        Posted By: &lt;input type="text" name="name_f"&gt;
+        &lt;input class="submit" type="submit" name="add_comment_f" value="Add Comment"&gt;
+        &nbsp;&nbsp;Scroll entries: 
+        &lt;input class="submit" type="submit" name="up_f" value="Up"&gt;
+        &lt;input class="submit" type="submit" name="down_f" value="Down"&gt;
+]]
+
+r:puts("&lt;input type='hidden' name='pointer_f' value='" .. pointer .. "' /&gt;")
+
+r:puts [[
+    &lt;/form&gt;
+]]
+
+
+r:puts [[
+&lt;/div&gt;  &lt;/body&gt;&lt;/html&gt;
+]]
+
+
+end
+</pre>
+</td>
+</tr>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Tools"></a>
+<h2>Tools</h2>
+
+<p>An excellent  DB browser and editor for SQLite can be found at PortableApps.com, page: <br />
+ http://portableapps.com/apps/development/sqlite_database_browser_portable</p>
+
+
+
+<hr>
+<div align="center">--oOo--</div>
+
+
+<script language="javascript" src="common/top.js"></script>
+<!-- ============ End Content ============ -->
+</td>
+</tr>
+</table>
+
+<!-- Start footer -->
+  <script language="javascript" src="common/footer.js"></script>
+<!-- End footer -->
+
+</body>
+</html>

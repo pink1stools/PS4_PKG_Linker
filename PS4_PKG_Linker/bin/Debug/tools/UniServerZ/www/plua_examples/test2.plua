@@ -1,0 +1,19 @@
+<html>
+ <body>
+   <?lua
+    local params = parseGet();
+    if (params) then
+        name1a = params['first_name'] or "xxx"; -- Add a default
+        name1b = params['first_name'];
+        name2a = params['last_name']  or "yyy"; -- Add a default
+        name2b = params['last_name'];
+    end
+   ?>
+
+   <h1>Hello1, <?lua echo(name1a) ?>!</h1>
+   <h1>Hello2, <?lua echo(name1b) ?>!</h1>
+   <h1>Hello3, <?lua echo(name2a) ?>!</h1>
+   <h1>Hello4, <?lua echo(name2b) ?>!</h1>
+
+ </body>
+</html>

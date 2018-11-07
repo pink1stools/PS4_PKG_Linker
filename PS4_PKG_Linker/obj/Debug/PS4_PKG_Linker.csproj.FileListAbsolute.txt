@@ -41,13 +41,11 @@ C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\bin\Debug\M
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\bin\Debug\MahApps.Metro.xml
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\bin\Debug\Newtonsoft.Json.xml
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker.csprojAssemblyReference.cache
-C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\Add.g.cs
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\MainWindow.g.cs
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\App.g.cs
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker_MarkupCompile.cache
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker_MarkupCompile.lref
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\App.baml
-C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\Add.baml
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\MainWindow.baml
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker.g.resources
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker.Properties.Resources.resources
@@ -59,3 +57,9 @@ C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\P
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\bin\Debug\MahApps.Metro.IconPacks.dll
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\bin\Debug\MahApps.Metro.IconPacks.pdb
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\bin\Debug\MahApps.Metro.IconPacks.xml
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\tools\resources\Logops4.baml
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker_Content.g.cs
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\bin\Debug\WPFFolderBrowser.dll
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\Window_server.baml
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\Window_server.g.cs
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\GeneratedInternalTypeHelper.g.cs

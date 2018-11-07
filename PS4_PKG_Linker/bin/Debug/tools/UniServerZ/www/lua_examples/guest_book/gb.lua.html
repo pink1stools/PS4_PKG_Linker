@@ -1,0 +1,276 @@
+ <!DOCTYPE html>
+<html>
+
+
+<style>
+.prewrap {
+ white-space: pre-wrap;
+}
+</style>
+<body>
+
+<pre class="prewrap">
+-- Full path to database
+db_file = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] .. 'gb_db.sqlite' -- database
+
+-- Check a file exists
+function file_exists(file_name)            -- Function: Check file exists
+  local file_found=io.open(file_name, "r") -- Note: Full path. With forward slashes     
+  if file_found==nil then
+    return false -- File Not Found
+  else
+    io.close(file_found)
+    return true -- File Found
+  end
+end
+
+-- Create database if it does not exist
+-- This will be run once only if the db does not exists 
+function db_init(db_file) 
+ if not file_exists(db_file) then           -- DB does not exist create it
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect/create to data source
+  assert(conn:execute("create table if not exists guestbook(id INTEGER PRIMARY KEY, name TEXT NOT NULL, tim TEXT DEFAULT CURRENT_TIMESTAMP, msg TEXT NOT NULL)"))
+  conn:close() -- close everything
+  env:close()
+ end
+end
+
+-- Insert into database.
+function db_add_data(name,message) 
+ if file_exists(db_file) then              -- DB exists add data
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect/create to data source
+  assert(conn:execute("insert into guestbook (name,msg) values(" .. "'" .. name .. "'" .. "," .. "'" .. message .. "'" .. ")"))
+  conn:close() -- close everything
+  env:close()
+ end
+end
+
+-- Get number of entries in database
+function db_get_entries()
+ local entries = 0  -- set initial value
+ if file_exists(db_file) then              -- Assumes guestbook DB exists
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect to data source
+
+  local cursor = conn:execute "SELECT id FROM guestbook"
+  local row = cursor:fetch ({}, "a")
+  while row do
+   entries = entries + 1
+   row = cursor:fetch (row, "a")
+  end
+
+  cursor:close() -- close everything
+  conn:close()
+  env:close()
+ end
+ return entries -- Return total number of entries
+end
+
+
+function split(s, delimiter) -- Split string at delimiter return table of strings
+    result = {};
+    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match);
+    end
+    return result;
+end
+
+-- Remove html code
+function clean_html(str)            
+  local t = str          -- Set local var
+  local cleaner = {      -- list of strings to replace (the order is important to avoid conflicts)
+  { "&lt;!--", "" },        -- Comment
+  { "&amp;amp;", "" },       -- decode ampersands
+  { "&amp;#151;", "" },      -- em dash
+  { "&amp;#146;", "" },      -- right single quote
+  { "&amp;#147;", "" },      -- left double quote
+  { "&amp;#148;", "" },      -- right double quote
+  { "&amp;#150;", "" },      -- en dash
+  { "&amp;#160;", "" },      -- non-breaking space
+  { "&lt;br ?/?&gt;", "" },    -- all &lt;br&gt; tags whether terminated or not (&lt;br&gt; &lt;br/&gt; &lt;br /&gt;) become new lines
+  { "&lt;/p&gt;", "" },        -- ends of paragraphs become new lines
+  { "(%b&lt;&gt;)", "" },      -- all other html elements are completely removed (must be done last)
+  { "\r", "\n" },        -- return carriage become new lines
+  { "[\n\n]+", "\n" },   -- reduce all multiple new lines with a single new line
+  { "[\n]+", "&lt;br /&gt;" }, -- reduce all multiple new lines with a single new line
+  { "^\n*", "" },        -- trim new lines from the start...
+  { "\n*$", "" },        -- ... and end
+  }
+   
+  for i=1, #cleaner do           -- clean html from the string
+   local cleans = cleaner[i]
+   t = string.gsub( t, cleans[1], cleans[2] )
+  end
+ return t -- Return cleaned string
+end 
+
+
+
+-- ##### Main Function #########
+function handle(r)
+
+ db_init(db_file)           -- Create database if it does not exist
+
+ r.content_type = "text/html"
+
+r:puts [[
+ &lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Guest book&lt;/title&gt;&lt;/head&gt;
+  &lt;link rel="stylesheet" type="text/css" href="style.css"&gt;
+  &lt;body&gt;
+  &lt;div id="main"&gt;
+]]
+
+-- Get form data 
+   -- Set initial values
+   name        = ''     -- Set initial values
+   msg         = ''     -- Assumes form was initial request
+   add_comment = false  -- Button pressed true default false
+   up          = false  -- Button pressed true default false
+   down        = false  -- Button pressed true default false
+   pointer     = 0      -- Current database location
+
+   for k, v in pairs(r:parsebody()) do -- Read data from form body.
+      if k=='comment_f' then
+         msg=v                 -- message
+      elseif k=='name_f' then
+         name=v                -- user name
+      elseif k=='add_comment_f' then
+         add_comment=true      -- button pressed
+      elseif k=='up_f' then
+         up=true               -- button pressed
+      elseif k=='down_f' then
+         down=true             -- button pressed
+      elseif k=='pointer_f' then
+         pointer=v             -- Hidden pointer number
+      end
+   end
+
+   name = name:gsub('[^A-Za-z0-9 ]','')  -- Clean name
+   msg  = msg:gsub('[^A-Za-z0-9\n ]','') -- Clean message
+   msg_arry = split(msg, '\n') -- Split string on \n
+
+  --Limit name and msg line lengths
+  name_length = 30 -- Mamimum number of characters
+  msg_length  = 80 -- Mamimum number of characters
+
+  if #name &gt;= name_length then              -- Check name length
+    name = string.sub(name, 1,name_length)  -- Extract shorter length
+  end
+
+  for i=1, #msg_arry do                     -- Scan message array
+   if #msg_arry[i] &gt;= msg_length then       -- Check msg line length
+     msg_arry[i] = string.sub(msg_arry[i], 1,msg_length)
+   end
+  end  
+
+
+  -- Limit number of lines
+  lines = 3 -- Mamimum number of lines
+  msg_lines = ''
+  max = 0
+  if #msg_arry &lt;= lines then
+    max = #msg_arry
+  else
+    max = lines
+  end
+
+  for i=1, max do    -- Build string limited to max lines
+   msg_lines = msg_lines .. msg_arry[i] .. '\n'
+  end
+  -- END Limit lines
+
+   msg = clean_html(msg_lines) -- Clean and replace /n with &lt;br /&gt;
+
+
+   -- Set database pointer initial value. Reads data from this lcation
+   if (not add_comment and not up and not down) then
+     pointer = db_get_entries() -- Set current value
+   end
+
+   -- Adjust pointer value depending on up or down button
+   if up then                -- Up button clicked
+    pointer = pointer + 3    -- Increment
+    max = db_get_entries()
+    if pointer &gt;= max then   -- Cannot be greater
+      pointer = max          -- Hence set max
+    end
+   end
+
+   if down then              -- Down button clicked
+    pointer = pointer - 3    -- Decrement
+    if pointer &lt;= 1 then     -- Cannot be negative
+      pointer = 3            -- Hence set it to zero
+    end
+   end
+
+-- Add content input from form
+ if add_comment then
+   db_add_data(name,msg)      -- Insert data into database
+   pointer = db_get_entries() -- Get new entries count
+ end
+
+
+-- Display gestbook content
+ if file_exists(db_file) then              -- Assumes guestbook DB exists
+  local luasql = require "luasql.sqlite3"  -- load driver
+  local env = luasql.sqlite3()             -- create environment object
+  local conn = env:connect(db_file)        -- connect to data source
+
+  local cursor = conn:execute ("SELECT id, name, tim, msg FROM guestbook WHERE id &lt;= " .. "'" .. pointer .. "' ORDER BY id DESC LIMIT 3 ")
+
+  local row = cursor:fetch ({}, "a")
+
+  while row do
+
+   r:puts("\n&lt;fieldset&gt;")
+   r:puts("\n&lt;legend&gt;" .. row.id .. "&lt;/legend&gt;")
+   r:puts("\n&lt;span class='lin1'&gt;Posted by:&lt;/span&gt;&lt;span class='lin2'&gt; " .. row.name .. "&lt;/span&gt;&lt;span class='lin3'&gt; On: &lt;/span&gt;&lt;span class='lin4'&gt;" .. row.tim .. "&lt;/span&gt;&lt;br /&gt;")
+   r:puts(row.msg)
+   r:puts("\n&lt;/fieldset&gt;")
+
+    row = cursor:fetch (row, "a")
+  end
+
+
+  cursor:close() -- close everything
+  conn:close()
+  env:close()
+ end
+-- END Display gestbook content
+
+
+-- Display form
+r:puts [[
+
+&lt;h2&gt;Add a comment!&lt;/h2&gt;
+    &lt;form method="post" action=""&gt;
+        &lt;textarea name="comment_f" rows="5" style="width:100%"&gt;&lt;/textarea&gt;&lt;br /&gt;
+        Posted By: &lt;input type="text" name="name_f"&gt;
+        &lt;input class="submit" type="submit" name="add_comment_f" value="Add Comment"&gt;
+        &nbsp;&nbsp;Scroll entries: 
+        &lt;input class="submit" type="submit" name="up_f" value="Up"&gt;
+        &lt;input class="submit" type="submit" name="down_f" value="Down"&gt;
+]]
+
+r:puts("&lt;input type='hidden' name='pointer_f' value='" .. pointer .. "' /&gt;")
+
+r:puts [[
+    &lt;/form&gt;
+]]
+
+
+r:puts [[
+&lt;/div&gt;  &lt;/body&gt;&lt;/html&gt;
+]]
+
+
+end
+</pre>
+</body>
+</html>

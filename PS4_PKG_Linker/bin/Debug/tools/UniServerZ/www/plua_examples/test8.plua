@@ -1,0 +1,5 @@
+<?lua
+local filename = "include_html.html";
+setContentType("text/plain");
+file.send(filename); --# Use sendfile to maximize performance
+?>

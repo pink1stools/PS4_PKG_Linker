@@ -1,0 +1,508 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>Apache Lua Basics 3</title>
+  <meta name="Description" content="The Uniform Server Zero." />
+  <meta name="Keywords" content="The Uniform Server, MPG, Mike Gleaves, Ric, UniServer, Olajide, BobS " />
+  <link href="common/css/main.css" rel="stylesheet" type="text/css">
+  <link href="common/css/menu.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="p1230">
+<!-- Start header -->
+  <script language="javascript" src="common/header.js"></script>
+<!-- End header -->
+
+<table id="main" >
+<tr valign="top">
+
+<td id="td_menu">
+  <script language="javascript" src="common/lua_plua_main_defined.js"></script>
+  <script language="javascript" src="common/lua_plua_top_menu.js"></script>
+  <script language="javascript" src="common/top_menu.js"></script>
+  <script language="javascript" src="common/lua_sub_menu.js"></script>
+</td>
+
+<td id="td_spacer" ></td >
+
+<td id="td_content" >
+<!-- ============ Start Content ========== -->
+
+<table >
+<tr>
+ <td>
+  <img src="common/images/zero_logo4.png" alt="Zero logo" />
+ </td>
+ <td>
+<h1>Mod Lua - Basics 3 files</h1>
+</tr>
+</table>
+
+<p>The standard I/O library is primarily designed for console applications, as a consequence functions such as io.popen() when run from a server script produce an annoying pop-up window.  To address this problem Uniform Server includes the LuaFileSystem (lfs) a library developed to complement the standard Lua distribution. This page provides code snippets for both file libraries.</p>
+
+
+<div id="page_links_menu_shadow" >
+ <div id="page_links_menu" >
+  <ul>
+
+   <li><a href="#List all files in a folder" >List all files in a folder</a></li>
+   <li><a href="#Convert listed files to links" >Convert listed files to links</a></li>
+   <li><a href="#Function file_exists()" >Function file_exists()</a></li>
+   <li><a href="#Script path add to package path" >Script path add to package path</a></li>
+   </ul>
+ </div>
+</div>
+
+
+<a name="List all files in a folder"></a>
+<h2>List all files in a folder</h2>
+
+<p>This section covers two options for reading the contents of a folder (directory). Option 1 uses the io.popen() function while option 2 uses the Lua Module lfs (LuaFileSystem). Option one is included for completeness to demonstrate why option two is preferred.</p>
+
+
+<table>
+ <tr valign="top">
+  <td>
+<b><i>Option 1</i>:</b>
+<p>Reading the contents of a single directory can be performed using the io.popen(dir…) directive. Example script test8.lua demonstrates this. You will notice that it has a distinct disadvantage!</p>
+
+<p>When run a command window momentarily opens and closes for each run of io.popen function.</p>
+
+<p><i>Note</i>: Although the pop-up window is annoying for a dedicated server it is not an issue because a client will never see it. However for a local demonstration server it is visible to a user.</p>
+
+  </td>
+  <td>
+<b><i>test8.lua</i>:</b>
+<pre>
+function handle(r)
+   r.content_type = "text/html"
+
+directory = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]]
+-- e.g directory = "C:/UniServerZ/www/lua_examples/"
+
+r:puts ("=== Folders and files === &lt;br /&gt;")
+for dir in io.popen("dir \"" .. directory ..  "\"/b"):lines() do r:puts(dir .."&lt;br /&gt;") end
+
+r:puts ("=== Folders === &lt;br /&gt;")
+for dir in io.popen("dir \"" .. directory ..  "\"/ad /b"):lines() do r:puts(dir .."&lt;br /&gt;") end
+
+r:puts ("=== Files === &lt;br /&gt;")
+for dir in io.popen("dir \"" .. directory ..  "\"/a:-d /b"):lines() do r:puts(dir .."&lt;br /&gt;") end
+
+end
+</pre>
+</td>
+</tr>
+</table>
+
+<p>The following prefered alternative uses the Lua Module lfs (LuaFileSystem).</p>
+
+<table>
+ <tr valign="top">
+  <td>
+<b><i>Option 2</i>:</b>
+<p>This option is preferred it uses the Lua Module lfs (LuaFileSystem) avoiding that anoying command window pop-up when using io.popen() function.</p>
+
+<p>Folder C:\UniServerZ\core\us_lua\<b>clibs</b> contains the Lua file system module (lfs.dll). This folder path was added to the Lua search path, for details see page <a href="lua.html#Search Paths - package.path and package.cpath">Search Paths</a>. It allows the module to be included into our script using the <b>require"lfs"</b> directive.</p>
+
+<p><b><i>lfs.dir (path)</i></b></p>
+<p>The lfs.dir function performs an interation operation over a given directory. Each time the iterator is called it returns a directory entry's name as a string, or nil if there are no more entries. Raises an error if path is not a directory.</p>
+
+<p>This is used in a for loop to extract file names as shown in examples A) to G) </p>
+
+<p><b>Note:</b>The lfs code origin is a Unix environment. In a Unix environment there is no distinction between folders and files they are both considered files. Hence folder names are listed including the pseudo folders . and .. see example A) output. </p>
+
+<p><b><i>Filter out pseduo folders</i>:</b><br />
+Within each for loop you can manipulate returned data for example in B) the pseudo folders are ignored using </p>
+<pre>
+if file ~= "." and file ~= ".." then   -- remove . ..
+</pre>
+
+
+<p><b><i>Target file extension</i>:</b><br />
+Using a regex in a for loop you can specifically target file types for example E) targets all  .html files</p>
+<pre>
+   if file:match("%.html$") then           -- contains .html
+</pre>
+<p>Note: The "%." symbol escapes the special character ".", while a "$" signifies end of string. </p>
+
+
+<br />
+<p><b><i>Target a specific file</i>:</b><br />
+Using a regex in a for loop you can specifically target a single file F)</p>
+<pre>
+   if file:match("^index%.lua$") then -- is the file
+</pre>
+
+
+<br />
+<p><b><i>Target a specific file </i> - generic:</b><br />
+Using a regex in a for loop you can specifically target a single file the above example hard coded the file name. A more generic example is shown in example G).</p>
+
+
+<p>A file name is saved to the variable named <b>specific</b> This variable is passed to the string.gsub function. The function escapes any regex special characters contained in the variable <i>specific</i>. The result is returned to variable <b>newspecific</b>.</p>
+<pre>
+ specific    = "index.lua"                 -- Target
+ newspecific = string.gsub(specific, "%p", "%%%1") -- general escape
+</pre>
+
+<p>This escaped variable (newspecific) is used for targeting a specific file:</p>
+<pre>
+  if file:match("^" .. newspecific .."$") then -- is the file
+</pre>
+
+<p><b></i>Note</li>:</b><br />
+This generic version can be converted into a general function.<br />
+ For details see section <a href="#Function file_exists()">Function file_exists()</a></p>
+
+  </td>
+  <td>
+<b><i>test9.lua</i>:</b>
+<pre>
+--Obatain script path and added to package path
+path = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] 
+package.path = path .."?.lua;".. package.path
+
+require"lfs" --  LuaFileSystem
+
+function handle(r)
+ r.content_type = "text/html" -- Required first line
+
+
+ --A) Retrieve all files and display result
+ r:puts ("&lt;b&gt;A) Retrieve all files&lt;/b&gt;&lt;br /&gt;")
+ folderpath = path                           -- script
+   for filename in lfs.dir(folderpath) do    -- Iterate
+        r:puts (filename .. "&lt;br /&gt;")        -- output
+   end
+
+ --B) Retrieve all files remove . and ..
+ r:puts ("&lt;br /&gt;&lt;b&gt;B) All files: Removed . and ..&lt;/b&gt;&lt;br /&gt;")
+ folderpath = path                           -- script
+   for file in lfs.dir(folderpath) do        -- Iterate
+      if file ~= "." and file ~= ".." then   -- remove . ..
+        r:puts (file .. "&lt;br /&gt;")            -- output
+      end
+   end
+
+ --C) Retrieve all files display only folders
+ r:puts ("&lt;br /&gt;&lt;b&gt;C) Display only folders&lt;/b&gt;&lt;br /&gt;")
+ folderpath = path                           -- script
+   for file in lfs.dir(folderpath) do        -- Iterate
+     if not file:match("%.") then   -- "%." an escaped "."
+        r:puts (file .. "&lt;br /&gt;")
+     end
+   end
+
+
+ --D) Retrieve all files: Display only files
+ r:puts ("&lt;br /&gt;&lt;b&gt;D) Display only files&lt;/b&gt;&lt;br /&gt;")
+ folderpath = path                           -- script
+   for file in lfs.dir(folderpath) do        -- Iterate
+      if file ~= "." and file ~= ".." then   -- remove . ..
+         if file:match("%.") then            -- contains .
+           r:puts (file .. "&lt;br /&gt;")
+         end
+      end
+   end
+
+
+ --E) Retrieve all files: Target .html files
+ r:puts ("&lt;br /&gt;&lt;b&gt;E) Target .html files&lt;/b&gt;&lt;br /&gt;")
+
+ folderpath = path                           -- script
+   for file in lfs.dir(folderpath) do        -- Iterate
+     if file:match("%.html$") then           -- contains .html
+       -- "%." is an escaped ".", "$" is end of string
+       r:puts (file .. "&lt;br /&gt;")
+     end
+  end
+
+
+ --F) Retrieve all files: Target specific file
+ r:puts ("&lt;br /&gt;&lt;b&gt;F) Target specific&lt;/b&gt;&lt;br /&gt;")
+
+ specific = "index.lua"                 -- Target
+ found = false  -- Set flag to false
+ folderpath = path                      -- script
+   for file in lfs.dir(folderpath) do   -- Iterate
+     if file:match("^index%.lua$") then -- is the file
+       found = true                     -- Found set flag
+     end
+   end
+
+ if found then 
+   r:puts ("File " .. specific .. "  Exists&lt;br /&gt;")
+ else
+   r:puts ("File " .. specific .. "  Does not Exist&lt;br /&gt;") 
+ end
+
+
+ --G) Use escape: Target specific file
+ r:puts ("&lt;br /&gt;&lt;b&gt;F) Use escape: Target specific file&lt;/b&gt;&lt;br /&gt;")
+
+ specific    = "index.lua"                 -- Target
+ newspecific = string.gsub(specific, "%p", "%%%1") -- general escape
+
+
+ found = false  -- Set flag to false
+ folderpath = path                      -- script
+   for file in lfs.dir(folderpath) do   -- Iterate
+     if file:match("^" .. newspecific .."$") then -- is the file
+       found = true                     -- Found set flag
+     end
+   end
+
+ if found then 
+   r:puts ("File " .. specific .. "  Exists&lt;br /&gt;")
+ else
+   r:puts ("File " .. specific .. "  Does not Exist&lt;br /&gt;") 
+ end
+
+
+end
+
+</pre>
+</td>
+</tr>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Convert listed files to links"></a>
+<h2>Convert listed files to links</h2>
+
+<table>
+ <tr valign="top">
+  <td>
+<p><b>Convert to links:</b></p>
+<p>The following example shows how easy it is to convert a list of files into links (html anchor tags). </p>
+
+<p>Section E) from example test9.lua requires a small modification to output lines for an un-ordered list.</p>
+
+Modify:
+<pre>
+r:puts (file .. "&lt;br /&gt;")
+</pre>
+To:
+<pre>
+r:puts ("&lt;li&gt;&lt;a href=\"" .. file .. "\"&gt;" .. file .. "&lt;/a>&lt;/li&gt;")
+</pre>
+
+
+
+  </td>
+  <td>
+<p><b>test10.lua:</b></p>
+<pre>
+--Obatain script path and added to package path
+path = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] 
+package.path = path .."?.lua;".. package.path
+
+require"lfs" --  LuaFileSystem
+
+function handle(r)
+   r.content_type = "text/html"
+
+ --E) Retrieve all files: Target .html files
+ -- Convert to links
+
+ r:puts ("&lt;br /&gt;&lt;b&gt;E) Target .html files. Converted to links&lt;/b&gt;&lt;br /&gt;")
+
+  r:puts ("&lt;ul&gt;") -- Start of list
+  folderpath = path                           -- script
+    for file in lfs.dir(folderpath) do        -- Iterate
+     if file:match("%.html$") then            -- contains .lua
+       r:puts ("&lt;li&gt;&lt;a href=\"" .. file .. "\"&gt;" .. file .. "&lt;/a>&lt;/li&gt;")
+     end
+  end
+  r:puts ("&lt;/ul&gt;") -- End list
+end
+</pre>
+  </td>
+
+</tr>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Function file_exists()"></a>
+<h2>Function file_exists()</h2>
+
+<p>The following two examples are general-purpose functions that check for the existence of a file given its full path. If the file exists it returns true otherwise returns false.</p>
+
+
+<table>
+ <tr valign="top">
+  <td>
+<p><b>Example 1</b> Function file_exists(file):</p>
+
+<p>The <b>file</b> parameter is a full path to the file including file extension.<br />
+ Note path specified uses a forward slash separator.</p>
+
+ <ul>
+   <li>Variable <b>ret</b> tracks file status. It is initially set to false, assumes file not found.</li>
+   <li>The <b>file</b> parameter is split into its component parts using function string.match and pattern matching (pattern matching similar to a regex)</li>
+   <li>File names contain a full stop, which is a special character in pattern matching and needs to be escaped. The function string.gsub provides generic escaping.</li>
+   <li>The for-loop runs function lfs.dir, which iterates the specified folder <b>folderpath</b>.    </li>
+   <li>Within the for-loop <b>file:match</b> targets the specified file. If the file exists the flag is set to true.</li>
+   <li>Finally the function returns variable <b>ret</b> </li>
+ </ul>
+ 
+ </td>
+  <td>
+<p><b>file_exists(file)</b></p>
+<pre>
+-- === Check file exists ====
+-- file is the full path
+function file_exists(file)
+
+ local ret = false          -- Assume file not found
+
+ -- Split file into sections
+ a,b,c = string.match(file, "(.-)([^/]-([^%.]+))$")
+ local folderpath = a  -- e.g C:/UniServerZ/www/templates/
+ local specific   = b  -- e.g mpg.lua Target
+ local extension  = c  -- e.g lua 
+
+ -- Escape the special regex characters
+ local newspecific = string.gsub(specific, "%p", "%%%1")
+
+ -- Iterate files in specified folder
+ for file in lfs.dir(folderpath) do             -- Iterate
+   if file:match("^" .. newspecific .."$") then -- found
+     ret = true                                 -- set flag
+   end
+ end
+
+ return ret
+end
+-- === End file_exists(file)
+</pre>
+  </td>
+
+</tr>
+
+
+ <tr valign="top">
+  <td>
+<p><b>Example 2</b> Function file_exists(file):</p>
+
+<p>The <b>file</b> parameter is a full path to the file including file extension.<br />
+ Note path specified uses a forward slash separator.</p>
+
+ <ul>
+   <li>Uses io.open to open a file, if it exists returns true and closes the file. If the open command returns <b>nil</b> the function returns false.</li>
+
+ </ul>
+ 
+ </td>
+  <td>
+<p><b>file_exists(file)</b></p>
+<pre>
+-- === Check file exists ====
+-- file is the full path
+function file_exists(file)
+   local f=io.open(file,"r")
+   if f~=nil then io.close(f) return true else return false end
+end
+-- === End file_exists(file)
+</pre>
+  </td>
+
+</tr>
+</table>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Script path add to package path"></a>
+<h2>Script path add to package path</h2>
+
+<p>The following two examples obtain a scripts path and adds it to the package path.</p>
+
+
+<table>
+ <tr valign="top">
+  <td>
+<p><b>This option uses a user function script_path():</b></p>
+
+<p>script_path()</p>
+
+ <ul>
+   <li><b>str</b> variable is assigned scripts full path for example C:/UniServerZ/www/test.lua</li>
+   <li><b>str:match("(.*/)")</b> removes the file name and extension for example C:/UniServerZ/www/ this string is returned.</li>
+   <li>Before updating package.path a file is appended to the path  C:/UniServerZ/www/<b>?.lua</b><br />
+Note: The "?" will match any file name.</li>
+ </ul>
+ 
+ </td>
+
+
+  <td>
+<p><b>Script path add to package path 1</b></p>
+<pre>
+--Obatain script path and add to package path
+function script_path()
+   local str = debug.getinfo(2, "S").source:sub(2)
+   return str:match("(.*/)")
+end
+
+package.path = script_path() .."?.lua;".. package.path
+
+function handle(r)
+  r.content_type = "text/html"
+  r:puts (package.path)
+end
+
+</pre>
+  </td>
+
+</tr>
+
+
+ <tr valign="top">
+  <td>
+<p><b>This option does not use a function:</b></p>
+
+ <ul>
+   <li><b>path</b> variable is assigned scripts path for example C:/UniServerZ/www/  </li>
+   <li>Before updating package.path a file is appended to the path  C:/UniServerZ/www/<b>?.lua</b><br />
+Note: The "?" will match any file name.</li>
+ </ul>
+
+ 
+ </td>
+  <td>
+<p><b>Script path add to package path 2</b></p>
+<pre>
+--Obatain script path and add to package path
+path = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] 
+package.path = path .."?.lua;".. package.path
+
+function handle(r)
+  r.content_type = "text/html"
+  r:puts (package.path)
+end
+</pre>
+  </td>
+
+</tr>
+</table>
+
+
+
+<hr>
+<div align="center">--oOo--</div>
+
+<script language="javascript" src="common/top.js"></script>
+<!-- ============ End Content ============ -->
+</td>
+</tr>
+</table>
+
+<!-- Start footer -->
+  <script language="javascript" src="common/footer.js"></script>
+<!-- End footer -->
+
+</body>
+</html>

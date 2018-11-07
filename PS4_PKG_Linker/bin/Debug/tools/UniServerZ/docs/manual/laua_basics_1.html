@@ -1,0 +1,514 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>Apache Lua Basics 1</title>
+  <meta name="Description" content="The Uniform Server Zero." />
+  <meta name="Keywords" content="The Uniform Server, MPG, Mike Gleaves, Ric, UniServer, Olajide, BobS " />
+  <link href="common/css/main.css" rel="stylesheet" type="text/css">
+  <link href="common/css/menu.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="p1210">
+<!-- Start header -->
+  <script language="javascript" src="common/header.js"></script>
+<!-- End header -->
+
+<table id="main" >
+<tr valign="top">
+
+<td id="td_menu">
+  <script language="javascript" src="common/lua_plua_main_defined.js"></script>
+  <script language="javascript" src="common/lua_plua_top_menu.js"></script>
+  <script language="javascript" src="common/top_menu.js"></script>
+  <script language="javascript" src="common/lua_sub_menu.js"></script>
+</td>
+
+<td id="td_spacer" ></td >
+
+<td id="td_content" >
+<!-- ============ Start Content ========== -->
+
+<table >
+<tr>
+ <td>
+  <img src="common/images/zero_logo4.png" alt="Zero logo" />
+ </td>
+ <td>
+<h1>Mod Lua - Basics 1</h1>
+</tr>
+</table>
+
+<p>This page covers the Mod-Lua handler function <b>handle()</b> and provides examples specifically for web-applications using Lua as the scripting language. It does not cover Apache confguration hooks.</p>
+
+<p>Lua script examples covered in the following pages are located in folder C:\UniServerZ\www\<b>lua_examples</b> and assume you have configured Apache as explained on the <a href="lua.html">Mod Lua page</a>. To run a test example script, start the Apache server and type the address provided.</p>
+
+<div id="page_links_menu_shadow" >
+ <div id="page_links_menu" >
+  <ul>
+   <li><a href="#Handler function" >Handler function</a> - handle()</li>
+   <li><a href="#Lua heredoc" >Lua heredoc</a> - Hello World example and Mime type text/html</li>
+   <li><a href="#Code snippets – file paths" >Code snippets – file paths</a></li>
+   <li><a href="#Directives require and dofile overview" >Directives require and dofile</a> - Overview</li>
+   <li><a href="#Directives require and dofile generic" >Directives require and dofile</a> - Generic</li>
+
+   <li><a href="#General notes require and dofile" >General notes require and dofile</a> - Common folder and File extension</li>
+
+   </ul>
+ </div>
+</div>
+
+<a name="Handler function"></a>
+<h2>Handler function - handle()</h2>
+
+
+<table>
+<tr valign="top">
+  <td>
+<p>A basic Lua script is shown on the right, it consists of two sections. The first section is where you perform initialisation of libraries, constants and tables. User defined functions can be located in this section. The second section is a special function referred to as the <b>handler function</b>.</p>
+
+
+<p><b><i>Handler function</i>:</b><br />
+ Every Lua script (web page) processed by the Lua engine must have a handler function, by default this is named <b>handle()</b>. After passing your script to the Lua engine for processing this handler function is <b>run</b> by mod_lua; which passes in a request object, named <b>r</b>.</p>
+  </td>
+  <td>
+<pre>
+--[[ Initialization example ]]--
+require "string"
+require "someLibrary"
+local a_table = {}
+local constant = "Foo bar"
+
+--[[ Handler function ]]--
+function handle(r)
+  ... Your code
+end
+</pre>
+  </td>
+</tr>
+
+ <tr valign="top">
+  <td>
+<p>The request object provides a set of predefined methods (functions) and parameters for example:</p>
+ <ul>
+  <li><b>r.content_type</b> - This parameter sets the MIME type of the returned document, which every web page script must have. In test1.lua it is set to  output plain text.</li>
+  <li><b>r:puts()</b> - This funtion outputs the string enclosed between quotes to a web-client (browser).</li>
+</ul>
+
+<p>Note: Comments in Lua always start with two hyphens e.g. <b>-- This is a comment</b></p>
+
+  </td>
+
+<td>
+<p><b><i>Test1.lua</i></b></p>
+<pre>
+function handle(r)
+  -- Set MIME type to text/plain
+  r.content_type = "text/plain"
+
+  -- return the "Hello World" text
+  r:puts("Hello World!")
+end
+</pre>
+</td>
+</tr>
+</table>
+
+<p>Note: You can save your scripts in the root folder C:\UniServerZ\<b>www</b> or any exisitng sub-folder or create a new sub-folder. Uniform server examples have been placed in folder  C:\UniServerZ\www\<b>lua_examples</b> </p>
+
+<p><i>Run the script</i>: Type the following into browser address bar:  http://localhost/lua_examples/test1.lua</p>
+
+<p><b>Note:</b> You can quickly run any examples from the Lua index page menu.<br />
+ To run the index page type the following into browser address bar: http://localhost/lua_examples/ or http://localhost/lua_examples/index.lua</p>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Lua heredoc"></a>
+<h2>Lua heredoc - Hello World example and Mime type text/html</h2>
+
+<p>Changing the parameter <b>content_type</b> to <b>text/html</b> allows you to include html mark-up (html tags) in output strings. </p>
+
+<table>
+
+ <tr valign="top">
+  <td>
+<p><b><i>Multi-puts strings</i></b></p>
+
+<p>Example on the right outputs five "Hello World" lines using multiple puts functions.<br />
+   These can be replaced using the <b>Lua heredoc</b> [[ and ]] shown in the code below.<br />
+   Using Lua heredoc reduces the amount code typed and improves clarity. <br /><br />
+   <b><i>Test3.lua</i></b></p>
+<pre>
+function handle(r)
+ r.content_type = "text/html"
+
+ -- return hello worlds text
+ r:puts [[
+  &lt;h1&gt;Hello Worlds  &lt;/h1&gt;
+  &lt;h2&gt;Hello World 1 &lt;/h2&gt;
+  Hello World 2     &lt;br /&gt;
+  Hello World 3     &lt;br /&gt;
+  Hello World 4
+ ]]
+end
+</pre>
+
+  </td>
+
+<td>
+<p><b><i>Test2.lua</i></b></p>
+<pre>
+
+
+
+
+
+function handle(r)
+  -- Note Mime type changed to text/html
+  r.content_type = "text/html"
+
+ -- return hello worlds text
+  r:puts("&lt;h1&gt;Hello Worlds  &lt;/h1&gt;")
+  r:puts("&lt;h2&gt;Hello World 1 &lt;/h2&gt;")
+  r:puts("Hello World 2    &lt;br /&gt;")
+  r:puts("Hello World 3   &lt;br /&gt; ")
+  r:puts("Hello World 4")
+end
+
+
+
+
+</pre>
+</td>
+</tr>
+</table>
+
+<p><i>Run scripts</i>: Type the following into browser address bar: http://localhost/lua_examples/test2.lua and http://localhost/lua_examples/test3.lua </p>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Code snippets – file paths"></a>
+<h2>Code snippets – file paths</h2>
+
+<p>This section looks at code snippets with an emphasis on determining file paths. File paths are important they allow you to check for a files existence and set configuration paths for require statements.</p>
+
+<table>
+ <tr valign="top">
+  <td>
+<p><b><i>Code snippets</i></b></p>
+
+<p>All A variables (A1-A5) are defined outside the handler function however to print these the r:puts function is used within the handler. Lines B1) to B5) demonstrate these directives can be used directly within the handler function. However for speed, if possible define as variables outside of the handler function.</p>
+
+<p>I mentioned earlier the request object <b>r</b> provides a set of predefined methods (functions) and parameters. Lines C1 to C5 output some of these predefined parameters.</p>
+
+<p>Line C4) displays the full script path (r.filename) including file name. The path (minus file name) is extracted using a regex and displayed using line C5).</p>
+
+<p><i><b>package.path</i></b></p>
+<p>When a require statement is used e.g. require('fred') fred is searched for in the folders listed in package.path (path shown below all on a single line). Each <b>?</b> is first replaced by the string <b>fred</b> and the resulting paths are searched</p>
+<pre>
+.\?.lua;
+C:\UniServerZ\core\apache2\bin\lua\?.lua;
+C:\UniServerZ\core\apache2\bin\lua\?\init.lua;
+</pre>
+
+<p>The first two characters "<b>.\</b>" mean search the <b>current</b> working directory. <b><i>Important do not assume this is the folder containing your script</i>.</b> For a default installation the current working directory is C:\UniServerZ</p>
+
+<p>How to resolve this issue see below.</p>
+
+  </td>
+  <td>
+<p><b><i>test4.lua</i></b></p>
+   <pre>
+--
+ local A1 = os.date("time: %X")
+ local A2 = os.getenv("US_ROOTF_WWW")
+ local A3 = debug.getinfo(1,"S").source -- Information to this file
+ local A4 = debug.getinfo(1).source:match("@(.*)$") --Full path to this file
+ local A5 = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] -- Path to this file
+
+
+function handle(r)
+ r.content_type = "text/html"
+
+   --Global outside of handler function
+   r:puts("&lt;b&gt;Global outside of handler function &lt;/b&gt;&lt;br /&gt;")
+   r:puts("A1) = " .. A1  .. "&lt;br /&gt;")
+   r:puts("A2) = " .. A2  .. "&lt;br /&gt;")
+   r:puts("A3) = " .. A3  .. "&lt;br /&gt;")
+   r:puts("A4) = " .. A4  .. "&lt;br /&gt;")
+   r:puts("A5) = " .. A5  .. "&lt;br /&gt;")
+
+   --Inside of handler function
+   r:puts("&lt;br /&gt;&lt;b&gt;Inside of handler function&lt;/b&gt; &lt;br /&gt;")
+   r:puts("B1) = " .. os.date("time: %X")        .. "&lt;br /&gt;")
+   r:puts("B2) = " .. os.getenv("US_ROOTF_WWW")  .. "&lt;br /&gt;")
+   r:puts("B3) = " .. debug.getinfo(1,"S").source  .. "&lt;br /&gt;")
+   r:puts("B4) = " .. debug.getinfo(1).source:match("@(.*)$") .. " &lt;br /&gt;")
+   r:puts("B5) = " .. debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] .. "&lt;br /&gt;")
+
+   --Specific to the handler function
+   r:puts("&lt;br /&gt;&lt;b&gt;Specific to the handler function&lt;/b&gt; &lt;br /&gt;")
+   r:puts("C1) r.uri      = " .. r.uri               .. "&lt;br /&gt;")
+   r:puts("C2) r.hostname = " .. r.hostname          .. "&lt;br /&gt;")
+   r:puts("C3) r.method   = " .. r.method            .. "&lt;br /&gt;")
+   r:puts("C4) r.filename = " .. r.filename          .. "&lt;br /&gt;")
+ 
+   path = string.gsub(r.filename, "^(.+/)[^/]+$", "%1") -- Get path
+   r:puts ("C5) Extract path = " .. path .. "&lt;br /&gt;")
+   r:puts("File name r.filename =  " .. r.filename .."&lt;br /&gt;")
+
+   --Search path for packages
+   r:puts("&lt;br /&gt;&lt;b&gt;Search path for packages&lt;/b&gt; &lt;br /&gt;")
+   r:puts (package.path)
+
+end
+
+   </pre>
+  </td>
+ </tr>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Directives require and dofile overview"></a>
+<h2>Directives require and dofile - Overview</h2>
+
+<p>Both directives <b>require</b> and <b>dofile</b> load and execute Lua files. One difference between these is that you pass the module name to <b>require</b> and an actual file path to a <b>dofile</b>. </p>
+
+<p>Unlike <b>dofile</b> the <b>require</b> keeps track of what modules have been loaded, so calling it again will not cause the module to be reloaded hence <b>require</b> is the prefered directive to use.</p>
+
+<p>To use these directives the search paths must be configured. Uniform Server Zero has pre-configured folders C:/UniServerZ/core/us_lua/<b>lua</b> and C:/UniServerZ/core/us_lua/<b>clibs</b> these have been configured in the Apache configuration files exaplained in this section <a href="lua.html#Search Paths - package.path and package.cpath">Search Paths</a></p>
+
+<p>You can place your common scripts and .dll modules in these folders respectively. That said their use is specific to the Uniform Server, a generic solution is covered in the next section.</p>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Directives require and dofile generic"></a>
+<h2>Directives require and dofile - Generic</h2>
+
+<p>The following proposes a generic solution for defining search paths used by directives <b>require</b> and <b>dofile</b>. This section covers paths to the folder containing your scripts while the next section <a href="#General notes require and dofile">General notes require and dofile</a> covers using a sub-folder.</p>
+
+<table>
+<tr valign="top">
+
+<td colspan="2">
+<p><b><i>Main page</i></b></p>
+<p>Every script that uses a <b>require</b> directive must set the path to the folder containing the files. If these files are located in the same folder as the script use the following two lines:</p>
+
+<pre>
+path = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] 
+package.path = path .."?.lua;".. package.path
+</pre>
+
+<p>Similarly every script that uses a <b>dofile</b> directive must specifically define the path to the folder containing the files. If these files are located in the same folder as the script use the following format:</p>
+
+<pre>
+dofile(path .. "name of file")
+</pre>
+
+<p>Test script <b>test5.lua</b> demonstrates how to use both the <b>include</b> and <b>dofile</b> directives. </p>
+
+</td>
+
+<td>
+<p><b><i>test5.lua</i></b></p>
+<pre>
+--Get path to this script e.g C:\UniSererZ\www\lua_examples\
+path = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] 
+
+-- Add script path to update package path
+package.path = path .."?.lua;".. package.path
+
+-- Example of require
+require 'test5a'
+require 'test5b'
+
+-- Example of dofile
+dofile(path .. "test5c.lua")
+dofile(path .. "test5d.lua")
+
+function handle(r)
+  r.content_type = "text/html"
+
+  r:puts (header .. "&lt;br /&gt;")
+  banner(r)
+  menu(r)
+  r:puts (footer .. "&lt;br /&gt;")
+end
+</pre>
+</td>
+</tr>
+
+
+
+<tr valign="top">
+<td>
+<p><b><i>External files</i></b></p>
+<p>These files are used by the <b>include</b> directive and demonstrate you can use variables and function in these files.</p>
+</td>
+
+<td>
+<p><b><i>test5a.lua</i></b></p>
+<pre>
+header = [[
+&lt;br /&gt;&lt;b&gt;Header test5a&lt;/b&gt;&lt;br /&gt;
+Hello, world test5a&lt;br /&gt;
+Hello, world test5a&lt;br /&gt;
+Hello, world test5a&lt;br /&gt;
+Hello, world test5a&lt;br /&gt;
+]]
+</pre>
+</td>
+
+<td>
+<p><b><i>test5b.lua</i></b></p>
+<pre>
+function banner(r)
+ r:puts ([[
+ &lt;b&gt;Banner test5b&lt;/b&gt;&lt;br /&gt;
+ Hello, world test5b&lt;br /&gt;
+ Hello, world test5b&lt;br /&gt;
+ ]])
+end
+</pre>
+</td>
+</tr>
+
+<tr valign="top">
+<td>
+<p><b><i>External files</i></b></p>
+<p>These files are used by the <b>dofile</b> directive and demonstrate you can use variables and function in these files.</p>
+</td>
+
+<td>
+<p><b><i>test5c.lua</i></b></p>
+<pre>
+function menu(r)
+r:puts ([[
+ &lt;b&gt;Menu test5c</b>&lt;br /&gt;
+ &lt;ul&gt;
+  &lt;li&gt; Hello, world test5c &lt;/li&gt;
+  &lt;li&gt; Hello, world test5c &lt;/li&gt;
+ &lt;/ul&gt;
+]])
+end
+</pre>
+</td>
+
+<td>
+<p><b><i>test5d.lua</i></b></p>
+<pre>
+footer = [[
+&lt;br /&gt;&lt;b&gt;Footer test5d&lt;/b&gt;&lt;br /&gt;
+ &lt;pre&gt;
+  Footer test5d
+  Hello, world test5d
+  Hello, world test5d
+ &lt;/pre&gt;
+==========================&lt;br /&gt;
+]]
+</pre>
+</td>
+</tr>
+</table>
+
+<p><i>Run script</i>: Type the following into browser address bar: http://localhost/lua_examples/test5.lua</p>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="General notes require and dofile"></a>
+<h2>General notes require and dofile</h2>
+
+<p>Lua is very flexible allowing you to have a repository for common files and even change their file extension see following examples:</p>
+
+<h3>Common folder:</h3>
+
+<p>You are not restricted to locating common scripts in the same folder as your main scripts. For example create a new folder <b>common_scripts</b> in folder lua_examples and move the scripts test5a.lua, test5b.lua, test5c.lua and test5d.lua to this folder. </p>
+
+<table>
+  <tr valign="top">
+   <td>
+<p>Update the path in script test5.lua to point to this new folder as shown on the right.</p>
+   </td>
+   <td>
+<pre>
+--Get path to this script e.g C:\UniSererZ\www\lua_examples\
+path = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] 
+path = path .. "common_scripts/"
+</pre>
+
+   </td>
+  </tr>
+</table>
+<p><i>Run script</i>: Type the following into browser address bar: http://localhost/lua_examples/test5.lua </p>
+
+
+<h3>File extension:</h3>
+<p>Included files used by require and dofile are not restricted to using a <b>.lua</b> file extension any extension can be used for example <b>.txt</b> if you wish try this by modifying the scripts as follows:</p>
+
+
+<table>
+ <tr valign="top">
+  <td>
+<p><b><i>File extension</i>:</b></p>
+
+
+<p>Open folder <b>common_scripts</b> you created in folder lua_examples and rename the files test5a.lua, test5b.lua, test5c.lua and test5d.lua to test5a.txt, test5b.txt, test5c.txt and test5d.txt </p>
+
+<p>Edit file UniServerZ\www\lua_examples\<b>test5.lua</b> and change the files extension as shown on the right.</p>
+
+<p>There are only three lines to change:</p>
+<pre>
+ package.path = path .."?.txt;".. package.path
+dofile(path .. "test5c.txt")
+dofile(path .. "test5d.txt")
+</pre>
+
+  </td>
+
+
+<td>
+<p><b><i>test5.lua</i></b></p>
+<pre>
+--Get path to this script e.g C:\UniSererZ\www\lua_examples\
+path = debug.getinfo(1,"S").source:match[[^@?(.*[\/])[^\/]-$]] 
+path = path .. "common_scripts/"
+
+-- Add script path to update package path
+package.path = path .."?.txt;".. package.path
+
+-- Example of require
+require 'test5a'
+require 'test5b'
+
+-- Example of dofile
+dofile(path .. "test5c.txt")
+dofile(path .. "test5d.txt")
+
+function handle(r)
+  r.content_type = "text/html"
+
+  r:puts (header .. "&lt;br /&gt;")
+  banner(r)
+  menu(r)
+  r:puts (footer .. "&lt;br /&gt;")
+end
+</pre>
+</td>
+</table>
+
+<p><i>Run script</i>: Type the following into browser address bar: http://localhost/lua_examples/test5.lua </p>
+
+<hr>
+<div align="center">--oOo--</div>
+
+<script language="javascript" src="common/top.js"></script>
+<!-- ============ End Content ============ -->
+</td>
+</tr>
+</table>
+
+<!-- Start footer -->
+  <script language="javascript" src="common/footer.js"></script>
+<!-- End footer -->
+
+</body>
+</html>

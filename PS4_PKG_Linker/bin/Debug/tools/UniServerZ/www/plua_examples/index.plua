@@ -1,0 +1,30 @@
+ <html>
+  <head><title>pLua index example</title></head>
+   <body>
+
+  <h1>UniServerZ pLua examples</h1>
+
+  <P>Basic pLua test pages.</P>
+  <ul>
+     <li><a href="http://localhost/plua_examples/env.plua"    target="_blank">env.plua</a> - DisplayEnvironment</i>
+     <li><a href="http://localhost/plua_examples/test1.plua"  target="_blank">test1.plua</a> - Get single parameter - no parameter</i>
+     <li><a href="http://localhost/plua_examples/test1.plua?name=Mike"  target="_blank">test1.plua</a> - Get single parameter - with parameter</i>
+
+     <li><a href="http://localhost/plua_examples/test2.plua"  target="_blank">test2.plua</a> - Get two parameters - no parameters</i>
+     <li><a href="http://localhost/plua_examples/test2.plua?first_name=Uniform&last_name=Server"  target="_blank">test2.plua</a> - Get two parameters - with parameters</i>
+
+     <li><a href="http://localhost/plua_examples/test3.plua"  target="_blank">test3.plua</a> - Post single parameter</i>
+     <li><a href="http://localhost/plua_examples/test4.plua"  target="_blank">test4.plua</a> - Post hidden parameter</i>
+     <li><a href="http://localhost/plua_examples/test5.plua"  target="_blank">test5.plua</a> - List all enironment variables</i>
+     <li><a href="http://localhost/plua_examples/test6.plua"  target="_blank">test6.plua</a> - Check Folder/File exists</i>
+     <li><a href="http://localhost/plua_examples/test7.plua"  target="_blank">test7.plua</a> - Header/Footer example</i>
+
+  </ul>
+
+<p>The above test pages are located in folder <b>UniServerZ\www\plua_examples</b> after testing; this folder can be deleted:<br />
+Main Test page index.plua and pages test1.lua to testxx.lua</p>
+
+  </body>
+ </html>
+
+

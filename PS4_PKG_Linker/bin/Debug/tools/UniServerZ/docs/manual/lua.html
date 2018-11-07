@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>Apache Mod Lua</title>
+  <meta name="Description" content="The Uniform Server Zero." />
+  <meta name="Keywords" content="The Uniform Server, MPG, Mike Gleaves, Ric, UniServer, Olajide, BobS " />
+  <link href="common/css/main.css" rel="stylesheet" type="text/css">
+  <link href="common/css/menu.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="p1200">
+<!-- Start header -->
+  <script language="javascript" src="common/header.js"></script>
+<!-- End header -->
+
+<table id="main" >
+<tr valign="top">
+
+<td id="td_menu">
+  <script language="javascript" src="common/lua_plua_main_defined.js"></script>
+  <script language="javascript" src="common/lua_plua_top_menu.js"></script>
+  <script language="javascript" src="common/top_menu.js"></script>
+  <script language="javascript" src="common/lua_sub_menu.js"></script>
+</td>
+
+<td id="td_spacer" ></td >
+
+<td id="td_content" >
+<!-- ============ Start Content ========== -->
+
+<table >
+<tr>
+ <td>
+  <img src="common/images/zero_logo4.png" alt="Zero logo" />
+ </td>
+ <td>
+<h1>Mod Lua</h1>
+</tr>
+</table>
+
+<p>The <b>Lua scripting language</b> has been around since 1993 and was finally integrated into Apache 2.4 primarily for server configuration. Apache (2.4.6 - 2.4.12) contains the Lua 5.1.5 (core). Although mod_lua is still tagged as experimental it is stable allowing you to work with hooks for Apache configuration and for creating dynamic web applications.</b> 
+
+<p>Primary intension of this section is to show how to use Lua specifically for web-applications. This allows you to produce a minimum server solution by removing the need for either php or MySQL. Deleting php and MySQL saves (52MB php and 27MB MySQL) 79MB disk space. The Lua section is split over several pages covering Lua basics and two examples of dynamic web-sites showing different coding styles. Database functionality is provided by sqlite3 see guest book example for details.</p>
+
+<p> This page covers installing, enabling Mod-Lua and provides detailed configuration information.
+.</p>
+
+<div id="page_links_menu_shadow" >
+ <div id="page_links_menu" >
+  <ul>
+   <li><a href="#Installing Lua" >Installing Lua</a> - Installing Lua and additional support.</li>
+   <li><a href="#Minimum server alternative" >&nbsp;&nbsp;Minimum server alternative</a></li>
+   <li><a href="#Changes made" >&nbsp;&nbsp;Changes made</a></li>
+
+
+   <li><a href="#Apache configuration" >Apache configuration</a> - Enable mod_lua</li>
+   <li><a href="#Search Paths - package.path and package.cpath" >Search Paths</a>  - package.path and package.cpath</li>
+
+   </ul>
+ </div>
+</div>
+
+<a name="Installing Lua"></a>
+<h2>Installing Lua</h2>
+<p>The Uniform Server ZeroXI plugin <b>ZeroXI_lua_1_0_1.exe</b> provides support for both Lua and pLua. <br />
+Installing is a misnomer! Nothing is installed to your PCs registry all files are extracted to their appropriate location within the UniServer folder structure.</p> 
+<p>The extraction procedure is identical for all plugin versions, proceed as follows:</p>
+
+<ol>
+  <li> Download Lua-plugin installation file e.g ZeroXI_lua_1_0_1.exe </li>
+  <li> Save the above file to folder UniServerZ. </li>
+  <li> If running, stop Apache and MySQL servers and also exit UniController. </li>
+  <li> Double click on the above installation file.<br>
+   This runs the self extracting archive. </li>
+  <li> If prompted allow overwriting of existing files. </li>
+  <li> If you wish, delete the installation file, it is no longer required. </li>
+</ol>
+
+
+<a name="Minimum server alternative"></a>
+<h3>Minimum server alternative</h3>
+
+<p>Instead of installing on a new or existing Uniform Server create a minimum server installation as follows:</p>
+
+<ol>
+  <li>Create a new folder for example c:\<b>my_lua</b></li>
+  <li> Download Controller-plugin installation file e.g ZeroXI_controller_1_2_0.exe <br>
+    <ol>
+        <li> Save the above file to folder my_lua. </li>
+        <li> Double click on installation file ZeroXI_controller_1_2_0.exe. This runs the self extracting archive. </li>
+        <li> Delete files: ZeroXI_controller_1_2_0.exe and ZeroXI_controller_read_me.txt</li>
+    </ol>
+
+  <li> Download Apache-plugin installation file e.g ZeroXI_apache_2_4_12.exe <br>
+    <ol>
+        <li> Save the above file to folder UniServerZ. </li>
+        <li> Double click on installation file ZeroXI_apache_2_4_12.exe. This runs the self extracting archive. </li>
+        <li> Delete files: ZeroXI_apache_2_4_12.exe, ZeroXI_apache_2_4_12_read_me.txt and ZeroXI_controller_read_me.txt</li>
+    </ol>
+  <li> Download Lua-plugin installation file e.g ZeroXI_lua_1_0_1.exe <br>
+    <ol>
+        <li> Save the above file to folder UniServerZ. </li>
+        <li> Double click on installation file ZeroXI_lua_1_0_1.exe. This runs the self extracting archive. </li>
+  <li> If prompted allow overwriting of existing files. </li>
+        <li> Delete file: ZeroXI_lua_1_0_1.exe</li>
+    </ol>
+</ol>
+
+<p>Note 1: Minimum server installation size is 20.4 MB while the full Uniform Server size is 121 MB</p>
+
+<a name="Changes made"></a>
+<h3>Changes made</h3>
+ <p>After installation the following changes are made or items added:</p>
+<ul>
+  <li>The Apache bin\<b>lua51.dll</b> is replaced with a new lua51.dll this redirects to  lua5.1.dll   </li> 
+  <li>Added bin\<b>lua5.1.dll</b> full Lua version that includes support for luasql.  </li>
+  <li>New folder created bin<b>\luasql</b> which contains sqlite3.dll compiled for lua51.  </li>
+  <li>Files us_lua.conf and us_plua.conf added to folder apache2\conf\extra</li>
+  <li>New folder created core/<b>us_lua</b> conatining optional folders <b>clibs</b> and <b>lua</b> see pages for details</li>
+  <ul>
+    <li>clibs: Contains <b>lfs.dll</b> file system</li>
+    <li>lua: Contains <b>us_functions.lua</b> </li>
+  </ul>
+</ul>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Apache configuration"></a>
+<h2>Apache configuration</h2>
+
+<p>A default installation of Uniform Server ZeroXI has Lua pre-configured  in Apache’s configuration file conf\<b>httpd.conf</b>. All that is required is to enable the Lua module from UniController as follows:</p>
+
+<p class="access">Apache &gt; Edit Basic and Modules &gt; Edit Basic Configuration</p>
+<table>
+<tr >
+<td>
+
+<ul>
+  <li>6) Ensure <b>Lua Module</b> is enabled (default disabled) from the drop-down menu.</li>
+  <li>9) Click <b>Update Configuration</b> button, applies the changes.</li>
+  <li>For the new settings to become effective you must restart the Apache server.</li>
+</ul>
+
+<p>Apache’s configuration file UniServerZ\core\apache2\conf\<b>httpd.conf</b> is modified (# removed) to enable the line as shown:</p>
+<pre>
+LoadModule lua_module modules/mod_lua.so
+</pre>
+
+<p>This in turn enables the following configuration block, which loads the configuration file <b>us_lua.conf</b>:</p>
+<pre>
+# Uniform Server Lua config
+&lt;IfModule lua_module&gt;
+   Include conf/extra/us_lua.conf
+&lt;/IfModule&gt;
+</pre>
+
+
+</td>
+<td>
+   <img src="images/C11_apache_basic_config_1.gif" alt="Apache basic config">
+</td>
+</tr>
+</table>
+<p>The configuration file UniServerZ\core\apache2\conf\extra\<b>us_lua.conf</b> contains the following two lines
+  <ul>
+    <li> AddHandler lua-script .lua</li>
+    <li> #AddHandler lua-script .htm .html</li>
+  </ul>
+
+<p>Web pages with the file extension <b>.lua</b> are passed to the Lua engine for processing. If you wish you can rename these pages with a file extension of <b>.htm</b> or <b>.html</b>.</p>
+
+<p>For these pages to be processed by the Lua engine enable the AddHandler line (#AddHandler lua-script .htm .html) in us_lua.conf configuration file.</p>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Search Paths - package.path and package.cpath"></a>
+<h2>Search Paths - package.path and package.cpath</h2>
+
+<p>Search paths in Lua are important for example the Lua <b>require</b> directive looks in both the Lua <b>module</b> and <b>extension</b> path, which are package.path and package.cpath respectively. The default paths configured by Apache mod_lua are:
+
+<table>
+ <tr valign="top">
+  <td>
+ <p><b><i>package.path</i></b></p>
+ <pre>
+.\?.lua;
+C:\UniServerZ\core\apache2\bin\lua\?.lua;
+C:\UniServerZ\core\apache2\bin\lua\?\init.lua;
+C:\UniServerZ\core\apache2\bin\?.lua;
+C:\UniServerZ\core\apache2\bin\?\init.lua;
+ </pre>
+  </td>
+
+  <td>
+ <p><b><i>package.cpath</i></b></p>
+ <pre>
+.\?.dll;
+C:\UniServerZ\core\apache2\bin\?.dll;
+C:\UniServerZ\core\apache2\bin\loadall.dll;
+
+
+ </pre>
+  </td>
+</table>
+
+<p>These target the Apache binary folder to separate Apache from Uniform Server two new folders were created C:\UniServerZ\core\<b>us_lua\lua</b> and C:\UniServerZ\core\<b>us_lua\clibs</b> and added to Lua <b>module</b> and <b>extension</b> paths. The paths are defined in configuration file UniServerZ\core\apache2\conf\extra\<b>us_lua.conf</b> as shown below:</p>
+
+<table>
+ <tr valign="top">
+<td>
+<b><i>Config file</i>:</b>
+<p>Paths are defined in config file UniServerZ\core\apache2\conf\extra\<b>us_lua.conf</b> see right:<br />
+Note: For portability the environment variable $HOME is used to define the top-level folder.</p>
+<p>Default Uniform Server pre-configured paths are shown below:</p>
+</td>
+
+<td>
+<pre>
+# LuaPackagePath /path/to/include/?.lua;
+LuaPackagePath ${HOME}\core\us_lua\lua\?.lua;
+ 
+# LuaPackageCPath /path/to/include/?.dll;
+LuaPackageCPath ${HOME}\core\us_lua\clibs\?.dll;
+</pre>
+</td>
+</tr>
+</table>
+
+<table>
+ <tr valign="top">
+  <td>
+ <p><b><i>package.path</i></b></p>
+ <pre>
+.\?.lua;
+C:\UniServerZ\core\apache2\bin\lua\?.lua;
+C:\UniServerZ\core\apache2\bin\lua\?\init.lua;
+C:\UniServerZ\core\apache2\bin\?.lua;
+C:\UniServerZ\core\apache2\bin\?\init.lua;
+C:/UniServerZ/core/us_lua/lua/?.lua;
+ </pre>
+  </td>
+
+  <td>
+ <p><b><i>package.cpath</i></b></p>
+ <pre>
+.\?.dll;
+C:\UniServerZ\core\apache2\bin\?.dll;
+C:\UniServerZ\core\apache2\bin\loadall.dll;
+C:/UniServerZ/core/us_lua/clibs/?.dll;
+
+
+ </pre>
+  </td>
+</table>
+
+<p>Note 1: The first two characters "<b>.\</b>" mean search the <b>current</b> working directory. <b><i>Important do not assume this is the folder containing your script</i>.</b> For a default installation the current working directory is C:\UniServerZ</p>
+
+<p>Note 2: The extension folder C:\UniServerZ\core\us_lua\<b>clibs</b> contails module <b>lfs.dll</b></p>
+
+<hr>
+<div align="center">--oOo--</div>
+
+<script language="javascript" src="common/top.js"></script>
+<!-- ============ End Content ============ -->
+</td>
+</tr>
+</table>
+
+<!-- Start footer -->
+  <script language="javascript" src="common/footer.js"></script>
+<!-- End footer -->
+
+</body>
+</html>

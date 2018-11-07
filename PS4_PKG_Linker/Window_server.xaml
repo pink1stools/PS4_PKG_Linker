@@ -1,0 +1,8 @@
+﻿<Controls:MetroWindow x:Class="PS4_PKG_Linker.Window_server"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls" Loaded="Window_Loaded" Closing="MetroWindow_Closing">
+    <Grid>
+        <WebBrowser Name="browser1" Height="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0"   Width="auto"  />
+    </Grid>
+</Controls:MetroWindow>

@@ -1,0 +1,20 @@
+<html>
+ <body>
+   <form method="post">
+    <input type="text"   name="name"/>
+    <input type="hidden" name="action" value="UniServerZ">
+    <input type="submit" value="Submit"/>
+   </form>
+<?lua
+ local params = parsePost();
+  if params then
+    if (params["name"]) then
+     echo("Hello, ", params["name"], "!<br />");
+    end
+    if (params["action"]) then
+     echo("Hidden, ", params["action"], "!");
+    end
+  end
+?>
+ </body>
+</html>

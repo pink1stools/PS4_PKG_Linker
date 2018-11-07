@@ -1,0 +1,21 @@
+<html>
+ <body>
+<p>Print single environment variable:</p>
+
+<?lua
+ local env = getEnv();
+ echo("Host name = ", env["Host"].."<br />");
+ echo("Working-Directory = "..env["Working-Directory"].."<br />")
+?>
+
+<p>Print all environment variable:</p>
+<?lua
+ local env = getEnv();
+  for key,value in pairs(env) do
+ ?>
+  <b><?lua=key?>:</b> <?lua=value?><br />
+ <?lua
+    end
+ ?>
+ </body>
+</html>

@@ -1,0 +1,30 @@
+<html>
+ <body>
+<p>File/Folder exists test:</p>
+
+<?lua
+ if (file.exists('C:\\WINDOWS')) then
+   echo("1) Folder C:\\WINDOWS exists!<br />");
+ end
+
+ env     = os.getenv("HOME");    -- C:\UniServerZ
+ if (file.exists(env)) then
+  echo("2) Folder os.getenv(\"HOME\") "..env.." exists.<br />");
+ end
+
+ if (file.exists("../plua_examples")) then
+  echo("3) Folder ../plua_examples exists.<br />");
+ end
+
+ if (file.exists("test4.plua")) then
+  echo("4) File test4.plua exists<br />");
+ end
+
+ env1  = os.getenv("HOME");    -- C:\UniServerZ
+ env1  = env1.."\\core\\msmtp\\msmtp.exe";
+ if (file.exists(env1)) then
+  echo("5) File os.getenv(\"HOME\") "..env1.." exists.<br />");
+ end
+?>
+ </body>
+</html>

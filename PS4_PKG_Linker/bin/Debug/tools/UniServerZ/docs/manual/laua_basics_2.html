@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>Apache Lua Basics 2</title>
+  <meta name="Description" content="The Uniform Server Zero." />
+  <meta name="Keywords" content="The Uniform Server, MPG, Mike Gleaves, Ric, UniServer, Olajide, BobS " />
+  <link href="common/css/main.css" rel="stylesheet" type="text/css">
+  <link href="common/css/menu.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="p1220">
+<!-- Start header -->
+  <script language="javascript" src="common/header.js"></script>
+<!-- End header -->
+
+<table id="main" >
+<tr valign="top">
+
+<td id="td_menu">
+  <script language="javascript" src="common/lua_plua_main_defined.js"></script>
+  <script language="javascript" src="common/lua_plua_top_menu.js"></script>
+  <script language="javascript" src="common/top_menu.js"></script>
+  <script language="javascript" src="common/lua_sub_menu.js"></script>
+</td>
+
+<td id="td_spacer" ></td >
+
+<td id="td_content" >
+<!-- ============ Start Content ========== -->
+
+<table >
+<tr>
+ <td>
+  <img src="common/images/zero_logo4.png" alt="Zero logo" />
+ </td>
+ <td>
+<h1>Mod Lua - Basics 2 forms get and post</h1>
+</tr>
+</table>
+
+<p>Dynamic websites generally provide user interaction using forms. Data is entered for example name and password, on clicking the send button this data is sent to a server using either the POST or GET methods. This page covers these two methods.</p>
+
+<div id="page_links_menu_shadow" >
+ <div id="page_links_menu" >
+  <ul>
+   <li><a href="#Overview" >Overview</a></li>
+   <li><a href="#Form data and GET" >Form data and GET</a></li>
+   <li><a href="#Form data and POST" >Form data and POST</a> </li>
+   </ul>
+ </div>
+</div>
+
+<a name="Overview"></a>
+<h2>Overview</h2>
+
+<p>The html form method attribute <b>&lt;form method="get|post"&gt;</b> specifies how to send form-data. With <b> method="get"</b> data is sent as URL variables while <b>method="post"</b> data is sent as a HTTP post transaction.</p>
+
+
+<p><b>GET:</b> </p>
+<ul>
+	<li>Appends form-data to the URL as name/value pairs</li>
+	<li>Name/value pairs are visible in the URL.</li>
+	<li>Maximum URL length is about 3000 characters.</li>
+</ul>
+
+<p><b>POST:</b> </p>
+<ul>
+	<li>Appends form-data inside the body of the HTTP request.</li>
+	<li>Form-data is not visible in the URL.</li>
+	<li>Form-data has no size limitations</li>
+        <li>Can have hidden attributes. Ideal for preserving data between posts.</li>
+</ul>
+
+
+
+
+<a name="Form data and GET"></a>
+<h2>Form data and GET</h2>
+<p>This example uses a basic html form (test6.html) to send data using the <b>get</b> method.  Received data is processed by Lua script test6.lua shown on the right.</p>
+
+<p> The handler() function sets the MIME type to text/html. This is followed by a Lua heredoc section that creates the HTML document header and opening body section. Form data can be processed in either one of two ways as shown in Alternative 1 and  Alternative 2 sections. Finally a Lua heredoc section adds the closing body and html tags.</p>
+
+
+<table>
+ <tr valign="top">
+  <td>
+<p><b><i>Basic form and processing script</i></b></p>
+
+<ul>
+  <li>All parameters sent by a form using the get method are returned in the objects <b>r:parseargs()</b> table (associative array)<br /><br /></li>
+
+  <li><b><i>Alternative 1</i>:</b> Reads the <b>r:parseargs()</b> into an array <b>allargs</b>. Individul items are selected from this array avoiding the need for a loop.  Items are output using r:puts note the use of the double dot operator for concatenations.<br /><br /></li>
+
+
+  <li><b><i>Alternative 2</i>:</b> A for loop iterates through the table. A form field name is stored in variable <b>k</b> while <b>v</b> stores its matching content.</li>
+  <li>The if  checks for first name and stores it in variable firstname. Similarly, the lastname variable stores the last name. </li>
+  <li>The string.format() function effectively concatenates the two strings before being output by r:puts() function. </li>
+</ul>
+
+<p><b><i>test6.html</i></b></p>
+<pre>
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Test 6 Form&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+ &lt;p&gt;Please enter the following information.&lt;/p&gt;
+ &lt;form action="test6.lua" method="get"&gt;
+   Your first name:&lt;br /&gt;
+   &lt;input type="text" name="firstname"&gt; &lt;br /&gt;
+   Your last name:&lt;br /&gt;
+   &lt;input type="text" name="lastname"&gt;  &lt;br /&gt;
+   &lt;input type="submit" value="Send!" /&gt;
+ &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+
+  </td>
+
+<td>
+<p><b><i>test6.lua</i></b></p>
+<pre>
+function handle(r)
+   r.content_type = "text/html"
+
+r:puts [[
+  &lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Test 6&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+  &lt;p&gt;Lua processed data from form&lt;/p&gt;
+]]
+
+   --Alternative 1
+   allargs   = r:parseargs();
+   firstname = allargs["firstname"]
+   lastname  = allargs["lastname"]
+   r:puts("Hi " .. firstname .. " " .. lastname .. "&lt;br /&gt;")
+
+   --Alternative 2
+   for k, v in pairs(r:parseargs()) do
+      if k=='firstname' then
+         firstname=v
+      elseif k=='lastname' then
+         lastname=v
+      end
+   end
+   r:puts(string.format("Hi %s %s", firstname, lastname))
+
+
+r:puts [[
+  &lt;/body&gt;&lt;/html&gt;
+]]
+end
+
+
+
+
+
+</pre>
+</td>
+</tr>
+</table>
+
+<p><i>Run script</i>: Type the following into browser address bar: http://localhost/lua_examples/test6.html </p>
+<p>Note: After pressing the send button, form is submitted for processing. The URL sent contains data as name/value pairs for example:<br />
+http://localhost/lua_examples/test6.lua<b>?firstname=Mike&lastname=Smith</b></p>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Form data and POST"></a>
+<h2>Form data and POST</h2>
+
+<p>This example uses a basic html form (test7.html) to send data using the <b>post</b> method.  Received data is processed by Lua script test7.lua shown on the right. <br />
+Processing POST data instead of GET data is just a matter of replacing GET with POST in the html file and replacing r:parseargs() with r:parsebody() in the processing script.</p>
+
+<p> The handler() function sets the MIME type to text/html. This is followed by a Lua heredoc section that creates the HTML document header and opening body section. Form data can be processed in either one of two ways as shown in Alternative 1 and  Alternative 2 sections. Finally a Lua heredoc section adds the closing body and html tags.</p>
+
+
+<table>
+ <tr valign="top">
+  <td>
+<p><b><i>Basic form and processing script</i></b></p>
+
+<ul>
+  <li>All parameters sent by a form using the post method are returned in the objects <b>r:parsebody()</b> table (associative array)<br /><br /></li>
+
+  <li><b><i>Alternative 1</i>:</b> Reads the <b>r:parsebody()</b> into an array <b>allargs</b>. Individul items are selected fron this array avoiding the need for a loop.  Items are output using r:puts note the use of the double dot operator for concatenations.<br /><br /></li>
+
+
+  <li><b><i>Alternative 2</i>:</b> A for loop iterates through the table. A form field name is stored in variable <b>k</b> while <b>v</b> stores its matching content.</li>
+  <li>The if  checks for first name and stores it in variable firstname. Similarly, the lastname variable stores the last name. </li>
+  <li>The string.format() function effectively concatenates the two strings before being output by r:puts() function. </li>
+</ul>
+
+<p><b><i>test7.html</i></b></p>
+<pre>
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Test 7 Form&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+ &lt;p&gt;Please enter the following information.&lt;/p&gt;
+ &lt;form action="test7.lua" method="get"&gt;
+   Your first name:&lt;br /&gt;
+   &lt;input type="text" name="firstname"&gt; &lt;br /&gt;
+   Your last name:&lt;br /&gt;
+   &lt;input type="text" name="lastname"&gt;  &lt;br /&gt;
+   &lt;input type="submit" value="Send!" /&gt;
+ &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+
+  </td>
+
+<td>
+<p><b><i>test7.lua</i></b></p>
+<pre>
+function handle(r)
+   r.content_type = "text/html"
+
+r:puts [[
+  &lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Test 7&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+  &lt;p&gt;Lua processed data from form&lt;/p&gt;
+]]
+
+   --Alternative 1
+   allargs   = r:parsebody();
+   firstname = allargs["firstname"]
+   lastname  = allargs["lastname"]
+   r:puts("Hi " .. firstname .. " " .. lastname .. "&lt;br /&gt;")
+
+   --Alternative 2
+   for k, v in pairs(r:parsebody()) do
+      if k=='firstname' then
+         firstname=v
+      elseif k=='lastname' then
+         lastname=v
+      end
+   end
+   r:puts(string.format("Hi %s %s", firstname, lastname))
+
+
+r:puts [[
+  &lt;/body&gt;&lt;/html&gt;
+]]
+end
+
+
+
+
+
+</pre>
+</td>
+</tr>
+</table>
+
+<p><i>Run script</i>: Type the following into browser address bar: http://localhost/lua_examples/test7.html <br />
+
+Note: After pressing the send button, form is submitted for processing. Data is sent as a HTTP post transaction the URL sent does not contain data.</p>
+
+<hr>
+<div align="center">--oOo--</div>
+
+<script language="javascript" src="common/top.js"></script>
+<!-- ============ End Content ============ -->
+</td>
+</tr>
+</table>
+
+<!-- Start footer -->
+  <script language="javascript" src="common/footer.js"></script>
+<!-- End footer -->
+
+</body>
+</html>

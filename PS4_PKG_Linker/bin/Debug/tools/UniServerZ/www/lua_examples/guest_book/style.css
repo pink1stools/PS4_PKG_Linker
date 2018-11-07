@@ -1,0 +1,29 @@
+
+#main {
+ width: 80%;
+ margin-left: 10%;
+ margin-right: 10%;
+}
+
+.lin1{ font-size: 80%;}
+.lin2{ font-size: 95%;}
+.lin3{
+ font-size: 80%;
+ padding-left:20px;
+}
+
+.lin4{ font-size: 95%;}
+
+legend {  font-size: 80%;}
+
+fieldset {
+    display: block;
+    margin-left: 2px;
+    margin-right: 2px;
+    padding-top: 0.35em;
+    padding-bottom: 0.625em;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    border: 2px groove (internal value);
+    border-radius: 8px;
+} 

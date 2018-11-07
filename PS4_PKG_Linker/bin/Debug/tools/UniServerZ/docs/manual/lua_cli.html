@@ -1,0 +1,409 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>Lua CLI</title>
+  <meta name="Description" content="Lua scripts are executed in one of two ways; through a web sever where the output is sent to a browser, or through the command-line interface. Main difference between the two methods is the format of new lines." />
+  <meta name="Keywords" content="Lua,CLI,command-line,interface,configuration,file,Running,scripts,The Uniform Server, MPG, Mike Gleaves, Ric, UniServer, Olajide, BobS " />
+  <link href="common/css/main.css" rel="stylesheet" type="text/css">
+  <link href="common/css/menu.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="p1260">
+<!-- Start header -->
+  <script language="javascript" src="common/header.js"></script>
+<!-- End header -->
+
+<table id="main" >
+<tr valign="top">
+
+<td id="td_menu">
+  <script language="javascript" src="common/top_menu.js"></script>
+  <script language="javascript" src="common/Lua_sub_menu.js"></script>
+</td>
+
+<td id="td_spacer" ></td >
+
+<td id="td_content" >
+<!-- ============ Start Content ========== -->
+
+<table >
+<tr>
+ <td>
+  <img src="common/images/zero_logo4.png" alt="Zero logo" />
+ </td>
+ <td>
+<h1>Lua CLI</h1>
+</tr>
+</table>
+
+<p>Lua scripts are executed in one of two ways; through a web sever where the output is sent to a browser, or through the command-line interface. Main difference between the two methods is the format of new lines. Output to a browser requires the HTML line break  &lt;br /&gt; while the output to a command-window requires \n. This page provides a basic introduction to Lua CLI (command line interface).</p>
+
+<div id="page_links_menu_shadow" >
+ <div id="page_links_menu" >
+  <ul>
+   <li><a href="#Overview" >Overview</a></li>
+   <li><a href="#Command-window" >Command-window</a></li>
+
+   <li><a href="#Lua Command-line - run code directely" >Lua Command-line</a> - run code directely</li>
+   <li><a href="#Code examples1" >&nbsp;&nbsp;Code examples</a></li>
+
+   <li><a href="#Lua Command-line - run code interactively" >Lua Command-line</a> - run code interactively</li>
+   <li><a href="#Code examples2" >&nbsp;&nbsp;Code examples</a></li>
+
+   <li><a href="#Lua Command-line - run scripts" >Lua Command-line</a> - run code from file (Lua scripts)</li>
+   <li><a href="#Run basic Lua script" >&nbsp;&nbsp;Run basic Lua script</a></li>
+   <li><a href="#Pass arguments to script" >&nbsp;&nbsp;Pass arguments to script</a></li>
+
+   </ul>
+ </div>
+</div>
+
+
+<a name="Overview"></a>
+<h2>Overview</h2>
+
+<p><i>Note</i>: It is assumed you have installed a Lua module for example ZeroXI_lua_1_0_1.exe</p>
+
+<p>Uniform Server is portable, it does not make changes to your PC. As a consequence the standard <a href="server_utils_server_console.html#How to run a standard command window">command prompt</a> (console window) cannot be used to run Lua CLI code. The path to Lua.exe along with other environment variables are undefined. To run Lua CLI code on Uniform Server use the <a href="server_utils.html#Server Console">Server Console</a>. </p> 
+
+<p>The <b>Server Console</b> button opens a command window (command prompt) with environment variables preset and paths configured for Uniform Server utilities including the Lua interpreter. Apart from cosmetics, it is identical to a standard command prompt.</p> 
+
+<p>Lua code is run from the command prompt either directly or interactively by typing lines of code. Alternatively code is run indirectly using code saved in a script file.</p>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Command-window"></a>
+<h2>Command-window</h2>
+
+<p>Running scripts via a command-line is performed using the CLI interpreter Lua.exe this program is located in folder C:\UniServerZ\core\apache2\bin note UniController automatically tracks the installation and changes this path accordingly. In addition UniController sets several environment variables that are required for portability.</p>
+
+<table>
+ <tr>
+   <td>
+<b><i>Check functionality</i>:</b>
+ <ul>
+   <li>Start UniController by double clicking on file UniController.exe</li>
+   <li>Start a command-window by clicking the <b>Server Console</b> button.</li> 
+ </ul>
+
+
+<p>Type the following into the command-window and press enter:</p>
+<pre>
+Lua.exe -v
+</pre>
+<p>Displays Lua version number, see image on right for example.</p>
+
+<p>Note 1: You can clear the command-window by typing CLS  <br />
+Note 2: For help type <b>Lua -h</b>.<br />
+Note 3: You can open more than one command-window.</p>
+  </td>
+
+<td>&nbsp;</td>
+
+   <td>
+   <img src="images/C11_lua_cli_1.gif" alt="Lua CLI intro">
+   </td>
+ </tr>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Lua Command-line - run code directely"></a>
+<h2>Lua Command-line - run code directely</h2>
+
+<p>The above demonstrates running Lua code directly using the CLI interpreter Lua.exe the following example prints hello world:</p>
+<pre>
+Lua.exe -e "print \"hello world\n\""
+</pre>
+<p>The interpreter program takes a number of parameters who’s function is:</p>
+
+<table>
+ <tr> <td><code>Lua.exe</code>                     </td>  <td>CLI interpreter program Lua.exe If a file extension is not provided Windows will assume .exe hence you can use just <b>Lua</b></b></td> </tr>
+ <tr> <td><code>-e</code>                           </td>  <td>Parameter -e informs Lua, not to expect a file, next thing on the command-line is actual Lua code</td> </tr>
+ <tr> <td><code>"print \"hello world\n\""</code> &nbsp; </td>  <td>Lua code to run. <i>Note</i>: Windows requires the code to be <b>enclosed within quotes</b>.   </td> </tr>
+</table>
+
+<p>Note: If your code contains quotes to avoid problems these must be <b>escaped</b> using a backslash for example:</p>
+
+<pre>
+Lua.exe -e "print <span style="background-color:green">\"</span>hello world\n<span style="background-color:green">\"</span>"
+</pre>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Code examples1"></a>
+<h3>Code examples</h3>
+<p>The following provide examples that you can cut and past into the command-window:</p>
+
+<table>
+ <tr valign="top">
+  <td>
+<p><b><i>Cut and paste</i>:</b></p>
+<pre>
+Lua -e "print 'Hello World!'"  
+Lua.exe -e "print \"hello world\n\""
+Lua -e "x = 1 y = 4 print(x+y)"
+Lua -e "print(os.getenv('windir'))"
+</pre>
+  </td> 
+<td>&nbsp;</td>
+<td>
+<p><b><i>Comments</i>:</b></p>
+<pre>
+Basic print
+Escape quotes
+Example calulation
+Get environment variable
+</pre>
+</td>
+
+ </tr>
+</table>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Lua Command-line - run code interactively"></a>
+<h2>Lua Command-line - run code interactively</h2>
+
+<p>You can run the Lua interpreter in interactive mode by typing <b>lua</b> without any arguments. This displays a Lua prompt. <br /> 
+Each command you type at the Lua prompt for example <b>print "Hello World"</b> is executed immediately after you press enter. </p>
+
+<p>To exit interactive mode and the interpreter use either of the following:
+
+<ul>
+  <li>Type <b>ctrl-z</b> (At the same time press ctrl and z keys) then press enter.</li>
+  <li>Or call the exit library function, by typing <b>os.exit()</b> then press enter.</li>
+</ul>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Code examples2"></a>
+<h3>Code examples</h3>
+
+<p>The following provide interactive session examples.</p>
+
+<p><b>1) <i>A basic interactive session</i>:</b></p>
+
+<table>
+<tr valign="top">
+  <td>
+<p><b><i>Run</i></b></p>
+<p>Interactive session is shown on the right.</p>
+
+ <ul>
+  <li>At the prompt <b>&gt;</b> type the code shown.</li>
+  <li>Results are displayed without the prompt.</li>
+</ul>
+
+  </td>
+  <td>
+<p><b><i>Session</i></b></p>
+<pre>
+C:\UniServerZ&gt;lua
+Lua 5.1.4  Copyright (C) 1994-2008 Lua.org, PUC-Rio
+&gt; x=2
+&gt; y=10
+&gt; print(x+y)
+12
+&gt; print(x*y)
+20
+&gt; os.exit()
+
+C:\UniServerZ&gt;
+</pre>
+  </td>
+</tr>
+
+</table>
+
+
+<p><b>2) <i>A basic interactive session and dofile function</i>:</b></p>
+
+<p>Generally interactive sessions are used for testing code in particular your own functions. These can be placed in a file and run  with the dofile function, which immediately executes a file.</p>
+
+<table>
+<tr valign="top">
+  <td>
+<p><b><i>Create function file</i></b></p>
+<p>Create a new file mylib.lua with content shown on right.</p>
+<p>Save this file in folder UniServerZ</p>
+  </td>
+  <td>
+<p><b><i>mylib.lua</i></b></p>
+<pre>
+ function sum (x, y)
+   return x+y
+ end
+
+ function sumsqr (x, y)
+   local result = x^2 + y^2
+   return result
+ end
+
+</pre>
+  </td>
+</tr>
+
+<tr valign="top">
+  <td>
+<p><b><i>Run</i></b></p>
+<p>Interactive session is shown on the right.</p>
+
+ <ul>
+  <li>At the prompt <b>&gt;</b> type the code shown.</li>
+  <li>Results are displayed without the prompt.</li>
+</ul>
+  </td>
+  <td>
+<p><b><i>Session</i></b></p>
+<pre>
+C:\UniServerZ&gt;lua
+Lua 5.1.4  Copyright (C) 1994-2008 Lua.org, PUC-Rio
+&gt; dofile("mylib.lua")
+&gt; print(sum(2,3))
+5
+&gt;> print(sumsqr(2,3))
+13
+&gt; os.exit()
+
+C:\UniServerZ&gt;
+</pre>
+  </td>
+</tr>
+
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Lua Command-line - run scripts"></a>
+<h2>Lua Command-line - run scripts</h2>
+
+<p>Entering code directly is suitable for a small number of transient commands. For a large number of commands it is preferable to create a script. Advantages of a script file it is easily run and the code is  reusable.</p>
+
+<p>Command line format: <b>lua</b>.exe [<i>options</i>] [<i>script_name</i>[<i>args</i>]] </p>
+<ul>
+  <li>lua - Lua interpreter .exe is optional</li>
+  <li><i>options</i> </li>
+  <li><i>script_name</i> - Name of Lua script for example test1.lua</li>
+  <li><i>args</i> - The args are optional. If given are available to script as strings in a global table named <b>arg</b>.</li>
+</ul>
+
+<p>Note: The <b>arg</b> table contains both positive and negative indices. Indices <b>0</b> to <b>arg.n</b> contain the <b>script_name</b> and <b>args</b> respectively. Negative indices include  name of the interpreter and any options.</p> 
+
+
+<p>The following examples show how to run Lua scripts</p>
+
+<a name="Run basic Lua script"></a>
+<p><b>1) <i>Run basic Lua script</i>:</b></p>
+<table>
+ <tr valign="top">
+  <td>
+<p><b>Create script:</b></p>
+<p>Create a test script shown on the right and save to<br />
+ root folder UniServerZ with name test1.lua</p>
+  </td>
+<td>&nbsp;</td>
+  <td>
+<p><b>test1.lua</b></p>
+<pre>
+print("hello world\n")
+</pre>
+  </td>
+ </tr>
+
+
+ <tr valign="top">
+  <td>
+<p><b>Run script:</b></p>
+<p>Run the script by typing the following into a command-window:</p>
+<pre>
+lua test1.pl
+</pre>
+  </td>
+<td>&nbsp;</td>
+  <td>
+<p><b>Result1</b></p>
+<pre>
+C:\UniServerZ>lua test1.pl
+hello world
+
+C:\UniServerZ>
+</pre>
+  </td>
+ </tr>
+
+</table>
+
+
+<a name="Pass arguments to script"></a>
+<p><b>2) <i>Pass arguments to script</i>:</b></p>
+<table>
+ <tr valign="top">
+  <td>
+<p><b>Create script:</b></p>
+<p>Create a test script shown on the right and save to<br />
+ root folder UniServerZ with name test2.lua</p>
+  </td>
+<td>&nbsp;</td>
+  <td>
+<p><b>test2.lua</b></p>
+<pre>
+print(arg[-2])
+print(arg[-1])
+print(arg[0])
+print(arg[1])
+print(arg[2])
+print(arg[3])
+</pre>
+  </td>
+ </tr>
+
+
+ <tr valign="top">
+  <td>
+<p><b>Run script:</b></p>
+<p>Run the script by typing the following into a command-window:</p>
+<pre>
+lua test2.lua aaa bbb bbb
+</pre>
+<ul>
+  <li>arg[0] - Prints script name</li>
+  <li>arg[1] - First argument passed to script</li>
+  <li>arg[2] - Second argument passed to script</li>
+  <li>arg[3] - Third argument passed to script</li>
+</ul>
+  </td>
+<td>&nbsp;</td>
+  <td>
+<p><b>Result2</b></p>
+<pre>
+
+C:\UniServerZ>lua test2.pl aaa bbb cccc
+nil
+lua
+test2.lua
+aaa
+bbb
+ccc
+
+C:\UniServerZ>
+</pre>
+  </td>
+ </tr>
+
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<hr>
+<div align="center">--oOo--</div>
+
+<!-- ============ End Content ============ -->
+</td>
+</tr>
+</table>
+
+<!-- Start footer -->
+  <script language="javascript" src="common/footer.js"></script>
+<!-- End footer -->
+
+</body>
+</html>

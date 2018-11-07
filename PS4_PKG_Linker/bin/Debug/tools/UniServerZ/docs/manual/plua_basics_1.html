@@ -1,0 +1,483 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>Apache Mod pLua Basics 1</title>
+  <meta name="Description" content="The Uniform Server Zero." />
+  <meta name="Keywords" content="The Uniform Server, MPG, Mike Gleaves, Ric, UniServer, Olajide, BobS " />
+  <link href="common/css/main.css" rel="stylesheet" type="text/css">
+  <link href="common/css/menu.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="p1310">
+<!-- Start header -->
+  <script language="javascript" src="common/header.js"></script>
+<!-- End header -->
+
+<table id="main" >
+<tr valign="top">
+
+<td id="td_menu">
+  <script language="javascript" src="common/lua_plua_main_defined.js"></script>
+  <script language="javascript" src="common/lua_plua_top_menu.js"></script>
+  <script language="javascript" src="common/top_menu.js"></script>
+  <script language="javascript" src="common/plua_sub_menu.js"></script>
+</td>
+
+<td id="td_spacer" ></td >
+
+<td id="td_content" >
+<!-- ============ Start Content ========== -->
+
+<table >
+<tr>
+ <td>
+  <img src="common/images/zero_logo4.png" alt="Zero logo" />
+ </td>
+ <td>
+<h1>Mod pLua Basics 1</h1>
+</tr>
+</table>
+
+<p>This page covers mod pLua basics and provides examples for web-applications using Lua as the scripting language.</p>
+
+<p>Lua (pLua) script examples covered in the following pages are located in folder C:\UniServerZ\www\<b>plua_examples</b> and assume you have configured Apache as explained on the <a href="plua.html">Mod pLua page</a>. To run a test example script, start Apache server and type the address provided.</p>
+
+
+<div id="page_links_menu_shadow" >
+ <div id="page_links_menu" >
+  <ul>
+   <li><a href="#GET data" >GET data</a> - Data sent with page address.</li>
+   <li><a href="#POST data" >POST data</a> - Data sent using a form</li>
+   <li><a href="#Environment variables" >Environment variables</a></li>
+   <li><a href="#Folder/File exists" >Folder/File exists</a></li>
+   <li><a href="#Include function include(filename)" >Include function include(filename)</a></li>
+   <li><a href="#"></a></li>
+   <li><a href="#"></a></li>
+   <li><a href="#"></a></li>
+   </ul>
+ </div>
+</div>
+
+<a name="GET data"></a>
+<h2>GET data</h2>
+
+<p>A forms GET method is used for sending short pieces of data to a server script.<br />
+Data item/value pairs are appended to the URL for example index.plua?name1=value1&name2=value2.<br />
+Note: A URL is restricted to a maximum length of 2048 characters.</p>
+
+
+<p>The pLua parseGet() function is used for extracting this data. The following test scripts provide examples how to use the <b>parseGet()</b> function.</p>
+
+
+<table>
+ <tr valign="top">
+  <td>
+<b>Run test1.plua</b>
+<p>Test file C:\UniServerZ\www\plua_examples\<b>test1.plua</b></p>
+<p>Type the following into a browser:</p>
+ <ul>
+  <li>http://localhost/plua_examples/test1.plua <br />
+  <i>Result</i>: Hello1, unknown!<br />
+  <i>Result</i>: Hello2, nil!<br /><br /></li>
+  <li>http://localhost/plua_examples/test1.plua<b>?name=Mike</b> <br />
+  <i>Result</i>: Hello1, Mike!<br />
+  <i>Result</i>: Hello2, Mike!</li>
+ </ul>
+
+  </td>
+  <td>
+<b>test1.plua</b>
+<pre>
+&lt;html&gt;
+ &lt;body&gt;
+  &lt;?lua
+   local params = parseGet();
+   if (params) then
+     name1 = params['name'] or "unknown"; -- Default
+     name2 = params['name'];
+   end
+  ?&gt;
+
+   &lt;h1&gt;Hello1, &lt;?lua echo(name1) ?&gt;!&lt;/h1&gt;
+   &lt;h1&gt;Hello2, &lt;?lua echo(name2) ?&gt;!&lt;/h1&gt;
+
+ &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  </td>
+ </tr>
+
+ <tr valign="top">
+  <td>
+<b>Run test2.plua</b>
+<p>Test file C:\UniServerZ\www\plua_examples\<b>test2.plua</b></p>
+<p>Type the following into a browser:</p>
+ <ul>
+  <li>http://localhost/plua_examples/test2.plua <br />
+  <i>Result</i>: Hello1, xxx!<br />
+  <i>Result</i>: Hello2, nil!<br />
+  <i>Result</i>: Hello3, yyy!<br />
+  <i>Result</i>: Hello4, nil!<br /><br /></li>
+  <li>http://localhost/plua_examples/test2.plua<b>?first_name=Uniform&last_name=Server</b><br />
+  <i>Result</i>: Hello1, Uniform!<br />
+  <i>Result</i>: Hello2, Uniform!<br />
+  <i>Result</i>: Hello3, Server!<br />
+  <i>Result</i>: Hello4, Server!</li>
+ </ul>
+
+  </td>
+  <td>
+<b>test2.plua</b>
+<pre>
+&lt;html&gt;
+ &lt;body&gt;
+  &lt;?lua
+   local params = parseGet();
+   if (params) then
+    name1a = params['first_name'] or "xxx"; -- Default
+    name1b = params['first_name'];
+    name2a = params['last_name']  or "yyy"; -- Default
+    name2b = params['last_name'];
+   end
+ ?&gt;
+
+   &lt;h1&gt;Hello1, &lt;?lua echo(name1a) ?&gt;!&lt;/h1&gt;
+   &lt;h1&gt;Hello2, &lt;?lua echo(name1b) ?&gt;!&lt;/h1&gt;
+   &lt;h1&gt;Hello3, &lt;?lua echo(name2a) ?&gt;!&lt;/h1&gt;
+   &lt;h1&gt;Hello4, &lt;?lua echo(name2b) ?&gt;!&lt;/h1&gt;
+
+ &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  </td>
+ </tr>
+</table>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="POST data"></a>
+<h2>POST data</h2>
+
+<p>A forms POST method is used for sending data to a server script. Data item/value pairs are sent in the HTTP message body, which unlike GET is not restricted to a maximum length of 2048 characters. The following test scripts show how to use the pLua <b>parsePost()</b> function to extract this data.</p>
+
+
+<table>
+ <tr valign="top">
+  <td>
+<b>Run test3.plua</b>
+<p>Test file C:\UniServerZ\www\plua_examples\<b>test3.plua</b></p>
+<p>Type the following into a browser:</p>
+ <ul>
+  <li>http://localhost/plua_examples/test3.plua <br />
+  <li>Enter your name into the form e.g Mike.<br />
+ <i>Result</i>: Hello, Mike!</li>
+ </ul>
+
+  </td>
+  <td>
+<b>test3.plua</b>
+<pre>
+&lt;html&gt;
+ &lt;body&gt;
+   &lt;form method="post"&gt;
+    &lt;input type="text" name="name"/&gt;
+    &lt;input type="submit" value="Submit"/&gt;
+   &lt;/form&gt;
+&lt;?lua
+ local params = parsePost();
+  if (params and params["name"]) then
+    echo("Hello, ", params["name"], "!");
+  end
+?&gt;
+
+ &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  </td>
+
+ </tr>
+
+ <tr valign="top">
+  <td>
+<b>Run test4.plua</b>
+<p>Test file C:\UniServerZ\www\plua_examples\<b>test4.plua</b></p>
+<p>Type the following into a browser:</p>
+ <ul>
+  <li>http://localhost/plua_examples/test4.plua <br />
+  <li>Enter your name into the form e.g Mike.<br />
+ <i>Result</i>: Hello, Mike!<br />
+ <i>Result</i>: Hidden, UniServerZ!</li>
+ </ul>
+
+  </td>
+  <td>
+<b>test4.plua</b>
+<pre>
+&lt;html&gt;
+ &lt;body&gt;
+   &lt;form method="post"&gt;
+    &lt;input type="text"   name="name"/&gt;
+    &lt;input type="hidden" name="action" value="UniServerZ"&gt;
+    &lt;input type="submit" value="Submit"/&gt;
+   &lt;/form&gt;
+&lt;?lua
+ local params = parsePost();
+  if params then
+    if (params["name"]) then
+     echo("Hello, ", params["name"], "!&lt;br /&gt;");
+    end
+    if (params["action"]) then
+     echo("Hidden, ", params["action"], "!");
+    end
+  end
+?&gt;
+ &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  </td>
+
+ </tr>
+</table>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Environment variables"></a>
+<h2>Environment variables</h2>
+
+<p>The following test script prints all Lua/pLua environment variables. An example is included showing how to extract a single variable.</p>
+
+
+<table>
+ <tr valign="top">
+  <td>
+<b>Run test5.plua</b>
+<p>Test file C:\UniServerZ\www\plua_examples\<b>test5.plua</b></p>
+<p>Type the following into a browser:</p>
+ <ul>
+  <li>http://localhost/plua_examples/test5.plua <br />
+ <i>Result</i>: Host name printed<br />
+ <i>Result</i>: All environment variables printed. The following shows a small extract from the output:</li>
+ </ul>
+
+<pre>
+Print single environment variable:
+Host name = localhost
+
+Print all environment variable:
+Connection: keep-alive
+pLua-Handle: 00BA3068
+Request-Time: -1543241688
+Clock-Offset: 1369237105
+Server-Banner: Apache
+Working-Directory: C:/UniServerZ/www/plua_examples
+</pre>
+
+  </td>
+  <td>
+<b>test5.plua</b>
+<pre>
+&lt;html&gt;
+ &lt;body&gt;
+&lt;p&gt;Print single environment variable:&lt;/p&gt;
+
+&lt;?lua
+ local env = getEnv();
+ echo("Host name = ", env["Host"]); 
+?&gt;
+
+&lt;p&gt;Print all environment variable:&lt;/p&gt;
+&lt;?lua
+ local env = getEnv();
+  for key,value in pairs(env) do
+ ?&gt;
+  &lt;b&gt;&lt;?lua=key?&gt;:&lt;/b&gt; &lt;?lua=value?&gt;&lt;br /&gt;
+ &lt;?lua
+    end
+ ?&gt;
+ &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  </td>
+
+ </tr>
+</table>
+
+<p><b><i>Note</i>:</b> If you want to find a system environment variable use function <b>os.getenv()</b>.</p>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Folder/File exists"></a>
+<h2>Folder/File exists</h2>
+
+<p>The function <b>file.exists()</b> determines if a folder or file exists, returns true if it does otherwise returns false.<br />
+The parameter passed to the function can be either a absolute or relative path to the folder or file to be tested.</p>
+
+
+<table>
+ <tr valign="top">
+  <td>
+<b>Run test6.plua</b>
+<p>Test file C:\UniServerZ\www\plua_examples\<b>test6.plua</b></p>
+<p>Type the following into a browser:</p>
+ <ul>
+  <li>http://localhost/plua_examples/test6.plua <br />
+ <i>Result</i>: Paths are checked and results printed</li>
+ </ul>
+
+<pre>
+File/Folder exists test:
+1) Folder C:\WINDOWS exists!
+2) Folder os.getenv("HOME") C:\UniServerZ exists.
+3) Folder ../plua_examples exists.
+4) File test4.plua exists
+5) File os.getenv("HOME") C:\UniServerZ\core\msmtp\msmtp.exe exists.
+</pre>
+<b>Note:</b>
+ <ul>
+  <li>1) and 2) Absolute folder paths</li>
+  <li>3) Relative folder path. Note reletive to the executing script.</li>
+  <li>4) Relative file path</li>
+  <li>5) Absolute file path</li>
+ </ul>
+
+  </td>
+  <td>
+<b>test6.plua</b>
+<pre>
+&lt;?lua
+ if (file.exists('C:\\WINDOWS')) then
+   echo("1) Folder C:\\WINDOWS exists!&lt;br /&gt;");
+ end
+
+ env     = os.getenv("HOME");    -- C:\UniServerZ
+ if (file.exists(env)) then
+  echo("2) Folder os.getenv(\"HOME\") "..env.." exists.&lt;br /&gt;");
+ end
+
+ if (file.exists("../plua_examples")) then
+  echo("3) Folder ../plua_examples exists.&lt;br /&gt;");
+ end
+
+ if (file.exists("test4.plua")) then
+  echo("4) File test4.plua exists&lt;br /&gt;");
+ end
+
+ env1  = os.getenv("HOME");    -- C:\UniServerZ
+ env1  = env1.."\\core\\msmtp\\msmtp.exe";
+ if (file.exists(env1)) then
+  echo("5) File os.getenv(\"HOME\") "..env1.." exists.&lt;br /&gt;");
+ end
+?&gt;
+ &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  </td>
+
+ </tr>
+</table>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Include function include(filename)"></a>
+<h2>Include function include(filename)</h2>
+
+<p>The include file function include(<i>filename</i>) includes another mod_plua script in the code.  It pre-processes the included file as it would a regular plua file (similar to a PHP include). Alternatively an HTML file can be included this again is pre-processes hence can contain Lua code. </p>
+
+<p>The following provides an example of using the include function:</p>
+
+<table>
+
+ <tr valign="top">
+  <td>
+<b>Run test7.plua</b>
+
+<p>Test file C:\UniServerZ\www\plua_examples\<b>test7.plua</b><br />
+Type the following into a browser:</p>
+
+ <ul>
+   <li>http://localhost/plua_examples/test7.plua </li>
+   <li><i>Result:</i> Complete page displayed.</li>
+ </ul>
+  </td>
+
+  <td>
+<b>test7.plua</b>
+<pre>
+&lt;?lua
+  include("include_header.plua");
+  echo("Contents goes here");
+  include("include_html.html"); 
+  include("include_footer.plua"); 
+?&gt;
+</pre>
+  </td>
+ </tr>
+
+ <tr valign="top">
+  <td>
+<b>include_header.plua</b>
+<pre>
+&lt;?lua
+&lt;html&gt;
+ &lt;head&gt;
+  &lt;title&gt;UniServer Zero website&lt;/title&gt;
+ &lt;/head&gt;
+&lt;body&gt;
+&lt;h1>Header:&lt;/h1&gt;
+?&gt;
+</pre>
+
+<b>include_footer.plua</b>
+<pre>
+&lt;?lua
+ &lt;div id="footer"&gt;
+   &lt;p&gt;&lt;b&gt;Footer:&lt;/b&gt; Uniform Server Copyright 2013 Test Site.&lt;/p&gt;
+ &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+?&gt;
+</pre>
+
+
+  </td>
+  <td>
+<b>include_html.html</b>
+<pre>
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Included HTML page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ &lt;div style="border:solid 2px red"&gt;
+&lt;h3&gt;Complete HTML file or HTML markup&lt;/h3&gt;
+&lt;p&gt;&lt;i&gt;Included HTML file&lt;/i&gt;&lt;/p&gt;
+&lt;?lua
+ str="Can contain Lua code"
+ echo(str);
+?&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+
+
+
+</pre>
+  </td>
+ </tr>
+</table>
+
+<p><b>Note:</b> The include() function is NOT the same as require() or dofile() these use the Lua paths configured.</p>
+
+<hr>
+<div align="center">--oOo--</div>
+
+<script language="javascript" src="common/top.js"></script>
+<!-- ============ End Content ============ -->
+</td>
+</tr>
+</table>
+
+<!-- Start footer -->
+  <script language="javascript" src="common/footer.js"></script>
+<!-- End footer -->
+
+</body>
+</html>

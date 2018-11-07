@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <title>Apache Mod pLua</title>
+  <meta name="Description" content="The Uniform Server Zero." />
+  <meta name="Keywords" content="The Uniform Server, MPG, Mike Gleaves, Ric, UniServer, Olajide, BobS " />
+  <link href="common/css/main.css" rel="stylesheet" type="text/css">
+  <link href="common/css/menu.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="p1300">
+<!-- Start header -->
+  <script language="javascript" src="common/header.js"></script>
+<!-- End header -->
+
+<table id="main" >
+<tr valign="top">
+
+<td id="td_menu">
+  <script language="javascript" src="common/lua_plua_main_defined.js"></script>
+  <script language="javascript" src="common/lua_plua_top_menu.js"></script>
+  <script language="javascript" src="common/top_menu.js"></script>
+  <script language="javascript" src="common/plua_sub_menu.js"></script>
+</td>
+
+<td id="td_spacer" ></td >
+
+<td id="td_content" >
+<!-- ============ Start Content ========== -->
+
+<table >
+<tr>
+ <td>
+  <img src="common/images/zero_logo4.png" alt="Zero logo" />
+ </td>
+ <td>
+<h1>Mod pLua</h1>
+</tr>
+</table>
+
+<p>The Uniform Server ZeroXI plugin ZeroXI_lua_1_0_1 provides support for mod pLua.  Mod pLua is a third party module, which allows both pure and mixed HTML/Lua code.</p>
+
+<p>This page covers enabling Mod-pLua and provides detailed configuration information.</p>
+
+<div id="page_links_menu_shadow" >
+ <div id="page_links_menu" >
+  <ul>
+   <li><a href="#Apache configuration" >Apache configuration</a> - Enable mod_pLua</li>
+   <li><a href="#Search Paths - package.path and package.cpath" >Search Paths</a>  - package.path and package.cpath</li>
+   <li><a href="#pLua test" >pLua test</a> - Quick test mod_pLua</li>
+   </ul>
+ </div>
+</div>
+
+<a name="Apache configuration"></a>
+<h2>Apache configuration</h2>
+
+<p>A default installation of Uniform Server ZeroXI has pLua pre-configured  in Apache’s configuration file. All that is required is to enable the pLua module from UniController as follows:</p>
+
+<p class="access">Apache &gt; Edit Basic and Modules &gt; Edit Basic Configuration</p>
+<table>
+<tr >
+<td>
+
+<ul>
+  <li>7) Ensure <b>PLua Module</b> is enabled (default disabled) from the drop-down menu.</li>
+  <li>9) Click <b>Update Configuration</b> button, applies the changes.</li>
+  <li>For the new settings to become effective you must restart the Apache server.</li>
+</ul>
+
+<p>Apache’s configuration file UniServerZ\core\apache2\conf\<b>httpd.conf</b> is modified (# removed) to enable the line as shown:</p>
+<pre>
+LoadModule plua_module modules/mod_plua.so
+</pre>
+
+<p>This in turn enables the following configuration block, which loads the configuration file <b>us_plua.conf</b>:</p>
+<pre>
+# Uniform Server pLua config
+&lt;IfModule lua_module&gt;
+   Include conf/extra/us_plua.conf
+&lt;/IfModule&gt;
+</pre>
+
+
+</td>
+<td>
+   <img src="images/C11_apache_basic_config_1.gif" alt="Apache basic config">
+</td>
+</tr>
+
+<tr valign="top">
+ <td>
+<b>Configuration</b>
+<p>The configuration file is shown on the right UniServerZ\core\apache2\conf\extra\<b>us_plua.conf</b></p>
+
+<p><b>AddHandler</b> sets the file extension. Web pages with the file extension <b>.plua</b> are passed to the Lua engine for processing.</p>
+<p><b>pLuaShortHand 0</b> Disables short open tags <b>&lt;? ?&gt;</b>, you must use the full open tag format <b>&lt;?lua ?&gt;</b> this prevents conflicts. </p>
+ </td>
+
+ <td>
+<b>us_plua.conf</b>
+<pre>
+AddHandler plua .plua
+
+pLuaStates      25
+pLuaRuns        500
+pLuaFiles       250
+pLuaTimeout     0
+pLuaRaw         .lua
+pLuaError       1
+pLuaLogLevel    1
+pLuaMultiDomain 0
+pLuaShortHand   0
+
+</pre>
+ </td>
+</tr>
+</table>
+
+
+<script language="javascript" src="common/top.js"></script>
+<a name="Search Paths - package.path and package.cpath"></a>
+<h2>Search Paths - package.path and package.cpath</h2>
+
+<p>Search paths in Lua are important for example the Lua <b>require</b> directive looks in both the Lua <b>module</b> and <b>extension</b> path, which are package.path and package.cpath respectively.</p>
+
+<p>The default paths configured by Apache mod_plua are shown below:
+
+<table>
+ <tr valign="top">
+  <td>
+ <p><b><i>package.path</i></b></p>
+ <pre>
+C:\UniServerZ\core\apache2\bin\lua\?.lua;
+C:\UniServerZ\core\apache2\bin\lua\?\init.lua;
+C:\UniServerZ\core\apache2\bin\?.lua;
+C:\UniServerZ\core\apache2\bin\?\init.lua;
+.\?.lua
+ </pre>
+  </td>
+
+  <td>
+ <p><b><i>package.cpath</i></b></p>
+ <pre>
+C:\UniServerZ\core\apache2\bin\?.dll;
+C:\UniServerZ\core\apache2\bin\loadall.dll;
+.\?.dll;
+C:\UniServerZ\core\apache2\bin\?52.dll;
+.\?52.dll
+ </pre>
+  </td>
+</table>
+
+<p>These target the Apache binary folder to separate Apache from Uniform Server two new folders were created C:\UniServerZ\core\<b>us_lua\lua</b> and C:\UniServerZ\core\<b>us_lua\clibs</b> and added to Lua <b>module</b> and <b>extension</b> paths.</p>
+
+<p>These paths are defined by adding the following code to each script as required.</p>
+
+<table>
+ <tr valign="top">
+<td>
+<b><i>Set additional search paths</i>:</b>
+<p>The global flag <b>set</b> prevents the code running more than one.</p>
+<p>New paths are appended to existing paths.</p>
+<p>New paths package.path and package.cpath are shown below:</p>
+</td>
+
+<td>
+<pre>
+&lt;?lua
+ if set == nil then                                    -- Global
+  local env     = os.getenv("HOME");                   -- C:\UniServerZ
+  local env1    = env.."\\core\\us_lua\\lua\\?.plua";  -- LuaPackagePath
+  local env2    = env.."\\core\\us_lua\\clibs\\?.dll"; -- LuaPackageCPath
+  package.path  = package.path..";"..env1              -- Add to path
+  package.cpath = package.cpath..";"..env2             -- Add to path
+ set = true                                            -- Set flag
+ end
+?&gt;
+</pre>
+</td>
+</tr>
+</table>
+
+<table>
+ <tr valign="top">
+  <td>
+ <p><b><i>package.path</i></b></p>
+ <pre>
+C:\UniServerZ\core\apache2\bin\lua\?.lua;
+C:\UniServerZ\core\apache2\bin\lua\?\init.lua;
+C:\UniServerZ\core\apache2\bin\?.lua;
+C:\UniServerZ\core\apache2\bin\?\init.lua;
+.\?.lua;
+C:\UniServerZ\core\us_lua\lua\?.plua
+ </pre>
+  </td>
+
+  <td>
+ <p><b><i>package.cpath</i></b></p>
+ <pre>
+C:\UniServerZ\core\apache2\bin\?.dll;
+C:\UniServerZ\core\apache2\bin\loadall.dll;
+.\?.dll;
+C:\UniServerZ\core\apache2\bin\?52.dll;
+.\?52.dll;
+C:\UniServerZ\core\us_lua\clibs\?.dll
+ </pre>
+  </td>
+</table>
+
+<p>Note 1: The first two characters "<b>.\</b>" mean search the <b>current</b> working directory. <b><i>Important do not assume this is the folder containing your script</i>.</b> For a default installation the current working directory is C:\UniServerZ</p>
+
+<p>Note 2: The extension folder C:\UniServerZ\core\us_lua\<b>clibs</b> contails module <b>lfs.dll</b></p>
+
+<script language="javascript" src="common/top.js"></script>
+<a name="pLua test"></a>
+<h2>pLua test</h2>
+
+<p>After enabling mod_plua. Start Apache server and type the following into a browser: http://localhost/plua_examples/env.plua</p>
+
+<p>The Lua Environment is displayed confirming correct operation. It runs test script UniServerZ\www\plua_examples\<b>env.plua</b></p>
+
+<hr>
+<div align="center">--oOo--</div>
+
+<script language="javascript" src="common/top.js"></script>
+<!-- ============ End Content ============ -->
+</td>
+</tr>
+</table>
+
+<!-- Start footer -->
+  <script language="javascript" src="common/footer.js"></script>
+<!-- End footer -->
+
+</body>
+</html>
