@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-        Title=""  Loaded="MetroWindow_Loaded" StateChanged="Window_StateChanged" Closing="MetroWindow_Closing" Height="450" Width="800"  >
+        Title=""  Loaded="MetroWindow_Loaded" StateChanged="Window_StateChanged" Closed="MetroWindow_Closed" Closing="MetroWindow_Closing" Height="450" Width="800"  >
     <!--
     <Controls:MetroWindow.IconTemplate>
         <DataTemplate>
@@ -522,7 +522,7 @@
 
                                 <UniformGrid Name="UgInstall" Columns="2" Margin="0,20,0,0">
 
-                                    <Button x:Name="button_2"  Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                    <Button x:Name="button_2"  Style="{StaticResource AccentedSquareButtonStyle}" Click="button_2_Click"  Margin="5" >
                                         <DockPanel LastChildFill="True">
                                             <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
@@ -883,22 +883,6 @@
 
                                     <TextBox Height="23" TextChanged="textBox2_TextChanged" ToolTip="DoubleClick to Scan for First Open Port" HorizontalAlignment="Left" Margin="247,17,0,0" Name="textBox2" MouseDoubleClick="textBox2_MouseDoubleClick"  VerticalAlignment="Top" Width="39" Text="" />
                                     <TextBox Height="23" HorizontalAlignment="Left" Margin="68,17,0,0" Name="textBox3" VerticalAlignment="Top" Width="98" Text="" />
-                                    <Button Visibility="Collapsed" Height="23" Style="{StaticResource AccentedSquareButtonStyle}" ToolTip="Save Webserver Configuration" HorizontalAlignment="Left" Margin="307,17,0,0" Name="button4" VerticalAlignment="Top" Width="105" Click="button4_Click" >
-                                        <DockPanel LastChildFill="True">
-                                            <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
-                                                <Rectangle.OpacityMask>
-                                                    <VisualBrush Stretch="Fill" Visual="{iconPacks:Material Kind=ContentSaveSettings}" />
-                                                </Rectangle.OpacityMask>
-                                            </Rectangle>
-                                            <TextBlock VerticalAlignment="Center" Padding="5"
-                                       Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
-                                       FontSize="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=FontSize}"
-                                       >
-                                        Save Settings
-                                            </TextBlock>
-
-                                        </DockPanel>
-                                    </Button>
                                     <Label Content="Port" FontSize="16" Height="34" HorizontalAlignment="Left" Margin="202,17,0,0" Name="label1" VerticalAlignment="Top" />
                                     <Label Content="PC IP" FontSize="16" Height="34" HorizontalAlignment="Left" Margin="15,17,0,0" Name="label2" VerticalAlignment="Top" />
 

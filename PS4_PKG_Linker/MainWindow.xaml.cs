@@ -401,181 +401,7 @@ namespace PS4_PKG_Linker
 
         #endregion<<style>>
 
-        #region<<buttons>>
-
-        private void lbtest_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-            DataRowView item1 = this.lbtest.SelectedItem as DataRowView;
-
-            if (item1 != null)
-            {
-                
-                Object[] items2 = item1.Row.ItemArray;
-               
-                textBoxtid.Text = items2[7].ToString();
-                textBoxcid.Text = items2[1].ToString();
-                textBoxname.Text = items2[0].ToString();
-                textBoxfile_type.Text = items2[14].ToString();
-                textBoxlink_type.Text = items2[2].ToString();
-                button_list.Visibility = Visibility.Visible;
-                
-            }
-        }
-
-        private void plist_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            /*
-            DataRowView item1 = this.lbtest.SelectedItem as DataRowView;
-
-            if (item1 != null)
-            {
-                Object[] items2 = item1.Row.ItemArray;
-                string item = items2[4].ToString();
-                item = item.Replace(".PNG", ".PKG");
-                //this.label4.Content = items2[0].ToString();
-                lvpkginfo.Items.Clear();
-                string t = "";
-                int n = 0;
-                while (n < 4)
-                {
-                    string[] t1 = new string[] { "Name: ", "CID:    ", "Type:  ", "Size:   " };
-                    //Object nob = items2[n];
-                    t = items2[n].ToString();
-                    lvpkginfo.Items.Add(t1[n] + t);
-                    n++;
-                }
-
-
-                foreach (DataRow row in dtpkg2.Rows)
-                {
-                    int tname = Convert.ToInt32(row["count"]);
-                    if (tname == n)
-                    {
-
-                        row["bl"] = "8.0";
-                        row["tileh"] = "150";
-                        row["tilew"] = "150";
-                        row["column1w"] = "150";
-                        row["column2w"] = "650";
-                        row["roww"] = "50";
-                        row["imags"] = "100";
-                        VisitPlanItems.DataContext = dtpkg2.DefaultView;
-                        lbtest.DataContext = dtpkg2.DefaultView;
-                        lvpkginfo.DataContext = dtpkg2.DefaultView;
-                    }
-                    else
-                    {
-                        row["bl"] = "0.0";
-                        row["tileh"] = "100";
-                        row["tilew"] = "100";
-                        row["column1w"] = "150";
-                        row["column2w"] = "650";
-                        row["roww"] = "30";
-                        row["imags"] = "50";
-                        VisitPlanItems.DataContext = dtpkg2.DefaultView;
-                        lbtest.DataContext = dtpkg2.DefaultView;
-                        lvpkginfo.DataContext = dtpkg2.DefaultView;
-                    }
-                    VisitPlanItems.DataContext = dtpkg2.DefaultView;
-                    lbtest.DataContext = dtpkg2.DefaultView;
-                    lvpkginfo.DataContext = dtpkg2.DefaultView;
-
-
-                    //dispatcherTimer2.Start();
-                    //VisitPlanItems.DataContext = dt2.DefaultView;
-                }
-
-
-            }
-
-
-            lbtest.SelectedItem = (sender as Border).DataContext;*/
-            //string k = lbtest.SelectedItem
-            //if (!lbtest.IsFocused)
-            // lbtest.Focus();
-        }
-
-        private void plist_MouseExit(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            /*
-            DataRowView item1 = this.lbtest.SelectedItem as DataRowView;
-
-            if (item1 != null)
-            {
-                Object[] items2 = item1.Row.ItemArray;
-                string item = items2[4].ToString();
-                item = item.Replace(".PNG", ".PKG");
-                //this.label4.Content = items2[0].ToString();
-                lvpkginfo.Items.Clear();
-                string t = "";
-                int n = 0;
-                while (n < 4)
-                {
-                    string[] t1 = new string[] { "Name: ", "CID:    ", "Type:  ", "Size:   " };
-                    //Object nob = items2[n];
-                    t = items2[n].ToString();
-                    lvpkginfo.Items.Add(t1[n] + t);
-                    n++;
-                }
-
-
-                foreach (DataRow row in dtpkg2.Rows)
-                {
-                    int tname = Convert.ToInt32(row["count"]);
-                    if (tname == n)
-                    {
-
-                        row["bl"] = "8.0";
-                        row["tileh"] = "150";
-                        row["tilew"] = "150";
-                        row["column1w"] = "150";
-                        row["column2w"] = "650";
-                        row["roww"] = "50";
-                        row["imags"] = "100";
-                        // VisitPlanItems.DataContext = dtpkg2.DefaultView;
-                        // lbtest.DataContext = dtpkg2.DefaultView;
-                        //lvpkginfo.DataContext = dtpkg2.DefaultView;
-                    }
-                    else
-                    {
-                        row["bl"] = "0.0";
-                        row["tileh"] = "100";
-                        row["tilew"] = "100";
-                        row["column1w"] = "150";
-                        row["column2w"] = "650";
-                        row["roww"] = "30";
-                        row["imags"] = "50";
-                        //VisitPlanItems.DataContext = dtpkg2.DefaultView;
-                        //lbtest.DataContext = dtpkg2.DefaultView;
-                        //lvpkginfo.DataContext = dtpkg2.DefaultView;
-                    }
-
-
-                    //dispatcherTimer2.Start();
-                    //VisitPlanItems.DataContext = dt2.DefaultView;
-                }
-
-
-            }
-
-            VisitPlanItems.DataContext = dtpkg2.DefaultView;
-            lbtest.DataContext = dtpkg2.DefaultView;
-            lvpkginfo.DataContext = dtpkg2.DefaultView;
-
-            lbtest.SelectedItem = (sender as Border).DataContext;*/
-            //string k = lbtest.SelectedItem
-            //if (!lbtest.IsFocused)
-            // lbtest.Focus();
-        }
-
-        private void button_1_Click(object sender, RoutedEventArgs e)
-        {
-            string link_name = textBoxname.Text;
-            string file_type = textBoxfile_type.Text;
-            string link_type = textBoxlink_type.Text;
-            Send_File(link_name, link_type, file_type);
-        }
+        #region<<head>>
 
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -621,22 +447,19 @@ namespace PS4_PKG_Linker
             }
         }
 
-        private void ContextMenu_Loaded(object sender, RoutedEventArgs e)
+        private void textBoxfile_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+           WPFFolderBrowserDialog test = new WPFFolderBrowserDialog();
+            test.ShowDialog();
 
+            if(test.FileName != "")
+            {
+                folder = test.FileName;
+                textBoxfile.Text = folder;
+            }
         }
 
-        private void ContextMenu_MouseLeave(object sender, MouseEventArgs e)
-        {
-
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        #endregion<<buttons>>
+        #endregion<<>>
 
         #region<<downloads>>
 
@@ -918,9 +741,11 @@ namespace PS4_PKG_Linker
                 }
             }
         }
-        
+
         #endregion<<>>
 
+        #region<<loading>>
+        
         private void Add_pkg()
         {
             DirectoryInfo dinfo;
@@ -1420,97 +1245,56 @@ namespace PS4_PKG_Linker
 
         }
 
-        private static string GetFileSize(string uriPath)
-        {
-            var webRequest = HttpWebRequest.Create(uriPath);
-            webRequest.Method = "HEAD";
-
-            using (var webResponse = webRequest.GetResponse())
-            {
-
-                var fileSize = webResponse.Headers.Get("Content-Length");
-                string sz = SizeSuffix(Convert.ToInt64(fileSize));
-                //var fileSizeInMegaByte = Math.Round(Convert.ToDouble(fileSize) / 1024.0 / 1024.0, 2);
-                return sz;
-            }
-        }
-
-        private void lvpkgsfo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-            DataRowView item1 = this.lvpkgsfo.SelectedItem as DataRowView;
-
-            if (item1 != null)
-            {
-
-                Object[] items2 = item1.Row.ItemArray;
-
-                //this.label4.Content = items2[0].ToString();
-                //lvpkginfo.Items.Clear();
-                new_cid.Text = items2[0].ToString();
-                new_name.Text = items2[1].ToString();
-                new_link.Text = items2[2].ToString();
-                new_icon.Text = items2[3].ToString();
-
-                //button_list.Visibility = Visibility.Visible;
-                /*Please note you can always do this another methid just get the sfo somehow so we can work with it*/
-
-            }
-        }
-
-        private void Wjson()
-        {
-            DataSet dataSet = new DataSet("dataSet");
-            dataSet.Namespace = "NetFrameWork";
-            DataTable table = new DataTable("plinks");
-            //DataColumn idColumn = new DataColumn("id", typeof(int));
-            // idColumn.AutoIncrement = true;
-
-            DataColumn itemColumn1 = new DataColumn("content_id");
-            DataColumn itemColumn2 = new DataColumn("name");
-            DataColumn itemColumn3 = new DataColumn("link");
-            DataColumn itemColumn4 = new DataColumn("icon_link");
-            //table.Columns.Add(idColumn);
-            table.Columns.Add(itemColumn1);
-            table.Columns.Add(itemColumn2);
-            table.Columns.Add(itemColumn3);
-            table.Columns.Add(itemColumn4);
-            dataSet.Tables.Add(table);
-
-
-            foreach (DataRow row in dtlinks.Rows)
-            {
-                ///Console.WriteLine("--- Row ---");
-
-                DataRow newRow = table.NewRow();
-                newRow["content_id"] = row.ItemArray[0];
-                newRow["name"] = row.ItemArray[1];
-                newRow["link"] = row.ItemArray[2];
-                newRow["icon_link"] = row.ItemArray[3];
-                table.Rows.Add(newRow);
-
-            }
-
-            dataSet.AcceptChanges();
-
-            string json = JsonConvert.SerializeObject(dataSet, Formatting.None);
-
-            /*
-                        string json;
-                        json = JsonConvert.SerializeObject(dtlinks);
-                        dtpkg[0] = dtlinks;
-
-                        json = JsonConvert.SerializeObject(dtpkg, Formatting.Undented);
-                        JsonConvert.SerializeObject<LINKS>(json);
-                        */
-            using (StreamWriter writer = new StreamWriter("Links.txt"))
-            {
-                writer.Write(json);
-
-            }
-        }
+       #endregion<<>>
 
         #region<<menu>>
+
+        private void ContextMenu_MouseLeave(object sender, MouseEventArgs e)
+        {
+
+
+            ContextMenu cm = this.TryFindResource("NotifierContextMenu") as ContextMenu;
+            if (cm != null)
+                cm.ReleaseMouseCapture();
+
+        }
+
+        private void ContextMenu_Loaded(object sender, RoutedEventArgs e)
+        {
+            ContextMenu cm = sender as ContextMenu;
+            Border border = GetChildOfType<Border>(cm);
+            border.MouseLeave += Border_MouseLeave;
+        }
+
+        private void Border_MouseLeave(object sender, MouseEventArgs e)
+        {
+            //do something here...
+            ContextMenu cm = this.TryFindResource("NotifierContextMenu") as ContextMenu;
+            if (cm != null)
+                cm.ReleaseMouseCapture();
+
+            ContextMenu cm2 = this.TryFindResource("NotifierContextMenu2") as ContextMenu;
+            if (cm2 != null)
+                cm2.ReleaseMouseCapture();
+            
+
+        }
+
+        private static T GetChildOfType<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj == null)
+                return null;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                var child = VisualTreeHelper.GetChild(depObj, i);
+
+                var result = (child as T) ?? GetChildOfType<T>(child);
+                if (result != null)
+                    return result;
+            }
+            return null;
+        }
 
         private void Menu_Open_list(object sender, RoutedEventArgs e)
         {
@@ -1596,19 +1380,13 @@ namespace PS4_PKG_Linker
             //MessageBox.Show("Close");
             App.Current.Shutdown();
         }
-
-
-
-
+        
         private void Exit_Tray_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
             changicon();
         }
-
-
-
-
+        
         #endregion<<menu>>
 
         #region<<links>>
@@ -1684,6 +1462,81 @@ namespace PS4_PKG_Linker
             }
         }
 
+        private void lvpkgsfo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            DataRowView item1 = this.lvpkgsfo.SelectedItem as DataRowView;
+
+            if (item1 != null)
+            {
+
+                Object[] items2 = item1.Row.ItemArray;
+
+                //this.label4.Content = items2[0].ToString();
+                //lvpkginfo.Items.Clear();
+                new_cid.Text = items2[0].ToString();
+                new_name.Text = items2[1].ToString();
+                new_link.Text = items2[2].ToString();
+                new_icon.Text = items2[3].ToString();
+
+                //button_list.Visibility = Visibility.Visible;
+                /*Please note you can always do this another methid just get the sfo somehow so we can work with it*/
+
+            }
+        }
+
+        private void Wjson()
+        {
+            DataSet dataSet = new DataSet("dataSet");
+            dataSet.Namespace = "NetFrameWork";
+            DataTable table = new DataTable("plinks");
+            //DataColumn idColumn = new DataColumn("id", typeof(int));
+            // idColumn.AutoIncrement = true;
+
+            DataColumn itemColumn1 = new DataColumn("content_id");
+            DataColumn itemColumn2 = new DataColumn("name");
+            DataColumn itemColumn3 = new DataColumn("link");
+            DataColumn itemColumn4 = new DataColumn("icon_link");
+            //table.Columns.Add(idColumn);
+            table.Columns.Add(itemColumn1);
+            table.Columns.Add(itemColumn2);
+            table.Columns.Add(itemColumn3);
+            table.Columns.Add(itemColumn4);
+            dataSet.Tables.Add(table);
+
+
+            foreach (DataRow row in dtlinks.Rows)
+            {
+                ///Console.WriteLine("--- Row ---");
+
+                DataRow newRow = table.NewRow();
+                newRow["content_id"] = row.ItemArray[0];
+                newRow["name"] = row.ItemArray[1];
+                newRow["link"] = row.ItemArray[2];
+                newRow["icon_link"] = row.ItemArray[3];
+                table.Rows.Add(newRow);
+
+            }
+
+            dataSet.AcceptChanges();
+
+            string json = JsonConvert.SerializeObject(dataSet, Formatting.None);
+
+            /*
+                        string json;
+                        json = JsonConvert.SerializeObject(dtlinks);
+                        dtpkg[0] = dtlinks;
+
+                        json = JsonConvert.SerializeObject(dtpkg, Formatting.Undented);
+                        JsonConvert.SerializeObject<LINKS>(json);
+                        */
+            using (StreamWriter writer = new StreamWriter("Links.txt"))
+            {
+                writer.Write(json);
+
+            }
+        }
+
         #endregion<<>>
 
         #region<<batch>>
@@ -1705,6 +1558,46 @@ namespace PS4_PKG_Linker
         }
 
         #endregion<<>>
+
+        #region<<pkg list>>
+
+        private void lbtest_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            DataRowView item1 = this.lbtest.SelectedItem as DataRowView;
+
+            if (item1 != null)
+            {
+                
+                Object[] items2 = item1.Row.ItemArray;
+               
+                textBoxtid.Text = items2[7].ToString();
+                textBoxcid.Text = items2[1].ToString();
+                textBoxname.Text = items2[0].ToString();
+                textBoxfile_type.Text = items2[14].ToString();
+                textBoxlink_type.Text = items2[2].ToString();
+                button_list.Visibility = Visibility.Visible;
+                
+            }
+        }
+        
+        private void button_1_Click(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+        private void button_2_Click(object sender, RoutedEventArgs e)
+        {
+            string link_name = textBoxname.Text;
+            string file_type = textBoxfile_type.Text;
+            string link_type = textBoxlink_type.Text;
+            Send_File(link_name, link_type, file_type);
+        }
+
+        private void Check_game()
+        {
+
+        }
 
         private void Send_File(string link_name, string link_type, string file_type)
         {
@@ -1760,102 +1653,9 @@ namespace PS4_PKG_Linker
 
         }
 
-        private void set_ip()
-        {
-            port1 = GetAvailablePort(80);
-            port = port1.ToString();
-            textBox2.Text = port;
-            g_ip();
-
-
-        }
-
-        private void g_ip()
-        {
-            string hostName = Dns.GetHostName();
-            ip = Dns.GetHostByName(hostName).AddressList[0].ToString();
-            //ip = Dns.GetHostEntry(hostName).AddressList[0].ToString();
-
-            // Get host name
-            String strHostName = Dns.GetHostName();
-
-            // Find host by name
-            IPHostEntry iphostentry = Dns.GetHostByName(strHostName);
-
-            
-            if (iphostentry.AddressList.Count() != 0)
-            {
-                //comboBox1.Text.
-            }
-            // Enumerate IP addresses
-            foreach (IPAddress ipaddress in iphostentry.AddressList)
-            {
-                comboBox1.Items.Add(ipaddress);
-
-            }
-            if (comboBox1.Items[0].ToString() != "999.999.999.999")
-            {
-                ip = comboBox1.Items[0].ToString();
-                comboBox1.Text = ip;
-            }
-
-        }
-
-
-        public static int GetAvailablePort(int startingPort)
-        {
-            IPEndPoint[] endPoints;
-            List<int> portArray = new List<int>();
-
-            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
-
-            //getting active connections
-            TcpConnectionInformation[] connections = properties.GetActiveTcpConnections();
-            portArray.AddRange(from n in connections
-                               where n.LocalEndPoint.Port >= startingPort
-                               select n.LocalEndPoint.Port);
-
-            //getting active tcp listners - WCF service listening in tcp
-            endPoints = properties.GetActiveTcpListeners();
-            portArray.AddRange(from n in endPoints
-                               where n.Port >= startingPort
-                               select n.Port);
-
-            //getting active udp listeners
-            endPoints = properties.GetActiveUdpListeners();
-            portArray.AddRange(from n in endPoints
-                               where n.Port >= startingPort
-                               select n.Port);
-
-            portArray.Sort();
-
-            for (int i = startingPort; i < UInt16.MaxValue; i++)
-                if (!portArray.Contains(i))
-                    return i;
-
-            return 0;
-        }
-
-
-
-        #region<<batch>>
-
         #endregion<<>>
 
-        private void textBox2_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void textBox2_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void button4_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        #region<<server settings>>
 
         private void button6_Click(object sender, RoutedEventArgs e)
         {
@@ -1872,37 +1672,23 @@ namespace PS4_PKG_Linker
 
         }
 
-        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void textBox2_TextChanged(object sender, TextChangedEventArgs e)
         {
-            e.Cancel = true;
 
-
-            ContextMenu menu = (ContextMenu)this.FindResource("NotifierContextMenu3");
-            //menu.Items.
-            menu.IsOpen = true;
-
-            SaveSettings();
         }
 
-        private void textBoxfile_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void textBox2_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-           WPFFolderBrowserDialog test = new WPFFolderBrowserDialog();
-            test.ShowDialog();
 
-            if(test.FileName != "")
-            {
-                folder = test.FileName;
-                textBoxfile.Text = folder;
-            }
         }
 
-        private void Load()
-        {
-            textBox1.Text = ps4_ip;
-            textBoxfile.Text = folder;
-        }
+        #endregion<<>>
 
-        #region<<links>>
+        #region<<batch>>
+
+        #endregion<<>>
+
+        #region<<about>>
 
         private void Octolus_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
@@ -1996,5 +1782,125 @@ namespace PS4_PKG_Linker
         }
 
         #endregion<<>>
+  
+        #region<<close>>
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+
+
+            ContextMenu menu = (ContextMenu)this.FindResource("NotifierContextMenu3");
+            //menu.Items.
+            menu.IsOpen = true;
+
+            //SaveSettings();
+        }
+     
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            MyNotifyIcon.Visible = false;
+            check_processes();
+        }
+
+        #endregion<<>>
+
+
+        private static string GetFileSize(string uriPath)
+        {
+            var webRequest = HttpWebRequest.Create(uriPath);
+            webRequest.Method = "HEAD";
+
+            using (var webResponse = webRequest.GetResponse())
+            {
+
+                var fileSize = webResponse.Headers.Get("Content-Length");
+                string sz = SizeSuffix(Convert.ToInt64(fileSize));
+                //var fileSizeInMegaByte = Math.Round(Convert.ToDouble(fileSize) / 1024.0 / 1024.0, 2);
+                return sz;
+            }
+        }
+
+        public static int GetAvailablePort(int startingPort)
+        {
+            IPEndPoint[] endPoints;
+            List<int> portArray = new List<int>();
+
+            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+
+            //getting active connections
+            TcpConnectionInformation[] connections = properties.GetActiveTcpConnections();
+            portArray.AddRange(from n in connections
+                               where n.LocalEndPoint.Port >= startingPort
+                               select n.LocalEndPoint.Port);
+
+            //getting active tcp listners - WCF service listening in tcp
+            endPoints = properties.GetActiveTcpListeners();
+            portArray.AddRange(from n in endPoints
+                               where n.Port >= startingPort
+                               select n.Port);
+
+            //getting active udp listeners
+            endPoints = properties.GetActiveUdpListeners();
+            portArray.AddRange(from n in endPoints
+                               where n.Port >= startingPort
+                               select n.Port);
+
+            portArray.Sort();
+
+            for (int i = startingPort; i < UInt16.MaxValue; i++)
+                if (!portArray.Contains(i))
+                    return i;
+
+            return 0;
+        }
+
+        private void Load()
+        {
+            textBox1.Text = ps4_ip;
+            textBoxfile.Text = folder;
+        }
+
+        private void set_ip()
+        {
+            port1 = GetAvailablePort(80);
+            port = port1.ToString();
+            textBox2.Text = port;
+            g_ip();
+
+
+        }
+
+        private void g_ip()
+        {
+            string hostName = Dns.GetHostName();
+            ip = Dns.GetHostByName(hostName).AddressList[0].ToString();
+            //ip = Dns.GetHostEntry(hostName).AddressList[0].ToString();
+
+            // Get host name
+            String strHostName = Dns.GetHostName();
+
+            // Find host by name
+            IPHostEntry iphostentry = Dns.GetHostByName(strHostName);
+
+            
+            if (iphostentry.AddressList.Count() != 0)
+            {
+                //comboBox1.Text.
+            }
+            // Enumerate IP addresses
+            foreach (IPAddress ipaddress in iphostentry.AddressList)
+            {
+                comboBox1.Items.Add(ipaddress);
+
+            }
+            if (comboBox1.Items[0].ToString() != "999.999.999.999")
+            {
+                ip = comboBox1.Items[0].ToString();
+                comboBox1.Text = ip;
+            }
+
+        }
+        
     }
 }
