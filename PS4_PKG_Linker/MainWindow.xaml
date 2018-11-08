@@ -1404,39 +1404,50 @@
                                 
                             </StackPanel>
 
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,300,0,0" Height="50" VerticalAlignment="Top">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,300,0,0" Height="50" VerticalAlignment="Top">
+                                    <local:ClickableLabel x:Name="CelesteBlue" FontSize="20" Foreground="Blue" Cursor="Hand" Click="CelesteBlue_Click">
+                                        φ CelesteBlue φ
+                                    </local:ClickableLabel>
+                                    <Label Content="&amp;"  FontSize="20"/>
+                                    <local:ClickableLabel x:Name="Centrino" FontSize="20" Foreground="Blue" Cursor="Hand" Click="Centrino_Click">
+                                        Centrino
+                                    </local:ClickableLabel>
+                                    <Label FontSize="20">
+                                        for the PS4
+                                    </Label>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,350,0,0" Height="50" VerticalAlignment="Top">
                                     <local:ClickableLabel x:Name="mah" FontSize="20" Foreground="Blue" Cursor="Hand" Click="mah_MouseDoubleClick">
                                     MahApps.Metro,
                                 </local:ClickableLabel>
                                     <local:ClickableLabel x:Name="wfb" FontSize="20" Foreground="Blue" Cursor="Hand" Click="wfb_MouseDoubleClick">
                                     WPFFolderBrowser
                                 </local:ClickableLabel>
-                                <Label FontSize="20">
-                                   and
-                                </Label>
+                                    <Label Content="&amp;"  FontSize="20"/>
                                     <local:ClickableLabel x:Name="jnet" FontSize="20" Foreground="Blue" Cursor="Hand" Click="jnet_MouseDoubleClick">
                                    JSON.NET
                                 </local:ClickableLabel>
                             </StackPanel>
 
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,350,0,0" Height="50" VerticalAlignment="Top">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,400,0,0" Height="50" VerticalAlignment="Top">
                                 <Label FontSize="20">
                                     Web Sites
                                 </Label>
                             </StackPanel>
 
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,400,0,0" Height="50" VerticalAlignment="Top">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,450,0,0" Height="50" VerticalAlignment="Top">
 
                                     <local:ClickableLabel x:Name="place" FontSize="20" Foreground="Blue" Cursor="Hand" Click="place_MouseDoubleClick">
                                     PSX-PLACE 
                                 </local:ClickableLabel>
-                                
-                                <local:ClickableLabel x:Name="hax" FontSize="20" Foreground="Blue" Cursor="Hand" Click="hax_MouseDoubleClick">
+                                    <Label Content="&amp;"  FontSize="20"/>
+                                    <local:ClickableLabel x:Name="hax" FontSize="20" Foreground="Blue" Cursor="Hand" Click="hax_MouseDoubleClick">
                                         playstationhax
                                     </local:ClickableLabel>
                             </StackPanel>
 
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,550,0,0" Height="50" VerticalAlignment="Top">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,550,0,0" Height="50" VerticalAlignment="Top">
                                 <Label FontSize="20">
                                     For help and support with uniformserver
                                 </Label>

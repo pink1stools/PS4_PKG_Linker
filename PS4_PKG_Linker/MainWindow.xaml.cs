@@ -1881,7 +1881,7 @@ namespace PS4_PKG_Linker
             //menu.Items.
             menu.IsOpen = true;
 
-            //SaveSettings();
+            SaveSettings();
         }
 
         private void textBoxfile_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -1901,6 +1901,8 @@ namespace PS4_PKG_Linker
             textBox1.Text = ps4_ip;
             textBoxfile.Text = folder;
         }
+
+        #region<<links>>
 
         private void Octolus_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
@@ -1978,5 +1980,21 @@ namespace PS4_PKG_Linker
             Process.Start(new ProcessStartInfo("http://www.uniformserver.com/"));
 
         }
+
+        private void CelesteBlue_Click(object sender, RoutedEventArgs e)
+        {
+
+            Process.Start(new ProcessStartInfo("https://twitter.com/CelesteBlue123"));
+
+        }
+
+        private void Centrino_Click(object sender, RoutedEventArgs e)
+        {
+
+            Process.Start(new ProcessStartInfo("https://twitter.com/Centrinouk"));
+
+        }
+
+        #endregion<<>>
     }
 }

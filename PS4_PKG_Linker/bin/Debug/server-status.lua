@@ -19,15 +19,15 @@ under the License.
 
 --[[ mod_lua implementation of the server-status page ]]
 
-local redact_ips = true -- whether to replace the last two bits of every IP with 'x.x'
+local redact_ips = false -- whether to replace the last two bits of every IP with 'x.x'
 local warning_banner = [[
     <div style="float: left; color: #222; margin-bottom: 8px; margin-top: 24px; text-align: center; width: 200px; font-size: 0.7rem; border: 1px dashed #333; background: #F8C940;">
         <h3 style="margin: 4px; font-size: 1rem;">Don't be alarmed - this page is here for a reason!</h3>
         <p style="font-weight: bolder; font-size: 0.8rem;">This is an example server status page for the Apache HTTP Server. Nothing on this server is secret, no URL tokens, no sensitive passwords. Everything served from here is static data.</p>
     </div>
 ]]
-local show_warning = true -- whether to display the above warning/notice on the page
-local show_modules = false -- Whether to list loaded modules or not
+local show_warning = false -- whether to display the above warning/notice on the page
+local show_modules = true -- Whether to list loaded modules or not
 local show_threads = true -- whether to list thread information or not
 
 -- pre-declare some variables defined at the bottom of this script:
