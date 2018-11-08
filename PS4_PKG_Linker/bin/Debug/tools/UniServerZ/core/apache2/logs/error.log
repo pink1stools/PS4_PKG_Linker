@@ -477,3 +477,9 @@
 [Wed Nov 07 23:19:42.915382 2018] [mpm_winnt:notice] [pid 11248:tid 156] AH00418: Parent: Created child process 8500
 [Wed Nov 07 23:19:44.291359 2018] [mpm_winnt:notice] [pid 8500:tid 356] AH00354: Child: Starting 150 worker threads.
 [Wed Nov 07 23:19:53.385109 2018] [mpm_winnt:notice] [pid 11248:tid 156] AH00428: Parent: child process 8500 exited with status 4294967295 -- Restarting.
+[Thu Nov 08 00:16:27.517921 2018] [core:warn] [pid 9632:tid 156] AH00098: pid file C:/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/core/apache2/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Thu Nov 08 00:16:27.589210 2018] [mpm_winnt:notice] [pid 9632:tid 156] AH00455: Apache/2.4.25 (Win32) PHP/7.1.1 configured -- resuming normal operations
+[Thu Nov 08 00:16:27.590187 2018] [mpm_winnt:notice] [pid 9632:tid 156] AH00456: Apache Lounge VC14 Server built: Dec 17 2016 10:42:52
+[Thu Nov 08 00:16:27.590187 2018] [core:notice] [pid 9632:tid 156] AH00094: Command line: 'C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\bin\\httpd_z.exe -d C:/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/core/apache2 -f C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\conf\\httpd.conf -d C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2'
+[Thu Nov 08 00:16:27.598976 2018] [mpm_winnt:notice] [pid 9632:tid 156] AH00418: Parent: Created child process 11656
+[Thu Nov 08 00:16:28.858742 2018] [mpm_winnt:notice] [pid 11656:tid 356] AH00354: Child: Starting 150 worker threads.

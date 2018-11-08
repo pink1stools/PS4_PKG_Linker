@@ -63,3 +63,10 @@ C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\bin\Debug\W
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\Window_server.baml
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\Window_server.g.cs
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\bin\Debug\es\PS4_PKG_Linker.resources.dll
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\bin\Debug\en\PS4_PKG_Linker.resources.dll
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker.Properties.Resources .en.es.resources
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker.Properties.Resources .en.resources
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker.Properties.Resources.en.resources
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\es\PS4_PKG_Linker.resources.dll
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\en\PS4_PKG_Linker.resources.dll

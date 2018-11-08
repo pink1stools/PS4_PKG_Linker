@@ -58,6 +58,9 @@ namespace PS4_PKG_Linker
         string serve_path;
         static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 
+        //Window Loading
+        #region<<Loading>>
+
         public MainWindow()
         {
             InitializeComponent();
@@ -134,24 +137,14 @@ namespace PS4_PKG_Linker
             //this.child01.IsOpen = true;
         }
 
-        static string SizeSuffix(Int64 value, int decimalPlaces = 1)
-        {
-            if (value < 0) { return "-" + SizeSuffix(-value); }
+        #endregion<<>>
 
-            int c = 0;
-            decimal dValue = (decimal)value;
-            while (Math.Round(dValue, decimalPlaces) >= 1000)
-            {
-                dValue /= 1024;
-                c++;
-            }
-
-            return string.Format("{0:n" + decimalPlaces + "} {1}", dValue, SizeSuffixes[c]);
-        }
+        //Background
+        #region<<tray>>
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            
+
             MyNotifyIcon.Icon = icons[currentIcon];
             currentIcon++;
             if (currentIcon == 15)
@@ -216,17 +209,17 @@ namespace PS4_PKG_Linker
             {
                 MyNotifyIcon.Visible = false;
                 dispatcherTimer.Start();
-                 MyNotifyIcon.Visible = true;
+                MyNotifyIcon.Visible = true;
             }
             else
             {
-                 MyNotifyIcon.Visible = false;
+                MyNotifyIcon.Visible = false;
                 dispatcherTimer.Stop();
                 Assembly myAssembly = Assembly.GetExecutingAssembly();
                 Stream myStream = myAssembly.GetManifestResourceStream("PS4_PKG_Linker.tools.resources." + "0.ico");
                 System.Drawing.Icon bmp = new System.Drawing.Icon(myStream);
                 MyNotifyIcon.Icon = bmp;
-                 MyNotifyIcon.Visible = true;
+                MyNotifyIcon.Visible = true;
             }
         }
 
@@ -270,14 +263,15 @@ namespace PS4_PKG_Linker
                 //this.WindowState = WindowState.Normal;
                 //maxButton.Visibility = Visibility.Visible;
                 //normButton.Visibility = Visibility.Hidden;
-               /* ret2.Visibility = Visibility.Hidden;
-                ret3.Visibility = Visibility.Visible;
-                ret2.Width = 0;
-                ret3.Width = 10;*/
+                /* ret2.Visibility = Visibility.Hidden;
+                 ret3.Visibility = Visibility.Visible;
+                 ret2.Width = 0;
+                 ret3.Width = 10;*/
 
             }
         }
-
+        
+        #endregion<<>>
 
         #region<<settings>>
         private void LoadSettings()
@@ -304,159 +298,117 @@ namespace PS4_PKG_Linker
 
         #endregion<<settings>>
 
-        #region<<style>>
+        #region<<set_up>>
 
-        private void button7_Click(object sender, RoutedEventArgs e)
+        static string SizeSuffix(Int64 value, int decimalPlaces = 1)
         {
-            if (ctheme == "BaseDark")
+            if (value < 0) { return "-" + SizeSuffix(-value); }
+
+            int c = 0;
+            decimal dValue = (decimal)value;
+            while (Math.Round(dValue, decimalPlaces) >= 1000)
             {
-                button7.Content = "Dark Theme";
-                ctheme = "BaseLight";
+                dValue /= 1024;
+                c++;
             }
-            else
-            {
-                button7.Content = "Light Theme";
-                ctheme = "BaseDark";
-            }
-            ChangeAppStyle();
+
+            return string.Format("{0:n" + decimalPlaces + "} {1}", dValue, SizeSuffixes[c]);
         }
 
-        private void ListBoxItem_Selected(object sender, RoutedEventArgs e)
+        private static string GetFileSize(string uriPath)
         {
+            var webRequest = HttpWebRequest.Create(uriPath);
+            webRequest.Method = "HEAD";
 
-            color = ((ListBoxItem)listBox1.SelectedValue).Content.ToString();
-            ChangeAppStyle();
-        }
-
-        public void ChangeAppStyledark()
-        {
-            // get the theme from the window
-            // get the theme from the current application
-            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
-
-            // now set the Green accent and dark theme
-            ThemeManager.ChangeAppStyle(System.Windows.Application.Current,
-                                        ThemeManager.GetAccent("Indigo"),
-                                        ThemeManager.GetAppTheme("BaseDark"));
-        }
-
-        public void ChangeAppStyle()
-        {
-
-            if (ctheme == "BaseDark")
+            using (var webResponse = webRequest.GetResponse())
             {
 
-                color2.Background = System.Windows.Media.Brushes.White;
-               page_icon.Fill = System.Windows.Media.Brushes.White;
-                abouthead.Fill = System.Windows.Media.Brushes.White;
-                //button7.Content = "Light Theme";
-                //b7tb1.Text = "Light Theme";
-                //ctheme = "BaseLight";
-            }
-            else
-            {
-                color2.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
-                page_icon.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
-                abouthead.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
-
-                //button7.Content = "Dark Theme";
-                // b7tb1.Text = "Dark Theme";
-                //ctheme = "BaseDark";
-            }
-            if (ctheme == "")
-            {
-                ctheme = "BaseDark";
-                color2.Background = System.Windows.Media.Brushes.White;
-                page_icon.Fill = System.Windows.Media.Brushes.White;
-                //button7.Content = "Light Theme";
-                //b7tb1.Text = "Light Theme";
-                //ctheme = "BaseLight";
-            }
-
-            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
-
-            if (color == null || color == "")
-            {
-                color = "Crimson";
-            }
-            ThemeManager.ChangeAppStyle(System.Windows.Application.Current,
-                                        ThemeManager.GetAccent(color),
-
-                                        ThemeManager.GetAppTheme(ctheme));
-
-            
-
-        }
-
-        public void ChangeAppStylelight()
-        {
-            // get the theme from the window
-            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
-
-            // now set the Red accent and dark theme
-            ThemeManager.ChangeAppStyle(System.Windows.Application.Current,
-                                        ThemeManager.GetAccent("Steel"),
-                                        ThemeManager.GetAppTheme("BaseLight"));
-        }
-
-        #endregion<<style>>
-
-        #region<<head>>
-
-        private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ps4_ip = textBox1.Text;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //if (button1.Content.ToString() == "Start Server")
-            if (b1tb1.Text == "Start Server")
-            {
-                port = textBox2.Text;
-                /*textBox3.Text = comboBox1.Text;
-                ip = textBox3.Text;
-
-                textBox1.Text = ip;
-                w_settings();
-                w_s_conf();*/
-
-                //b1tb1.Content = "Stop Server";
-                b1tb1.Text = "Stop Server";
-                ip = comboBox1.Text;
-                start_server();
-                // MyNotifyIcon.Visible = true;
-                //Server_Running.BadgeBackground = Brushes.Green;
-                //Server_Running.BadgeForeground = Brushes.Green;
-               // MyNotifyIcon.ShowBalloonTip(10000, "Server Started", "Server Started", System.Windows.Forms.ToolTipIcon.Info);
-                // MyNotifyIcon.Visible = false;
-            }
-            else
-            {
-                //button1.Content = "Start Server";
-                //b1tb1.Text = "Start Server";
-                b1tb1.Text = "Start Server";
-                stop_server();
-                //MyNotifyIcon.Visible = true;
-                // b1tb1.Text = "Start Server";
-                //dispatcherTimer2.Stop();
-                MyNotifyIcon.ShowBalloonTip(10000, "Server Stopped", "Server Stopped", System.Windows.Forms.ToolTipIcon.Info);
-                // MyNotifyIcon.Visible = false;
-               // Server_Running.BadgeBackground = Brushes.Red;
-               // Server_Running.BadgeForeground = Brushes.Red;
+                var fileSize = webResponse.Headers.Get("Content-Length");
+                string sz = SizeSuffix(Convert.ToInt64(fileSize));
+                //var fileSizeInMegaByte = Math.Round(Convert.ToDouble(fileSize) / 1024.0 / 1024.0, 2);
+                return sz;
             }
         }
 
-        private void textBoxfile_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        public static int GetAvailablePort(int startingPort)
         {
-           WPFFolderBrowserDialog test = new WPFFolderBrowserDialog();
-            test.ShowDialog();
+            IPEndPoint[] endPoints;
+            List<int> portArray = new List<int>();
 
-            if(test.FileName != "")
+            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
+
+            //getting active connections
+            TcpConnectionInformation[] connections = properties.GetActiveTcpConnections();
+            portArray.AddRange(from n in connections
+                               where n.LocalEndPoint.Port >= startingPort
+                               select n.LocalEndPoint.Port);
+
+            //getting active tcp listners - WCF service listening in tcp
+            endPoints = properties.GetActiveTcpListeners();
+            portArray.AddRange(from n in endPoints
+                               where n.Port >= startingPort
+                               select n.Port);
+
+            //getting active udp listeners
+            endPoints = properties.GetActiveUdpListeners();
+            portArray.AddRange(from n in endPoints
+                               where n.Port >= startingPort
+                               select n.Port);
+
+            portArray.Sort();
+
+            for (int i = startingPort; i < UInt16.MaxValue; i++)
+                if (!portArray.Contains(i))
+                    return i;
+
+            return 0;
+        }
+
+        private void Load()
+        {
+            textBox1.Text = ps4_ip;
+            textBoxfile.Text = folder;
+        }
+
+        private void set_ip()
+        {
+            port1 = GetAvailablePort(80);
+            port = port1.ToString();
+            textBox2.Text = port;
+            g_ip();
+
+
+        }
+
+        private void g_ip()
+        {
+            string hostName = Dns.GetHostName();
+            ip = Dns.GetHostByName(hostName).AddressList[0].ToString();
+            //ip = Dns.GetHostEntry(hostName).AddressList[0].ToString();
+
+            // Get host name
+            String strHostName = Dns.GetHostName();
+
+            // Find host by name
+            IPHostEntry iphostentry = Dns.GetHostByName(strHostName);
+
+
+            if (iphostentry.AddressList.Count() != 0)
             {
-                folder = test.FileName;
-                textBoxfile.Text = folder;
+                //comboBox1.Text.
             }
+            // Enumerate IP addresses
+            foreach (IPAddress ipaddress in iphostentry.AddressList)
+            {
+                comboBox1.Items.Add(ipaddress);
+
+            }
+            if (comboBox1.Items[0].ToString() != "999.999.999.999")
+            {
+                ip = comboBox1.Items[0].ToString();
+                comboBox1.Text = ip;
+            }
+
         }
 
         #endregion<<>>
@@ -745,7 +697,7 @@ namespace PS4_PKG_Linker
         #endregion<<>>
 
         #region<<loading>>
-        
+
         private void Add_pkg()
         {
             DirectoryInfo dinfo;
@@ -1245,7 +1197,7 @@ namespace PS4_PKG_Linker
 
         }
 
-       #endregion<<>>
+        #endregion<<>>
 
         #region<<menu>>
 
@@ -1276,7 +1228,7 @@ namespace PS4_PKG_Linker
             ContextMenu cm2 = this.TryFindResource("NotifierContextMenu2") as ContextMenu;
             if (cm2 != null)
                 cm2.ReleaseMouseCapture();
-            
+
 
         }
 
@@ -1310,6 +1262,7 @@ namespace PS4_PKG_Linker
 
 
         }
+
         private void Menu_Open_settings(object sender, RoutedEventArgs e)
         {
             this.Focus();
@@ -1322,30 +1275,33 @@ namespace PS4_PKG_Linker
 
 
         }
+
         private void Menu_Open_tools(object sender, RoutedEventArgs e)
         {
             this.Focus();
             this.Activate();
             //MessageBox.Show("Open");
             this.WindowState = WindowState.Normal;
-           // this.tabItem3.IsSelected = true;
+            // this.tabItem3.IsSelected = true;
             //  MyNotifyIcon.Visible = false;
             this.ShowInTaskbar = true;
 
 
         }
+
         private void Menu_Open_help(object sender, RoutedEventArgs e)
         {
             this.Focus();
             this.Activate();
             //MessageBox.Show("Open");
             this.WindowState = WindowState.Normal;
-           // this.tabItem4.IsSelected = true;
+            // this.tabItem4.IsSelected = true;
             //   MyNotifyIcon.Visible = false;
             this.ShowInTaskbar = true;
 
 
         }
+
         private void Menu_Start_Stop(object sender, RoutedEventArgs e)
         {
 
@@ -1356,7 +1312,7 @@ namespace PS4_PKG_Linker
                 port = textBox2.Text;
                 ip = textBox3.Text;
                 textBox1.Text = ip;
-               
+
                 b1tb1.Text = "Stop Server";
                 //button1.Content = "Stop Server"; 
                 MyNotifyIcon.ShowBalloonTip(10000, "Server Started", "Server Started", System.Windows.Forms.ToolTipIcon.Info);
@@ -1373,21 +1329,230 @@ namespace PS4_PKG_Linker
             }
 
         }
-       
+
         private void Menu_Close(object sender, RoutedEventArgs e)
         {
 
             //MessageBox.Show("Close");
             App.Current.Shutdown();
         }
-        
+
         private void Exit_Tray_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
             changicon();
         }
-        
+
         #endregion<<menu>>
+
+        #region<<close>>
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+
+
+            ContextMenu menu = (ContextMenu)this.FindResource("NotifierContextMenu3");
+            //menu.Items.
+            menu.IsOpen = true;
+
+            //SaveSettings();
+        }
+
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            MyNotifyIcon.Visible = false;
+            check_processes();
+        }
+
+        #endregion<<>>
+
+
+        //Tabs
+        #region<<head>>
+
+        private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ps4_ip = textBox1.Text;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //if (button1.Content.ToString() == "Start Server")
+            if (b1tb1.Text == "Start Server")
+            {
+                port = textBox2.Text;
+                /*textBox3.Text = comboBox1.Text;
+                ip = textBox3.Text;
+
+                textBox1.Text = ip;
+                w_settings();
+                w_s_conf();*/
+
+                //b1tb1.Content = "Stop Server";
+                b1tb1.Text = "Stop Server";
+                ip = comboBox1.Text;
+                start_server();
+                // MyNotifyIcon.Visible = true;
+                //Server_Running.BadgeBackground = Brushes.Green;
+                //Server_Running.BadgeForeground = Brushes.Green;
+                // MyNotifyIcon.ShowBalloonTip(10000, "Server Started", "Server Started", System.Windows.Forms.ToolTipIcon.Info);
+                // MyNotifyIcon.Visible = false;
+            }
+            else
+            {
+                //button1.Content = "Start Server";
+                //b1tb1.Text = "Start Server";
+                b1tb1.Text = "Start Server";
+                stop_server();
+                //MyNotifyIcon.Visible = true;
+                // b1tb1.Text = "Start Server";
+                //dispatcherTimer2.Stop();
+                MyNotifyIcon.ShowBalloonTip(10000, "Server Stopped", "Server Stopped", System.Windows.Forms.ToolTipIcon.Info);
+                // MyNotifyIcon.Visible = false;
+                // Server_Running.BadgeBackground = Brushes.Red;
+                // Server_Running.BadgeForeground = Brushes.Red;
+            }
+        }
+
+        private void textBoxfile_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            WPFFolderBrowserDialog test = new WPFFolderBrowserDialog();
+            test.ShowDialog();
+
+            if (test.FileName != "")
+            {
+                folder = test.FileName;
+                textBoxfile.Text = folder;
+            }
+        }
+
+        #endregion<<>>
+
+        #region<<pkg list>>
+
+        private void lbtest_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            DataRowView item1 = this.lbtest.SelectedItem as DataRowView;
+
+            if (item1 != null)
+            {
+
+                Object[] items2 = item1.Row.ItemArray;
+
+                textBoxtid.Text = items2[7].ToString();
+                textBoxcid.Text = items2[1].ToString();
+                textBoxname.Text = items2[0].ToString();
+                textBoxfile_type.Text = items2[14].ToString();
+                textBoxlink_type.Text = items2[2].ToString();
+                button_list.Visibility = Visibility.Visible;
+
+            }
+        }
+
+        private void button_1_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void button_2_Click(object sender, RoutedEventArgs e)
+        {
+            string link_name = textBoxname.Text;
+            string file_type = textBoxfile_type.Text;
+            string link_type = textBoxlink_type.Text;
+            Send_File(link_name, link_type, file_type);
+        }
+
+        private void Check_game()
+        {
+
+        }
+
+        private void Send_File(string link_name, string link_type, string file_type)
+        {
+            if (link_type == "PKG")
+            {
+                //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
+
+            }
+            else if (link_type == "JSON")
+            {
+                //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
+
+            }
+            else if (link_type == "Split")
+            {
+                //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_0.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_1.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_2.pkg"]}'
+
+            }
+            else if (link_type == "Link")
+            {
+                bool endsInJSON = file_type.EndsWith(".json") || file_type.EndsWith(".JSON");
+                bool endsInPKG = file_type.EndsWith(".pkg") || file_type.EndsWith(".PKG");
+                if (endsInJSON == true)
+                {
+                    //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
+
+                }
+                else if (endsInPKG == true)
+                {
+                    //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
+
+                }
+            }
+        }
+
+        private void Uninstall_game()
+        {
+
+        }
+
+        private void Uninstall_patch()
+        {
+
+        }
+
+        private void Uninstall_theme()
+        {
+
+        }
+
+        private void Uninstall_ac()
+        {
+
+        }
+
+        #endregion<<>>
+
+        #region<<server settings>>
+
+        private void button6_Click(object sender, RoutedEventArgs e)
+        {
+            Window_server win2 = new Window_server("http://127.0.0.1:" + port + "/server-info", color, ctheme);
+            win2.Show();
+            //Process.Start(new ProcessStartInfo("http://127.0.0.1:" + port + "/server-info"));
+
+        }
+
+        private void button8_Click(object sender, RoutedEventArgs e)
+        {
+
+            Process.Start(new ProcessStartInfo("http://" + ip + ":" + port + "/server-status.lua"));
+
+        }
+
+        private void textBox2_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void textBox2_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        #endregion<<>>
 
         #region<<links>>
 
@@ -1540,13 +1705,13 @@ namespace PS4_PKG_Linker
         #endregion<<>>
 
         #region<<batch>>
-   
+
         private void batch_Click(object sender, RoutedEventArgs e)
         {
             //dataGrid
-            foreach(DataRow row in dtpkg2.Rows)
+            foreach (DataRow row in dtpkg2.Rows)
             {
-                if(row.ItemArray[15].ToString() == "true")
+                if (row.ItemArray[15].ToString() == "true")
                 {
                     string link_name = row.ItemArray[0].ToString();
                     string file_type = row.ItemArray[14].ToString();
@@ -1559,134 +1724,102 @@ namespace PS4_PKG_Linker
 
         #endregion<<>>
 
-        #region<<pkg list>>
+        #region<<style>>
 
-        private void lbtest_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void button7_Click(object sender, RoutedEventArgs e)
         {
-
-            DataRowView item1 = this.lbtest.SelectedItem as DataRowView;
-
-            if (item1 != null)
+            if (ctheme == "BaseDark")
             {
-                
-                Object[] items2 = item1.Row.ItemArray;
-               
-                textBoxtid.Text = items2[7].ToString();
-                textBoxcid.Text = items2[1].ToString();
-                textBoxname.Text = items2[0].ToString();
-                textBoxfile_type.Text = items2[14].ToString();
-                textBoxlink_type.Text = items2[2].ToString();
-                button_list.Visibility = Visibility.Visible;
-                
+                button7.Content = "Dark Theme";
+                ctheme = "BaseLight";
             }
-        }
-        
-        private void button_1_Click(object sender, RoutedEventArgs e)
-        {
-           
-        }
-
-        private void button_2_Click(object sender, RoutedEventArgs e)
-        {
-            string link_name = textBoxname.Text;
-            string file_type = textBoxfile_type.Text;
-            string link_type = textBoxlink_type.Text;
-            Send_File(link_name, link_type, file_type);
-        }
-
-        private void Check_game()
-        {
-
-        }
-
-        private void Send_File(string link_name, string link_type, string file_type)
-        {
-            if(link_type == "PKG")
+            else
             {
-                //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
-
+                button7.Content = "Light Theme";
+                ctheme = "BaseDark";
             }
-            else if (link_type == "JSON")
+            ChangeAppStyle();
+        }
+
+        private void ListBoxItem_Selected(object sender, RoutedEventArgs e)
+        {
+
+            color = ((ListBoxItem)listBox1.SelectedValue).Content.ToString();
+            ChangeAppStyle();
+        }
+
+        public void ChangeAppStyledark()
+        {
+            // get the theme from the window
+            // get the theme from the current application
+            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+
+            // now set the Green accent and dark theme
+            ThemeManager.ChangeAppStyle(System.Windows.Application.Current,
+                                        ThemeManager.GetAccent("Indigo"),
+                                        ThemeManager.GetAppTheme("BaseDark"));
+        }
+
+        public void ChangeAppStyle()
+        {
+
+            if (ctheme == "BaseDark")
             {
-                //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
 
+                color2.Background = System.Windows.Media.Brushes.White;
+                page_icon.Fill = System.Windows.Media.Brushes.White;
+                abouthead.Fill = System.Windows.Media.Brushes.White;
+                //button7.Content = "Light Theme";
+                //b7tb1.Text = "Light Theme";
+                //ctheme = "BaseLight";
             }
-            else if (link_type == "Split")
+            else
             {
-                //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_0.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_1.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_2.pkg"]}'
+                color2.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
+                page_icon.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
+                abouthead.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
 
+                //button7.Content = "Dark Theme";
+                // b7tb1.Text = "Dark Theme";
+                //ctheme = "BaseDark";
             }
-            else if (link_type == "Link")
+            if (ctheme == "")
             {
-                bool endsInJSON = file_type.EndsWith(".json") || file_type.EndsWith(".JSON");
-                bool endsInPKG = file_type.EndsWith(".pkg") || file_type.EndsWith(".PKG");
-                if(endsInJSON == true)
-                {
-                    //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
-
-                }
-                else if (endsInPKG == true)
-                {
-                    //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
-
-                }
+                ctheme = "BaseDark";
+                color2.Background = System.Windows.Media.Brushes.White;
+                page_icon.Fill = System.Windows.Media.Brushes.White;
+                //button7.Content = "Light Theme";
+                //b7tb1.Text = "Light Theme";
+                //ctheme = "BaseLight";
             }
+
+            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+
+            if (color == null || color == "")
+            {
+                color = "Crimson";
+            }
+            ThemeManager.ChangeAppStyle(System.Windows.Application.Current,
+                                        ThemeManager.GetAccent(color),
+
+                                        ThemeManager.GetAppTheme(ctheme));
+
+
+
         }
 
-        private void Uninstall_game()
+        public void ChangeAppStylelight()
         {
+            // get the theme from the window
+            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
 
+            // now set the Red accent and dark theme
+            ThemeManager.ChangeAppStyle(System.Windows.Application.Current,
+                                        ThemeManager.GetAccent("Steel"),
+                                        ThemeManager.GetAppTheme("BaseLight"));
         }
 
-        private void Uninstall_patch()
-        {
-
-        }
-
-        private void Uninstall_theme()
-        {
-
-        }
-
-        private void Uninstall_ac()
-        {
-
-        }
-
-        #endregion<<>>
-
-        #region<<server settings>>
-
-        private void button6_Click(object sender, RoutedEventArgs e)
-        {
-            Window_server win2 = new Window_server("http://127.0.0.1:" + port + "/server-info", color, ctheme);
-            win2.Show();
-            //Process.Start(new ProcessStartInfo("http://127.0.0.1:" + port + "/server-info"));
-
-        }
-
-        private void button8_Click(object sender, RoutedEventArgs e)
-        {
-
-            Process.Start(new ProcessStartInfo("http://" + ip + ":" + port + "/server-status.lua"));
-
-        }
-
-        private void textBox2_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void textBox2_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        #endregion<<>>
-
-        #region<<batch>>
-
-        #endregion<<>>
+        #endregion<<style>>
 
         #region<<about>>
 
@@ -1781,126 +1914,17 @@ namespace PS4_PKG_Linker
 
         }
 
-        #endregion<<>>
-  
-        #region<<close>>
-
-        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void sandungas_Click(object sender, RoutedEventArgs e)
         {
-            e.Cancel = true;
 
+            Process.Start(new ProcessStartInfo("http://www.psx-place.com/members/sandungas.872/"));
 
-            ContextMenu menu = (ContextMenu)this.FindResource("NotifierContextMenu3");
-            //menu.Items.
-            menu.IsOpen = true;
-
-            //SaveSettings();
         }
-     
-        private void MetroWindow_Closed(object sender, EventArgs e)
-        {
-            MyNotifyIcon.Visible = false;
-            check_processes();
-        }
+
 
         #endregion<<>>
 
 
-        private static string GetFileSize(string uriPath)
-        {
-            var webRequest = HttpWebRequest.Create(uriPath);
-            webRequest.Method = "HEAD";
 
-            using (var webResponse = webRequest.GetResponse())
-            {
-
-                var fileSize = webResponse.Headers.Get("Content-Length");
-                string sz = SizeSuffix(Convert.ToInt64(fileSize));
-                //var fileSizeInMegaByte = Math.Round(Convert.ToDouble(fileSize) / 1024.0 / 1024.0, 2);
-                return sz;
-            }
-        }
-
-        public static int GetAvailablePort(int startingPort)
-        {
-            IPEndPoint[] endPoints;
-            List<int> portArray = new List<int>();
-
-            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
-
-            //getting active connections
-            TcpConnectionInformation[] connections = properties.GetActiveTcpConnections();
-            portArray.AddRange(from n in connections
-                               where n.LocalEndPoint.Port >= startingPort
-                               select n.LocalEndPoint.Port);
-
-            //getting active tcp listners - WCF service listening in tcp
-            endPoints = properties.GetActiveTcpListeners();
-            portArray.AddRange(from n in endPoints
-                               where n.Port >= startingPort
-                               select n.Port);
-
-            //getting active udp listeners
-            endPoints = properties.GetActiveUdpListeners();
-            portArray.AddRange(from n in endPoints
-                               where n.Port >= startingPort
-                               select n.Port);
-
-            portArray.Sort();
-
-            for (int i = startingPort; i < UInt16.MaxValue; i++)
-                if (!portArray.Contains(i))
-                    return i;
-
-            return 0;
-        }
-
-        private void Load()
-        {
-            textBox1.Text = ps4_ip;
-            textBoxfile.Text = folder;
-        }
-
-        private void set_ip()
-        {
-            port1 = GetAvailablePort(80);
-            port = port1.ToString();
-            textBox2.Text = port;
-            g_ip();
-
-
-        }
-
-        private void g_ip()
-        {
-            string hostName = Dns.GetHostName();
-            ip = Dns.GetHostByName(hostName).AddressList[0].ToString();
-            //ip = Dns.GetHostEntry(hostName).AddressList[0].ToString();
-
-            // Get host name
-            String strHostName = Dns.GetHostName();
-
-            // Find host by name
-            IPHostEntry iphostentry = Dns.GetHostByName(strHostName);
-
-            
-            if (iphostentry.AddressList.Count() != 0)
-            {
-                //comboBox1.Text.
-            }
-            // Enumerate IP addresses
-            foreach (IPAddress ipaddress in iphostentry.AddressList)
-            {
-                comboBox1.Items.Add(ipaddress);
-
-            }
-            if (comboBox1.Items[0].ToString() != "999.999.999.999")
-            {
-                ip = comboBox1.Items[0].ToString();
-                comboBox1.Text = ip;
-            }
-
-        }
-        
     }
 }
