@@ -76,8 +76,7 @@ namespace PS4_PKG_Linker
             MyNotifyIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(notifier_MouseDown);
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 250);
-
-            //port1 = GetAvailablePort(80);
+            
         }
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
@@ -132,6 +131,7 @@ namespace PS4_PKG_Linker
             Add_pkg();
             Load_Links();
             Wjson();
+
             set_ip();
             Load();
             //this.child01.IsOpen = true;
@@ -362,6 +362,16 @@ namespace PS4_PKG_Linker
                     return i;
 
             return 0;
+        }
+
+        private void scan()
+        {
+           if(Directory.Exists(folder))
+            {
+                Add_pkg();
+                Load_Links();
+                Wjson();
+            }
         }
 
         private void Load()
@@ -1174,6 +1184,58 @@ namespace PS4_PKG_Linker
 
         }
 
+        private void Wjson()
+        {
+            DataSet dataSet = new DataSet("dataSet");
+            dataSet.Namespace = "NetFrameWork";
+            DataTable table = new DataTable("plinks");
+            //DataColumn idColumn = new DataColumn("id", typeof(int));
+            // idColumn.AutoIncrement = true;
+
+            DataColumn itemColumn1 = new DataColumn("content_id");
+            DataColumn itemColumn2 = new DataColumn("name");
+            DataColumn itemColumn3 = new DataColumn("link");
+            DataColumn itemColumn4 = new DataColumn("icon_link");
+            //table.Columns.Add(idColumn);
+            table.Columns.Add(itemColumn1);
+            table.Columns.Add(itemColumn2);
+            table.Columns.Add(itemColumn3);
+            table.Columns.Add(itemColumn4);
+            dataSet.Tables.Add(table);
+
+
+            foreach (DataRow row in dtlinks.Rows)
+            {
+                ///Console.WriteLine("--- Row ---");
+
+                DataRow newRow = table.NewRow();
+                newRow["content_id"] = row.ItemArray[0];
+                newRow["name"] = row.ItemArray[1];
+                newRow["link"] = row.ItemArray[2];
+                newRow["icon_link"] = row.ItemArray[3];
+                table.Rows.Add(newRow);
+
+            }
+
+            dataSet.AcceptChanges();
+
+            string json = JsonConvert.SerializeObject(dataSet, Formatting.None);
+
+            /*
+                        string json;
+                        json = JsonConvert.SerializeObject(dtlinks);
+                        dtpkg[0] = dtlinks;
+
+                        json = JsonConvert.SerializeObject(dtpkg, Formatting.Undented);
+                        JsonConvert.SerializeObject<LINKS>(json);
+                        */
+            using (StreamWriter writer = new StreamWriter("Links.txt"))
+            {
+                writer.Write(json);
+
+            }
+        }
+
         private static T _serialized_json_data<T>(string url) where T : new()
         {
 
@@ -1420,10 +1482,17 @@ namespace PS4_PKG_Linker
             WPFFolderBrowserDialog test = new WPFFolderBrowserDialog();
             test.ShowDialog();
 
-            if (test.FileName != "")
+            if (test.FileName != "" && Directory.Exists(test.FileName))
             {
+                if(Directory.Exists("PS4"))
+                {
+                    Directory.Delete("PS4");
+                }
+
                 folder = test.FileName;
                 textBoxfile.Text = folder;
+
+                make_shortcut(folder);
             }
         }
 
@@ -1453,7 +1522,7 @@ namespace PS4_PKG_Linker
 
         private void button_1_Click(object sender, RoutedEventArgs e)
         {
-
+          //  curl--data '{"title_id":"CUSA09311"}' 'http://<PS4 IP>:12800/api/is_exists'
         }
 
         private void button_2_Click(object sender, RoutedEventArgs e)
@@ -1466,6 +1535,7 @@ namespace PS4_PKG_Linker
 
         private void Check_game()
         {
+            //  curl--data '{"title_id":"CUSA09311"}' 'http://<PS4 IP>:12800/api/is_exists'
 
         }
 
@@ -1650,58 +1720,6 @@ namespace PS4_PKG_Linker
             }
         }
 
-        private void Wjson()
-        {
-            DataSet dataSet = new DataSet("dataSet");
-            dataSet.Namespace = "NetFrameWork";
-            DataTable table = new DataTable("plinks");
-            //DataColumn idColumn = new DataColumn("id", typeof(int));
-            // idColumn.AutoIncrement = true;
-
-            DataColumn itemColumn1 = new DataColumn("content_id");
-            DataColumn itemColumn2 = new DataColumn("name");
-            DataColumn itemColumn3 = new DataColumn("link");
-            DataColumn itemColumn4 = new DataColumn("icon_link");
-            //table.Columns.Add(idColumn);
-            table.Columns.Add(itemColumn1);
-            table.Columns.Add(itemColumn2);
-            table.Columns.Add(itemColumn3);
-            table.Columns.Add(itemColumn4);
-            dataSet.Tables.Add(table);
-
-
-            foreach (DataRow row in dtlinks.Rows)
-            {
-                ///Console.WriteLine("--- Row ---");
-
-                DataRow newRow = table.NewRow();
-                newRow["content_id"] = row.ItemArray[0];
-                newRow["name"] = row.ItemArray[1];
-                newRow["link"] = row.ItemArray[2];
-                newRow["icon_link"] = row.ItemArray[3];
-                table.Rows.Add(newRow);
-
-            }
-
-            dataSet.AcceptChanges();
-
-            string json = JsonConvert.SerializeObject(dataSet, Formatting.None);
-
-            /*
-                        string json;
-                        json = JsonConvert.SerializeObject(dtlinks);
-                        dtpkg[0] = dtlinks;
-
-                        json = JsonConvert.SerializeObject(dtpkg, Formatting.Undented);
-                        JsonConvert.SerializeObject<LINKS>(json);
-                        */
-            using (StreamWriter writer = new StreamWriter("Links.txt"))
-            {
-                writer.Write(json);
-
-            }
-        }
-
         #endregion<<>>
 
         #region<<batch>>
@@ -1769,15 +1787,22 @@ namespace PS4_PKG_Linker
                 color2.Background = System.Windows.Media.Brushes.White;
                 page_icon.Fill = System.Windows.Media.Brushes.White;
                 abouthead.Fill = System.Windows.Media.Brushes.White;
+
+                
+                //System.Windows.Media.ImageSource temp = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/tools/resources/default.png"));
+                this.Icon = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/Icon.ico"));
+
                 //button7.Content = "Light Theme";
                 //b7tb1.Text = "Light Theme";
                 //ctheme = "BaseLight";
             }
-            else
+            else if (ctheme == "BaseLight")
             {
                 color2.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
                 page_icon.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
                 abouthead.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
+
+                this.Icon = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/tools/resources/default.png"));
 
                 //button7.Content = "Dark Theme";
                 // b7tb1.Text = "Dark Theme";
@@ -1788,6 +1813,9 @@ namespace PS4_PKG_Linker
                 ctheme = "BaseDark";
                 color2.Background = System.Windows.Media.Brushes.White;
                 page_icon.Fill = System.Windows.Media.Brushes.White;
+
+                this.Icon = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/tools/resources/0.ico"));
+
                 //button7.Content = "Light Theme";
                 //b7tb1.Text = "Light Theme";
                 //ctheme = "BaseLight";
@@ -1924,7 +1952,22 @@ namespace PS4_PKG_Linker
 
         #endregion<<>>
 
+        private void make_shortcut(string file_name)
+        {
+            
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.CreateNoWindow = true;
+            startInfo.UseShellExecute = false;
+            startInfo.WorkingDirectory = appPath;
 
+            startInfo.RedirectStandardError = true;
+            startInfo.RedirectStandardInput = false;
+            startInfo.RedirectStandardOutput = true;
+            startInfo.FileName = "cmd.exe";
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.Arguments = "/c mklink /J PS4 " + file_name + "\\";
+            Process exeProcess = Process.Start(startInfo);
+        }
 
     }
 }
