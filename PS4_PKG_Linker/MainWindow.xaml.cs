@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
@@ -436,6 +437,7 @@ namespace PS4_PKG_Linker
                 string newl = new1[0].icon;
                 WebClient webClient = new WebClient();
                 webClient.DownloadFile(newl, "tools/icons/" + id + ".png");
+                
             }
             else
             {
@@ -1516,13 +1518,25 @@ namespace PS4_PKG_Linker
                 textBoxfile_type.Text = items2[14].ToString();
                 textBoxlink_type.Text = items2[2].ToString();
                 button_list.Visibility = Visibility.Visible;
-
+                Check_game();
+                if(items2[8].ToString() != "")
+                {
+                    textBoxtask.Text = items2[8].ToString();
+                    UgTask.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    textBoxtask.Text = "";
+                    UgTask.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
         private void button_1_Click(object sender, RoutedEventArgs e)
         {
-          //  curl--data '{"title_id":"CUSA09311"}' 'http://<PS4 IP>:12800/api/is_exists'
+            //  curl--data '{"title_id":"CUSA09311"}' 'http://<PS4 IP>:12800/api/is_exists'
+            //string out1 = RPI.Send(ip, port, "is_exists", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
+            Check_game();
         }
 
         private void button_2_Click(object sender, RoutedEventArgs e)
@@ -1536,6 +1550,44 @@ namespace PS4_PKG_Linker
         private void Check_game()
         {
             //  curl--data '{"title_id":"CUSA09311"}' 'http://<PS4 IP>:12800/api/is_exists'
+            string out1 = RPI.Send(ip, port, "is_exists", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
+
+
+            try
+            {
+                var json = _serialized_json_data<Read_Exists>(out1);
+                string status = json.status;
+                string error = json.error;
+                if (json.error == "true")
+                {
+                    try
+                    {
+                        button_1.Content = null;
+                        button_1.Content = textBoxtid.Text + "is on the PS4";
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        button_1.Content = null;
+                        button_1.Content = textBoxtid.Text + "is not on the PS4";
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                /*added a try catch for this enitire method as well as something is causing it to fall over on some of the pkg's i tested */
+            }
+
 
         }
 
@@ -1545,16 +1597,19 @@ namespace PS4_PKG_Linker
             {
                 //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
 
+                RPI.Send(ip, port, "install", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
             }
             else if (link_type == "JSON")
             {
                 //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
 
+                RPI.Send(ip, port, "install", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
             }
             else if (link_type == "Split")
             {
                 //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_0.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_1.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_2.pkg"]}'
 
+                RPI.Send(ip, port, "install", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
             }
             else if (link_type == "Link")
             {
@@ -1564,11 +1619,13 @@ namespace PS4_PKG_Linker
                 {
                     //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
 
+                    RPI.Send(ip, port, "install", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
                 }
                 else if (endsInPKG == true)
                 {
                     //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
 
+                    RPI.Send(ip, port, "install", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
                 }
             }
         }
@@ -1576,21 +1633,25 @@ namespace PS4_PKG_Linker
         private void Uninstall_game()
         {
 
+            string out1 = RPI.Send(ip, port, "uninstall_game", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
         }
 
         private void Uninstall_patch()
         {
 
+            string out1 = RPI.Send(ip, port, "uninstall_patch", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
         }
 
         private void Uninstall_theme()
         {
 
+            string out1 = RPI.Send(ip, port, "uninstall_theme", "{\"content_id\":\"" + textBoxcid.Text + "\"}");
         }
 
         private void Uninstall_ac()
         {
 
+            string out1 = RPI.Send(ip, port, "uninstall_ac", "{\"content_id\":\"" + textBoxcid.Text + "\"}");
         }
 
         #endregion<<>>

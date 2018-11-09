@@ -1,0 +1,3856 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>libcurl.NET</name>
+    </assembly>
+    <members>
+        <member name="T:SeasideResearch.LibCurlNet.Curl">
+            <summary>
+            Top-level class for initialization and cleanup.
+            </summary>
+            <remarks>
+            It also implements static methods for capabilities that don't
+            logically belong in a class.
+            </remarks>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Curl.GlobalInit(System.Int32)">
+            <summary>
+            Process-wide initialization -- call only once per process.
+            </summary>
+            <param name="flags">An or'd combination of
+            <see cref="T:SeasideResearch.LibCurlNet.CURLinitFlag"/> members.</param>
+            <returns>A <see cref="T:SeasideResearch.LibCurlNet.CURLcode"/>, hopefully
+            <c>CURLcode.CURLE_OK</c>.</returns>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Curl.GlobalCleanup">
+            <summary>
+            Process-wide cleanup -- call just before exiting process.
+            </summary>
+            <remarks>
+            While it's not necessary that your program call this method
+            before exiting, doing so will prevent leaks of native cURL resources.
+            </remarks>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Curl.Escape(System.String,System.Int32)">
+            <summary>
+            URL encode a String.
+            </summary>
+            <param name="url">The string to URL encode.</param>
+            <param name="length">Input string length;
+            use 0 for cURL to determine.</param>
+            <returns>A new URL encoded string.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if cURL isn't properly initialized.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Curl.Unescape(System.String,System.Int32)">
+            <summary>
+            URL decode a String.
+            </summary>
+            <param name="url">The string to URL decode.</param>
+            <param name="length">Input string length;
+            use 0 for cURL to determine.</param>
+            <returns>A new URL decoded string.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if cURL isn't properly initialized.</exception>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.Curl.Version">
+            <summary>
+            Get the underlying cURL version as a string, example "7.12.2".
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if cURL isn't properly initialized.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Curl.GetVersionInfo(SeasideResearch.LibCurlNet.CURLversion)">
+            <summary>
+            Get a <see cref="T:SeasideResearch.LibCurlNet.VersionInfoData"/> object.
+            </summary>
+            <param name="ver">Specify a <see cref="T:SeasideResearch.LibCurlNet.CURLversion"/>, such as
+            <c>CURLversion.CURLVERSION_NOW</c>.</param>
+            <returns>A <see cref="T:SeasideResearch.LibCurlNet.VersionInfoData"/> object.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if cURL isn't properly initialized.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Curl.EnsureCurl">
+            <summary>
+            Called by other classes to ensure valid cURL state.
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Curl.#cctor">
+            <summary>
+            Class constructor - initialize global status.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Easy">
+            <summary>
+            Implements the <c>curl_easy_xxx</c> API.
+            </summary>
+            <remarks>
+            This is the most important class in <c>libcurl.NET</c>. It wraps a
+            <c>CURL*</c> handle and provides delegates through which callbacks
+            (such as <c>CURLOPT_WRITEFUNCTION</c> and <c>CURLOPT_READFUNCTION</c>)
+            are implemented.
+            </remarks>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Easy.WriteFunction">
+            <summary>
+            Called when cURL has data for the client.
+            </summary>
+            <remarks>
+            For usage, see the example <c>EasyGet.cs</c>.
+            Arguments passed to the delegate implementation include:
+            <list type="table">
+            <listheader>
+                <term>Argument</term>
+                <description>Description</description>
+            </listheader>
+            <item>
+                <term>buf</term>
+                <description>Data cURL is providing to the client.</description>
+            </item>
+            <item>
+                <term>size</term>
+                <description>Size of a character, usually 1.</description>
+            </item>
+            <item>
+                <term>nmemb</term>
+                <description>Number of characters.</description>
+            </item>
+            <item>
+                <term>extraData</term>
+                <description>Client-provided extra data.</description>
+            </item>
+            </list>
+            
+            Your implementation should return the number of bytes (not
+            characters) processed. Return 0 to abort the transfer.
+            </remarks>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Easy.ReadFunction">
+            <summary>
+            Called when cURL wants to read data from the client.
+            </summary>
+            <remarks>
+            For usage, see the sample <c>Upload.cs</c>.
+            Arguments passed to the recipient include:
+            <list type="table">
+            <listheader>
+                <term>Argument</term>
+                <description>Description</description>
+            </listheader>
+            <item>
+                <term>buf</term>
+                <description>Buffer into which your client should write data
+                for cURL.</description>
+            </item>
+            <item>
+                <term>size</term>
+                <description>Size of a character, usually 1.</description>
+            </item>
+            <item>
+                <term>nmemb</term>
+                <description>Number of characters.</description>
+            </item>
+            <item>
+                <term>extraData</term>
+                <description>Client-provided extra data.</description>
+            </item>
+            </list>
+            
+            Your implementation should return the number of bytes (not
+            characters) written to <c>buf</c>. Return 0 to abort the transfer.
+            </remarks>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Easy.ProgressFunction">
+            <summary>
+            Called when cURL wants to report progress.
+            </summary>
+            <remarks>
+            For usage, see the sample <c>Upload.cs</c>.
+            Arguments passed to the recipient include:
+            <list type="table">
+            <listheader>
+                <term>Argument</term>
+                <description>Description</description>
+            </listheader>
+            <item>
+                <term>extraData</term>
+                <description>Client-provided extra data.</description>
+            </item>
+            <item>
+                <term>dlTotal</term>
+                <description>Number of bytes to download.</description>
+            </item>
+            <item>
+                <term>dlNow</term>
+                <description>Number of bytes downloaded so far.</description>
+            </item>
+            <item>
+                <term>ulTotal</term>
+                <description>Number of bytes to upload.</description>
+            </item>
+            <item>
+                <term>ulNow</term>
+                <description>Number of bytes uploaded so far.</description>
+            </item>
+            </list>
+            
+            Your implementation should return 0 to continue, or a non-zero
+            value to abort the transfer.
+            </remarks>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Easy.DebugFunction">
+            <summary>
+            Called when cURL has debug information for the client.
+            </summary>
+            <remarks>
+            For usage, see the sample <c>Upload.cs</c>.
+            Arguments passed to the recipient include:
+            <list type="table">
+            <listheader>
+                <term>Argument</term>
+                <description>Description</description>
+            </listheader>
+            <item>
+                <term>infoType</term>
+                <description>Type of debug information, see
+                <see cref="T:SeasideResearch.LibCurlNet.CURLINFOTYPE"/>.</description>
+            </item>
+            <item>
+                <term>message</term>
+                <description>Debug information as a string.</description>
+            </item>
+            <item>
+                <term>extraData</term>
+                <description>Client-provided extra data.</description>
+            </item>
+            </list>
+            </remarks>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Easy.HeaderFunction">
+            <summary>
+            Called when cURL has header data for the client.
+            </summary>
+            <remarks>
+            For usage, see the sample <c>Headers.cs</c>.
+            Arguments passed to the recipient include:
+            <list type="table">
+            <listheader>
+                <term>Argument</term>
+                <description>Description</description>
+            </listheader>
+            <item>
+                <term>buf</term>
+                <description>Header data from cURL to the client.</description>
+            </item>
+            <item>
+                <term>size</term>
+                <description>Size of a character, in bytes.</description>
+            </item>
+            <item>
+                <term>nmemb</term>
+                <description>Number of characters.</description>
+            </item>
+            <item>
+                <term>extraData</term>
+                <description>Client-provided extra data.</description>
+            </item>
+            </list>
+            
+            Your implementation should return the number of bytes (not
+            characters) processed. Usually this is <c>size * nmemb</c>.
+            Return -1 to abort the transfer.
+            </remarks>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Easy.SSLContextFunction">
+            <summary>
+            Called when cURL wants to report an SSL event.
+            </summary>
+            <remarks>
+            For usage, see the sample <c>SSLGet.cs</c>.
+            Arguments passed to the recipient include:
+            <list type="table">
+            <listheader>
+                <term>Argument</term>
+                <description>Description</description>
+            </listheader>
+            <item>
+                <term>ctx</term>
+                <description>
+                An <see cref="T:SeasideResearch.LibCurlNet.SSLContext"/> object that wraps an
+                OpenSSL <c>SSL_CTX</c> pointer.
+                </description>
+            </item>
+            <item>
+                <term>extraData</term>
+                <description>Client-provided extra data.</description>
+            </item>
+            </list>
+            
+            Your implementation should return a <see cref="T:SeasideResearch.LibCurlNet.CURLcode"/>,
+            which should be <see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_OK"/> if everything
+            is okay.
+            </remarks>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Easy.IoctlFunction">
+            <summary>
+            Called when cURL needs for the client to perform an
+            IOCTL operation. An example might be when an FTP
+            upload requires rewinding of the input file to deal
+            with a resend occasioned by an error.
+            </summary>
+            <remarks>
+            <list type="table">
+            <listheader>
+                <term>Argument</term>
+                <description>Description</description>
+            </listheader>
+            <item>
+                <term>cmd</term>
+                <description>
+                A <see cref="T:SeasideResearch.LibCurlNet.CURLIOCMD"/>; for now, only
+                <c>CURLIOCMD_RESTARTREAD</c> should be passed.
+                </description>
+            </item>
+            <item>
+                <term>extraData</term>
+                <description>Client-provided extra data; in the
+                case of an FTP upload, it might be a
+                <c>FileStream</c> object.</description>
+            </item>
+            </list>
+            
+            Your implementation should return a <see cref="T:SeasideResearch.LibCurlNet.CURLIOERR"/>,
+            which should be <see cref="F:SeasideResearch.LibCurlNet.CURLIOERR.CURLIOE_OK"/> if everything
+            is okay.
+            </remarks>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.#ctor">
+            <summary>
+            Constructor
+            </summary>
+            <exception cref="T:System.InvalidOperationException">This is thrown
+            if <see cref="T:SeasideResearch.LibCurlNet.Curl"/> hasn't bee properly initialized.</exception>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>CURL*</c> handle wasn't created successfully.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.Finalize">
+            <summary>
+            Destructor
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.Dispose">
+            <summary>
+            Cleanup unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.Reset">
+            <summary>
+            Reset the internal cURL handle.
+            </summary>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>CURL*</c> handle wasn't created successfully.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)">
+            <summary>
+            Set options for this object. See the <c>EasyGet</c> sample for
+            basic usage.
+            </summary>
+            <param name="option">This should be a valid <see cref="T:SeasideResearch.LibCurlNet.CURLoption"/>.</param>
+            <param name="parameter">This should be a parameter of a varying
+            type based on the value of the <c>option</c> parameter.</param>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>CURL*</c> handle wasn't created successfully.</exception>
+            <returns>A <see cref="T:SeasideResearch.LibCurlNet.CURLcode"/>, typically obtained from
+            <c>cURL</c> internally, but sometimes a
+            <see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_BAD_FUNCTION_ARGUMENT"/>
+            will be returned if the type of value of <c>parameter</c> is invalid.
+            </returns>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.Perform">
+            <summary>
+            Perform a transfer.
+            </summary>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>CURL*</c> handle wasn't created successfully.</exception>
+            <returns>The <see cref="T:SeasideResearch.LibCurlNet.CURLcode"/> obtained from the internal
+            call to <c>curl_easy_perform()</c>.
+            </returns>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.DupHandle">
+            <summary>
+            Clone an Easy object.
+            </summary>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>CURL*</c> handle wasn't created successfully.</exception>
+            <returns>A cloned <c>Easy</c> object.</returns>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.StrError(SeasideResearch.LibCurlNet.CURLcode)">
+            <summary>
+            Get a string description of an error code.
+            </summary>
+            <param name="code">Error code.</param>
+            <returns>String description of the error code.</returns>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.GetInfo(SeasideResearch.LibCurlNet.CURLINFO,System.Object@)">
+            <summary>
+            Extract information from a cURL handle.
+            </summary>
+            <param name="info">One of the values in the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLINFO"/> enumeration.</param>
+            <param name="objInfo">Reference to an object into which the
+            value specified by <c>info</c> is written.</param>
+            <returns>The <see cref="T:SeasideResearch.LibCurlNet.CURLcode"/> obtained from the internal
+            call to <c>curl_easy_getinfo()</c>.
+            </returns>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>CURL*</c> handle wasn't created successfully.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.GetInfo(SeasideResearch.LibCurlNet.CURLINFO,SeasideResearch.LibCurlNet.Slist@)">
+            <summary>
+            Extract <c>Slist</c> information from an <c>Easy</c> object.
+            </summary>
+            <param name="info">One of the values in the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLINFO"/> enumeration. In this case, it must
+            specifically be one of the members that obtains an <c>Slist</c>.
+            </param>
+            <param name="slist">Reference to an <c>Slist</c> value.</param>
+            <returns>The <see cref="T:SeasideResearch.LibCurlNet.CURLcode"/> obtained from the internal
+            call to <c>curl_easy_getinfo()</c>.
+            </returns>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>CURL*</c> handle wasn't created successfully.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.GetInfo(SeasideResearch.LibCurlNet.CURLINFO,System.String@)">
+            <summary>
+            Extract <c>string</c> information from an <c>Easy</c> object.
+            </summary>
+            <param name="info">One of the values in the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLINFO"/> enumeration. In this case, it must
+            specifically be one of the members that obtains a <c>string</c>.
+            </param>
+            <param name="strVal">Reference to an <c>string</c> value.</param>
+            <returns>The <see cref="T:SeasideResearch.LibCurlNet.CURLcode"/> obtained from the internal
+            call to <c>curl_easy_getinfo()</c>.
+            </returns>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>CURL*</c> handle wasn't created successfully.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.GetInfo(SeasideResearch.LibCurlNet.CURLINFO,System.Double@)">
+            <summary>
+            Extract <c>int</c> information from an <c>Easy</c> object.
+            </summary>
+            <param name="info">One of the values in the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLINFO"/> enumeration. In this case, it must
+            specifically be one of the members that obtains a <c>double</c>.
+            </param>
+            <param name="dblVal">Reference to an <c>double</c> value.</param>
+            <returns>The <see cref="T:SeasideResearch.LibCurlNet.CURLcode"/> obtained from the internal
+            call to <c>curl_easy_getinfo()</c>.
+            </returns>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>CURL*</c> handle wasn't created successfully.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.GetInfo(SeasideResearch.LibCurlNet.CURLINFO,System.Int32@)">
+            <summary>
+            Extract <c>int</c> information from an <c>Easy</c> object.
+            </summary>
+            <param name="info">One of the values in the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLINFO"/> enumeration. In this case, it must
+            specifically be one of the members that obtains an <c>int</c>.
+            </param>
+            <param name="intVal">Reference to an <c>int</c> value.</param>
+            <returns>The <see cref="T:SeasideResearch.LibCurlNet.CURLcode"/> obtained from the internal
+            call to <c>curl_easy_getinfo()</c>.
+            </returns>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>CURL*</c> handle wasn't created successfully.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Easy.GetInfo(SeasideResearch.LibCurlNet.CURLINFO,System.DateTime@)">
+            <summary>
+            Extract <c>DateTime</c> information from an <c>Easy</c> object.
+            </summary>
+            <param name="info">One of the values in the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLINFO"/> enumeration. In this case, it must
+            specifically be <see cref="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_FILETIME"/>.
+            </param>
+            <param name="dt">Reference to a <c>DateTime</c> value.</param>
+            <returns>The <see cref="T:SeasideResearch.LibCurlNet.CURLcode"/> obtained from the internal
+            call to <c>curl_easy_getinfo()</c>.
+            </returns>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>CURL*</c> handle wasn't created successfully.</exception>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLIOERR">
+            <summary>
+            Your handler for the <see cref="T:SeasideResearch.LibCurlNet.Easy.IoctlFunction"/> delegate
+            should return a member of this enumeration.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLIOERR.CURLIOE_OK">
+            <summary>
+            Indicate that the callback processed everything okay.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLIOERR.CURLIOE_UNKNOWNCMD">
+            <summary>
+            Unknown command sent to callback. Right now, only
+            <code>CURLIOCMD_RESTARTREAD</code> is supported.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLIOERR.CURLIOE_FAILRESTART">
+            <summary>
+            Indicate to libcurl that a restart failed.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLIOERR.CURLIOE_LAST">
+            <summary>
+            End of enumeration marker, don't use in a client application.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLIOCMD">
+            <summary>
+            Your handler for the <see cref="T:SeasideResearch.LibCurlNet.Easy.IoctlFunction"/>
+            delegate is passed one of these values as its first parameter.
+            Right now, the only supported value is
+            <code>CURLIOCMD_RESTARTREAD</code>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLIOCMD.CURLIOCMD_NOP">
+            <summary>
+            No IOCTL operation; we should never see this.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLIOCMD.CURLIOCMD_RESTARTREAD">
+            <summary>
+            When this is sent, your callback may need to, for example,
+            rewind a local file that is being sent via FTP.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLIOCMD.CURLIOCMD_LAST">
+            <summary>
+            End of enumeration marker, don't use in a client application.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLINFOTYPE">
+            <summary>
+            A member of this enumeration is passed as the first parameter to the
+            <see cref="T:SeasideResearch.LibCurlNet.Easy.DebugFunction"/> delegate to which libcurl passes
+            debug messages.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFOTYPE.CURLINFO_TEXT">
+            <summary>
+            The data is informational text.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFOTYPE.CURLINFO_HEADER_IN">
+            <summary>
+            The data is header (or header-like) data received from the peer.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFOTYPE.CURLINFO_HEADER_OUT">
+            <summary>
+            The data is header (or header-like) data sent to the peer.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFOTYPE.CURLINFO_DATA_IN">
+            <summary>
+            The data is protocol data received from the peer.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFOTYPE.CURLINFO_DATA_OUT">
+            <summary>
+            The data is protocol data sent to the peer.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFOTYPE.CURLINFO_SSL_DATA_IN">
+            <summary>
+            The data is SSL-related data sent to the peer.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFOTYPE.CURLINFO_SSL_DATA_OUT">
+            <summary>
+            The data is SSL-related data received from the peer.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFOTYPE.CURLINFO_END">
+            <summary>
+            End of enumeration marker, don't use in a client application.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLcode">
+            <summary>
+            Status code returned from <see cref="T:SeasideResearch.LibCurlNet.Easy"/> functions.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_OK">
+            <summary>
+            All fine. Proceed as usual.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_ABORTED_BY_CALLBACK">
+            <summary>
+            Aborted by callback. An internal callback returned "abort"
+            to libcurl. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_BAD_CALLING_ORDER">
+            <summary>
+            Internal error. A function was called in a bad order.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_BAD_CONTENT_ENCODING">
+            <summary>
+            Unrecognized transfer encoding.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_BAD_DOWNLOAD_RESUME">
+            <summary>
+            Attempting FTP resume beyond file size.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_BAD_FUNCTION_ARGUMENT">
+            <summary>
+            Internal error. A function was called with a bad parameter.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_BAD_PASSWORD_ENTERED">
+            <summary>
+            Bad password entered. An error was signaled when the password was
+            entered. This can also be the result of a "bad password" returned
+            from a specified password callback. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_COULDNT_CONNECT">
+            <summary>
+            Failed to connect to host or proxy. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_COULDNT_RESOLVE_HOST">
+            <summary>
+            Couldn't resolve host. The given remote host was not resolved. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_COULDNT_RESOLVE_PROXY">
+            <summary>
+            Couldn't resolve proxy. The given proxy host could not be resolved.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FAILED_INIT">
+            <summary>
+            Very early initialization code failed. This is likely to be an
+            internal error or problem. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FILESIZE_EXCEEDED">
+            <summary>
+            Maximum file size exceeded.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FILE_COULDNT_READ_FILE">
+            <summary>
+            A file given with FILE:// couldn't be opened. Most likely
+            because the file path doesn't identify an existing file. Did
+            you check file permissions? 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_ACCESS_DENIED">
+            <summary>
+            We were denied access when trying to login to an FTP server or
+            when trying to change working directory to the one given in the URL. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_CANT_GET_HOST">
+            <summary>
+            An internal failure to lookup the host used for the new
+            connection.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_CANT_RECONNECT">
+            <summary>
+            A bad return code on either PASV or EPSV was sent by the FTP
+            server, preventing libcurl from being able to continue. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_COULDNT_GET_SIZE">
+            <summary>
+            The FTP SIZE command returned error. SIZE is not a kosher FTP
+            command, it is an extension and not all servers support it. This
+            is not a surprising error. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_COULDNT_RETR_FILE">
+            <summary>
+            This was either a weird reply to a 'RETR' command or a zero byte
+            transfer complete. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_COULDNT_SET_ASCII">
+            <summary>
+            libcurl failed to set ASCII transfer type (TYPE A).
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_COULDNT_SET_BINARY">
+            <summary>
+            Received an error when trying to set the transfer mode to binary.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_COULDNT_STOR_FILE">
+            <summary>
+            FTP couldn't STOR file. The server denied the STOR operation.
+            The error buffer usually contains the server's explanation to this. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_COULDNT_USE_REST">
+            <summary>
+            The FTP REST command returned error. This should never happen
+            if the server is sane. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_PORT_FAILED">
+            <summary>
+            The FTP PORT command returned error. This mostly happen when
+            you haven't specified a good enough address for libcurl to use.
+            See <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTPPORT"/>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_QUOTE_ERROR">
+            <summary>
+            When sending custom "QUOTE" commands to the remote server, one
+            of the commands returned an error code that was 400 or higher. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_SSL_FAILED">
+            <summary>
+            Requested FTP SSL level failed.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_USER_PASSWORD_INCORRECT">
+            <summary>
+            The FTP server rejected access to the server after the password
+            was sent to it. It might be because the username and/or the
+            password were incorrect or just that the server is not allowing
+            you access for the moment etc. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_WEIRD_227_FORMAT">
+            <summary>
+            FTP servers return a 227-line as a response to a PASV command.
+            If libcurl fails to parse that line, this return code is
+            passed back. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_WEIRD_PASS_REPLY">
+            <summary>
+            After having sent the FTP password to the server, libcurl expects
+            a proper reply. This error code indicates that an unexpected code
+            was returned. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_WEIRD_PASV_REPLY">
+            <summary>
+            libcurl failed to get a sensible result back from the server as
+            a response to either a PASV or a EPSV command. The server is flawed. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_WEIRD_SERVER_REPLY">
+            <summary>
+            After connecting to an FTP server, libcurl expects to get a
+            certain reply back. This error code implies that it got a strange
+            or bad reply. The given remote server is probably not an
+            OK FTP server. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_WEIRD_USER_REPLY">
+            <summary>
+            After having sent user name to the FTP server, libcurl expects a
+            proper reply. This error code indicates that an unexpected code
+            was returned. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_WRITE_ERROR">
+            <summary>
+            After a completed file transfer, the FTP server did not respond a
+            proper "transfer successful" code. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FUNCTION_NOT_FOUND">
+            <summary>
+            Function not found. A required LDAP function was not found.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_GOT_NOTHING">
+            <summary>
+            Nothing was returned from the server, and under the circumstances,
+            getting nothing is considered an error.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_HTTP_POST_ERROR">
+            <summary>
+            This is an odd error that mainly occurs due to internal confusion.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_HTTP_RANGE_ERROR">
+            <summary>
+            The HTTP server does not support or accept range requests.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_HTTP_RETURNED_ERROR">
+            <summary>
+            This is returned if <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FAILONERROR"/>
+            is set TRUE and the HTTP server returns an error code that
+            is >= 400. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_INTERFACE_FAILED">
+            <summary>
+            Interface error. A specified outgoing interface could not be
+            used. Set which interface to use for outgoing connections'
+            source IP address with <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_INTERFACE"/>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_LAST">
+            <summary>
+            End-of-enumeration marker; do not use in client applications.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_LDAP_CANNOT_BIND">
+            <summary>
+            LDAP cannot bind. LDAP bind operation failed.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_LDAP_INVALID_URL">
+            <summary>
+            Invalid LDAP URL.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_LDAP_SEARCH_FAILED">
+            <summary>
+            LDAP search failed.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_LIBRARY_NOT_FOUND">
+            <summary>
+            Library not found. The LDAP library was not found.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_MALFORMAT_USER">
+            <summary>
+            Malformat user. User name badly specified. *Not currently used*
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_OBSOLETE">
+            <summary>
+            This is not an error. This used to be another error code in an
+            old libcurl version and is currently unused. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_OPERATION_TIMEOUTED">
+            <summary>
+            Operation timeout. The specified time-out period was reached
+            according to the conditions. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_OUT_OF_MEMORY">
+            <summary>
+            Out of memory. A memory allocation request failed. This is serious
+            badness and things are severely messed up if this ever occurs. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_PARTIAL_FILE">
+            <summary>
+            A file transfer was shorter or larger than expected. This
+            happens when the server first reports an expected transfer size,
+            and then delivers data that doesn't match the previously
+            given size. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_READ_ERROR">
+            <summary>
+            There was a problem reading a local file or an error returned by
+            the read callback. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_RECV_ERROR">
+            <summary>
+            Failure with receiving network data.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SEND_ERROR">
+            <summary>
+            Failed sending network data.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURL_SEND_FAIL_REWIND">
+            <summary>
+            Sending the data requires a rewind that failed.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SHARE_IN_USE">
+            <summary>
+            Share is in use.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SSL_CACERT">
+            <summary>
+            Problem with the CA cert (path? access rights?) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SSL_CERTPROBLEM">
+            <summary>
+            There's a problem with the local client certificate. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SSL_CIPHER">
+            <summary>
+            Couldn't use specified cipher. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SSL_CONNECT_ERROR">
+            <summary>
+            A problem occurred somewhere in the SSL/TLS handshake. You really
+            want to use the <see cref="T:SeasideResearch.LibCurlNet.Easy.DebugFunction"/> delegate and read
+            the message there as it pinpoints the problem slightly more. It
+            could be certificates (file formats, paths, permissions),
+            passwords, and others. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SSL_ENGINE_INITFAILED">
+            <summary>
+            Failed to initialize SSL engine.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SSL_ENGINE_NOTFOUND">
+            <summary>
+            The specified crypto engine wasn't found. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SSL_ENGINE_SETFAILED">
+            <summary>
+            Failed setting the selected SSL crypto engine as default!
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SSL_PEER_CERTIFICATE">
+            <summary>
+            The remote server's SSL certificate was deemed not OK.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_TELNET_OPTION_SYNTAX">
+            <summary>
+            A telnet option string was improperly formatted.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_TOO_MANY_REDIRECTS">
+            <summary>
+            Too many redirects. When following redirects, libcurl hit the
+            maximum amount. Set your limit with
+            <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_MAXREDIRS"/>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_UNKNOWN_TELNET_OPTION">
+            <summary>
+            An option set with <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_TELNETOPTIONS"/>
+            was not recognized/known. Refer to the appropriate documentation. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_UNSUPPORTED_PROTOCOL">
+            <summary>
+            The URL you passed to libcurl used a protocol that this libcurl
+            does not support. The support might be a compile-time option that
+            wasn't used, it can be a misspelled protocol string or just a
+            protocol libcurl has no code for. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_URL_MALFORMAT">
+            <summary>
+            The URL was not properly formatted. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_URL_MALFORMAT_USER">
+            <summary>
+            URL user malformatted. The user-part of the URL syntax was not
+            correct. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_WRITE_ERROR">
+            <summary>
+            An error occurred when writing received data to a local file,
+            or an error was returned to libcurl from a write callback. 
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLproxyType">
+            <summary>
+            This enumeration contains values used to specify the proxy type when
+            using the <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PROXY"/> option when calling
+            <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLproxyType.CURLPROXY_HTTP">
+            <summary>
+            Ordinary HTTP proxy.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLproxyType.CURLPROXY_SOCKS4">
+            <summary>
+            Use if the proxy supports SOCKS4 user authentication. If you're
+            unfamiliar with this, consult your network administrator.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLproxyType.CURLPROXY_SOCKS5">
+            <summary>
+            Use if the proxy supports SOCKS5 user authentication. If you're
+            unfamiliar with this, consult your network administrator.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLhttpAuth">
+            <summary>
+            This enumeration contains values used to specify the HTTP authentication
+            when using the <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HTTPAUTH"/> option when
+            calling <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLhttpAuth.CURLAUTH_NONE">
+            <summary>
+            No authentication.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLhttpAuth.CURLAUTH_BASIC">
+            <summary>
+            HTTP Basic authentication. This is the default choice, and the
+            only method that is in wide-spread use and supported virtually
+            everywhere. This is sending the user name and password over the
+            network in plain text, easily captured by others.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLhttpAuth.CURLAUTH_DIGEST">
+            <summary>
+            HTTP Digest authentication. Digest authentication is defined
+            in RFC2617 and is a more secure way to do authentication over
+            public networks than the regular old-fashioned Basic method.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLhttpAuth.CURLAUTH_GSSNEGOTIATE">
+            <summary>
+            HTTP GSS-Negotiate authentication. The GSS-Negotiate (also known
+            as plain "Negotiate") method was designed by Microsoft and is
+            used in their web applications. It is primarily meant as a
+            support for Kerberos5 authentication but may be also used along
+            with another authentication methods. For more information see IETF
+            draft draft-brezak-spnego-http-04.txt.
+            <note>
+            You need to use a version of libcurl.NET built with a suitable
+            GSS-API library for this to work. This is not currently standard.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLhttpAuth.CURLAUTH_NTLM">
+            <summary>
+            HTTP NTLM authentication. A proprietary protocol invented and
+            used by Microsoft. It uses a challenge-response and hash concept
+            similar to Digest, to prevent the password from being eavesdropped.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLhttpAuth.CURLAUTH_ANY">
+            <summary>
+            This is a convenience macro that sets all bits and thus makes
+            libcurl pick any it finds suitable. libcurl will automatically
+            select the one it finds most secure.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLhttpAuth.CURLAUTH_ANYSAFE">
+            <summary>
+            This is a convenience macro that sets all bits except Basic
+            and thus makes libcurl pick any it finds suitable. libcurl
+            will automatically select the one it finds most secure.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLftpSSL">
+            <summary>
+            This enumeration contains values used to specify the FTP SSL level
+            using the <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTP_SSL"/> option when calling
+            <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLftpSSL.CURLFTPSSL_NONE">
+            <summary>
+            Don't attempt to use SSL.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLftpSSL.CURLFTPSSL_TRY">
+            <summary>
+            Try using SSL, proceed as normal otherwise.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLftpSSL.CURLFTPSSL_CONTROL">
+            <summary>
+            Require SSL for the control connection or fail with
+            <see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_SSL_FAILED"/>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLftpSSL.CURLFTPSSL_ALL">
+            <summary>
+            Require SSL for all communication or fail with
+            <see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FTP_SSL_FAILED"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLftpSSL.CURLFTPSSL_LAST">
+            <summary>
+            End-of-enumeration marker. Do not use in a client application.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLftpAuth">
+            <summary>
+            This enumeration contains values used to specify the FTP SSL
+            authorization level using the
+            <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTPSSLAUTH"/> option when calling
+            <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLftpAuth.CURLFTPAUTH_DEFAULT">
+            <summary>
+            Let <c>libcurl</c> decide on the authorization scheme.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLftpAuth.CURLFTPAUTH_SSL">
+            <summary>
+            Use "AUTH SSL".
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLftpAuth.CURLFTPAUTH_TLS">
+            <summary>
+            Use "AUTH TLS".
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLftpAuth.CURLFTPAUTH_LAST">
+            <summary>
+            End-of-enumeration marker. Do not use in a client application.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLoption">
+            <summary>
+            One of these is passed as the first parameter to
+            <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>. The <c>Description</c> column of
+            the table describes the value that should be passed as the second parameter.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_AUTOREFERER">
+            <summary>
+            Pass a <c>true</c> parameter to enable this. When enabled, libcurl
+            will automatically set the Referer: field in requests where it follows
+            a Location: redirect. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_BUFFERSIZE">
+            <summary>
+            Pass an <c>int</c> specifying your preferred size for the receive buffer
+            in libcurl. The main point of this would be that the write callback gets
+            called more often and with smaller chunks. This is just treated as a
+            request, not an order. You cannot be guaranteed to actually get the
+            requested size. (Added in 7.10) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_CAINFO">
+            <summary>
+            Pass a <c>string</c> naming a file holding one or more certificates
+            to verify the peer with. This only makes sense when used in combination
+            with the <c>CURLOPT_SSL_VERIFYPEER</c> option.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_CAPATH">
+            <summary>
+            Pass a <c>string</c> naming a directory holding multiple CA certificates
+            to verify the peer with. The certificate directory must be prepared
+            using the openssl c_rehash utility. This only makes sense when used in
+            combination with the <c>CURLOPT_SSL_VERIFYPEER</c> option. The
+            <c>CURLOPT_CAPATH</c> function apparently does not work in Windows due
+            to some limitation in openssl. (Added in 7.9.8) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_CLOSEPOLICY">
+            <summary>
+            Pass an <c>int</c>. This option sets what policy libcurl should use when
+            the connection cache is filled and one of the open connections has to be
+            closed to make room for a new connection. This must be one of the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLclosePolicy"/> members. Use
+            <see cref="F:SeasideResearch.LibCurlNet.CURLclosePolicy.CURLCLOSEPOLICY_LEAST_RECENTLY_USED"/> to make
+            libcurl close the connection that was least recently used, that connection
+            is also least likely to be capable of re-use. Use
+            <see cref="F:SeasideResearch.LibCurlNet.CURLclosePolicy.CURLCLOSEPOLICY_OLDEST"/> to make libcurl close
+            the oldest connection, the one that was created first among the ones in
+            the connection cache. The other close policies are not supported yet.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_CONNECTTIMEOUT">
+            <summary>
+            Time-out connect operations after this amount of seconds, if connects
+            are OK within this time, then fine... This only aborts the connect
+            phase. [Only works on unix-style/SIGALRM operating systems]
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_COOKIE">
+            <summary>
+            Pass a <c>string</c> as parameter. It will be used to set a cookie
+            in the http request. The format of the string should be NAME=CONTENTS,
+            where NAME is the cookie name and CONTENTS is what the cookie should contain. 
+            <para>
+            If you need to set multiple cookies, you need to set them all using a
+            single option and thus you need to concatenate them all in one single
+            string. Set multiple cookies in one string like this:
+            "name1=content1; name2=content2;" etc. 
+            </para>
+            <para>
+            Using this option multiple times will only make the latest string override
+            the previously ones.
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_COOKIEFILE">
+            <summary>
+            Pass a <c>string</c> as parameter. It should contain the name of your
+            file holding cookie data to read. The cookie data may be in Netscape /
+            Mozilla cookie data format or just regular HTTP-style headers dumped
+            to a file.
+            <para>
+            Given an empty or non-existing file, this option will enable cookies
+            for this Easy object, making it understand and parse received cookies
+            and then use matching cookies in future request. 
+            </para> 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_COOKIEJAR">
+            <summary>
+            Pass a file name as <c>string</c>. This will make libcurl write all
+            internally known cookies to the specified file when
+            <see cref="M:SeasideResearch.LibCurlNet.Easy.Dispose"/> is called. If no cookies are known, no file
+            will be created. Using this option also enables cookies for this
+            session, so if you for example follow a location it will make matching
+            cookies get sent accordingly.
+            <note>
+            If the cookie jar file can't be created or written to
+            (when <see cref="M:SeasideResearch.LibCurlNet.Easy.Dispose"/> is called), libcurl will not and
+            cannot report an error for this. Using <c>CURLOPT_VERBOSE</c> or
+            <c>CURLOPT_DEBUGFUNCTION</c> will get a warning to display, but that
+            is the only visible feedback you get about this possibly lethal situation.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_COOKIESESSION">
+            <summary>
+            Pass a <c>bool</c> set to <c>true</c> to mark this as a new cookie
+            "session". It will force libcurl to ignore all cookies it is about to
+            load that are "session cookies" from the previous session. By default,
+            libcurl always stores and loads all cookies, independent of whether they are
+            session cookies. Session cookies are cookies without expiry date and they
+            are meant to be alive and existing for this "session" only.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_CRLF">
+            <summary>
+            Convert Unix newlines to CRLF newlines on transfers.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_CUSTOMREQUEST">
+            <summary>
+            Pass a <c>string</c> as parameter. It will be used instead of GET or
+            HEAD when doing an HTTP request, or instead of LIST or NLST when
+            doing an ftp directory listing. This is useful for doing DELETE or
+            other more or less obscure HTTP requests. Don't do this at will,
+            make sure your server supports the command first. 
+            <para>
+            Restore to the internal default by setting this to <c>null</c>.
+            </para>
+            <note>
+            Many people have wrongly used this option to replace the entire
+            request with their own, including multiple headers and POST contents.
+            While that might work in many cases, it will cause libcurl to send
+            invalid requests and it could possibly confuse the remote server badly.
+            Use <c>CURLOPT_POST</c> and <c>CURLOPT_POSTFIELDS</c> to set POST data.
+            Use <c>CURLOPT_HTTPHEADER</c> to replace or extend the set of headers
+            sent by libcurl. Use <c>CURLOPT_HTTP_VERSION</c> to change HTTP version.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_DEBUGDATA">
+            <summary>
+            Pass an <c>object</c> referene to whatever you want passed to your
+            <see cref="T:SeasideResearch.LibCurlNet.Easy.DebugFunction"/> delegate's <c>extraData</c> argument.
+            This reference is not used internally by libcurl, it is only passed to
+            the delegate. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_DEBUGFUNCTION">
+            <summary>
+            Pass a reference to an <see cref="T:SeasideResearch.LibCurlNet.Easy.DebugFunction"/> delegate.
+            <c>CURLOPT_VERBOSE</c> must be in effect. This delegate receives debug
+            information, as specified with the <see cref="T:SeasideResearch.LibCurlNet.CURLINFOTYPE"/> argument.
+            This function must return 0. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_DNS_CACHE_TIMEOUT">
+            <summary>
+            Pass an <c>int</c>, specifying the timeout in seconds. Name resolves
+            will be kept in memory for this number of seconds. Set to zero (0)
+            to completely disable caching, or set to -1 to make the cached
+            entries remain forever. By default, libcurl caches this info for 60
+            seconds.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_DNS_USE_GLOBAL_CACHE">
+            <summary>
+            Not supported.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_EDGSOCKET">
+            <summary>
+            Pass a <c>string</c> containing the path name to the Entropy Gathering
+            Daemon socket. It will be used to seed the random engine for SSL.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_ENCODING">
+            <summary>
+            Sets the contents of the Accept-Encoding: header sent in an HTTP request,
+            and enables decoding of a response when a Content-Encoding: header is
+            received. Three encodings are supported: <c>identity</c>, which does
+            nothing, <c>deflate</c> which requests the server to compress its
+            response using the zlib algorithm, and <c>gzip</c> which requests the
+            gzip algorithm. If a zero-length string is set, then an Accept-Encoding:
+            header containing all supported encodings is sent.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_ERRORBUFFER">
+            <summary>
+            Not supported.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FAILONERROR">
+            <summary>
+            A <c>true</c> parameter tells the library to fail silently if the
+            HTTP code returned is equal to or larger than 300. The default
+            action would be to return the page normally, ignoring that code. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FILETIME">
+            <summary>
+            Pass a <c>bool</c>. If it is <c>true</c>, libcurl will attempt to get
+            the modification date of the remote document in this operation. This
+            requires that the remote server sends the time or replies to a time
+            querying command. The <see cref="M:SeasideResearch.LibCurlNet.Easy.GetInfo(SeasideResearch.LibCurlNet.CURLINFO,System.DateTime@)"/> function with the
+            <see cref="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_FILETIME"/> argument can be used after a
+            transfer to extract the received time (if any).
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FOLLOWLOCATION">
+            <summary>
+            A <c>true</c> parameter tells the library to follow any Location:
+            header that the server sends as part of an HTTP header.
+            <note>
+            this means that the library will re-send the same request on the
+            new location and follow new Location: headers all the way until no
+            more such headers are returned. <c>CURLOPT_MAXREDIRS</c> can be used
+            to limit the number of redirects libcurl will follow.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FORBID_REUSE">
+            <summary>
+            Pass a <c>bool</c>. Set to <c>true</c> to make the next transfer
+            explicitly close the connection when done. Normally, libcurl keeps all
+            connections alive when done with one transfer in case there comes a
+            succeeding one that can re-use them. This option should be used with
+            caution and only if you understand what it does. Set to <c>false</c>
+            to have libcurl keep the connection open for possibly later re-use
+            (default behavior). 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FRESH_CONNECT">
+            <summary>
+            Pass a <c>bool</c>. Set to <c>true</c> to make the next transfer use a
+            new (fresh) connection by force. If the connection cache is full before
+            this connection, one of the existing connections will be closed as
+            according to the selected or default policy. This option should be used
+            with caution and only if you understand what it does. Set this to
+            <c>false</c> to have libcurl attempt re-using an existing connection
+            (default behavior). 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTPACCOUNT">
+            <summary>
+            String that will be passed to the FTP server when it requests
+            account info.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTPAPPEND">
+            <summary>
+            A <c>true</c> parameter tells the library to append to the remote
+            file instead of overwrite it. This is only useful when uploading
+            to an ftp site. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTPLISTONLY">
+            <summary>
+            A <c>true</c> parameter tells the library to just list the names of
+            an ftp directory, instead of doing a full directory listing that
+            would include file sizes, dates etc. 
+            <para>
+            This causes an FTP NLST command to be sent. Beware that some FTP
+            servers list only files in their response to NLST; they might not
+            include subdirectories and symbolic links.
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTPPORT">
+            <summary>
+            Pass a <c>string</c> as parameter. It will be used to get the IP
+            address to use for the ftp PORT instruction. The PORT instruction
+            tells the remote server to connect to our specified IP address.
+            The string may be a plain IP address, a host name, an network
+            interface name (under Unix) or just a '-' letter to let the library
+            use your systems default IP address. Default FTP operations are
+            passive, and thus won't use PORT. 
+            <para>
+            You disable PORT again and go back to using the passive version
+            by setting this option to NULL.
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTPSSLAUTH">
+            <summary>
+            When FTP over SSL/TLS is selected (with <c>CURLOPT_FTP_SSL</c>),
+            this option can be used to change libcurl's default action which
+            is to first try "AUTH SSL" and then "AUTH TLS" in this order,
+            and proceed when a OK response has been received.
+            <para>
+            Pass a member of the <see cref="T:SeasideResearch.LibCurlNet.CURLftpAuth"/> enumeration.
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTP_CREATE_MISSING_DIRS">
+            <summary>
+            Pass a <c>bool</c>. If the value is <c>true</c>, cURL will attempt to
+            create any remote directory that it fails to CWD into. CWD is the
+            command that changes working directory. (Added in 7.10.7) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTP_RESPONSE_TIMEOUT">
+            <summary>
+            Pass an <c>int</c>. Causes libcurl to set a timeout period (in seconds)
+            on the amount of time that the server is allowed to take in order to
+            generate a response message for a command before the session is
+            considered hung. Note that while libcurl is waiting for a response, this
+            value overrides <c>CURLOPT_TIMEOUT</c>. It is recommended that if used in
+            conjunction with <c>CURLOPT_TIMEOUT</c>, you set
+            <c>CURLOPT_FTP_RESPONSE_TIMEOUT</c> to a value smaller than
+            <c>CURLOPT_TIMEOUT</c>. (Added in 7.10.8) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTP_SSL">
+            <summary>
+            Pass a member of the <see cref="T:SeasideResearch.LibCurlNet.CURLftpSSL"/> enumeration.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTP_USE_EPRT">
+            <summary>
+            Pass a <c>bool</c>. If the value is <c>true</c>, it tells curl to use
+            the EPRT (and LPRT) command when doing active FTP downloads (which is
+            enabled by CURLOPT_FTPPORT). Using EPRT means that it will first attempt
+            to use EPRT and then LPRT before using PORT, but if you pass <c>false</c>
+            to this option, it will not try using EPRT or LPRT, only plain PORT.
+            (Added in 7.10.5) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FTP_USE_EPSV">
+            <summary>
+            Pass a <c>bool</c>. If the value is <c>true</c>, it tells curl to use
+            the EPSV command when doing passive FTP downloads (which it always does
+            by default). Using EPSV means that it will first attempt to use EPSV
+            before using PASV, but if you pass <c>false</c> to this option, it will
+            not try using EPSV, only plain PASV.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HEADER">
+            <summary>
+            A <c>true</c> parameter tells the library to include the header in
+            the body output. This is only relevant for protocols that actually
+            have headers preceding the data (like HTTP).
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HEADERDATA">
+            <summary>
+            Object reference to pass to the <see cref="T:SeasideResearch.LibCurlNet.Easy.HeaderFunction"/>
+            delegate. Note that if you specify the <c>CURLOPT_HEADERFUNCTION</c>,
+            this is the reference you'll get as the <c>extraData</c> parameter.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HEADERFUNCTION">
+            <summary>
+            Provide an <see cref="T:SeasideResearch.LibCurlNet.Easy.HeaderFunction"/> delegate reference.
+            This delegate gets called by libcurl as soon as there is received
+            header data that needs to be written down. The headers are guaranteed
+            to be written one-by-one and only complete lines are written. Parsing
+            headers should be easy enough using this. The size of the data contained
+            in <c>buf</c> is <c>size</c> multiplied with <c>nmemb</c>.
+            Return the number of bytes actually written or return -1 to signal
+            error to the library (it will cause it to abort the transfer with a
+            <see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_WRITE_ERROR"/> return code). 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HTTP200ALIASES">
+            <summary>
+            Pass an <see cref="T:SeasideResearch.LibCurlNet.Slist"/> of aliases to be treated as valid HTTP
+            200 responses. Some servers respond with a custom header response line.
+            For example, IceCast servers respond with "ICY 200 OK". By including
+            this string in your list of aliases, the response will be treated as a
+            valid HTTP header line such as "HTTP/1.0 200 OK". (Added in 7.10.3) 
+            <note>
+            The alias itself is not parsed for any version strings. So if your alias
+            is "MYHTTP/9.9", libcurl will not treat the server as responding with
+            HTTP version 9.9. Instead libcurl will use the value set by option
+            <c>CURLOPT_HTTP_VERSION</c>. 
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HTTPAUTH">
+            <summary>
+            Pass an <c>int</c> as parameter, which is set to a bitmask 
+            of <see cref="T:SeasideResearch.LibCurlNet.CURLhttpAuth"/>, to tell libcurl what authentication
+            method(s) you want it to use. If more than one bit is set, libcurl will
+            first query the site to see what authentication methods it supports and
+            then pick the best one you allow it to use. Note that for some methods,
+            this will induce an extra network round-trip. Set the actual name and
+            password with the <c>CURLOPT_USERPWD</c> option. (Added in 7.10.6) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HTTPGET">
+            <summary>
+            Pass a <c>bool</c>. If it's <c>true</c>, this forces the HTTP request
+            to get back to GET. Usable if a POST, HEAD, PUT or a custom request
+            has been used previously using the same <see cref="T:SeasideResearch.LibCurlNet.Easy"/> object.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HTTPHEADER">
+            <summary>
+            Pass an <see cref="T:SeasideResearch.LibCurlNet.Slist"/> reference containing HTTP headers to pass to
+            the server in your HTTP request. If you add a header that is otherwise
+            generated and used by libcurl internally, your added one will be used
+            instead. If you add a header with no contents as in 'Accept:' (no data
+            on the right side of the colon), the internally used header will get
+            disabled. Thus, using this option you can add new headers, replace
+            internal headers and remove internal headers. The headers included in the
+            <c>Slist</c> must not be CRLF-terminated, because curl adds CRLF after
+            each header item. Failure to comply with this will result in strange bugs
+            because the server will most likely ignore part of the headers you specified. 
+            <para>
+            The first line in a request (usually containing a GET or POST) is not
+            a header and cannot be replaced using this option. Only the lines
+            following the request-line are headers. 
+            </para>
+            <para>
+            Pass a <c>null</c> to this to reset back to no custom headers.
+            </para>
+            <note>
+            The most commonly replaced headers have "shortcuts" in the options
+            <c>CURLOPT_COOKIE</c>, <c>CURLOPT_USERAGENT</c> and <c>CURLOPT_REFERER</c>.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HTTPPOST">
+            <summary>
+            Tells libcurl you want a multipart/formdata HTTP POST to be made and you
+            instruct what data to pass on to the server. Pass a reference to a 
+            <see cref="T:SeasideResearch.LibCurlNet.MultiPartForm"/> object as parameter.
+            The best and most elegant way to do this, is to use 
+            <see cref="M:SeasideResearch.LibCurlNet.MultiPartForm.AddSection(System.Object[])"/> as documented.
+            <para>
+            Using POST with HTTP 1.1 implies the use of a "Expect: 100-continue"
+            header. You can disable this header with <c>CURLOPT_HTTPHEADER</c> as usual.
+            </para> 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HTTPPROXYTUNNEL">
+            <summary>
+            Set the parameter to <c>true</c> to get the library to tunnel all
+            operations through a given HTTP proxy. Note that there is a big
+            difference between using a proxy and tunneling through it. If you
+            don't know what this means, you probably don't want this tunneling option. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HTTP_VERSION">
+            <summary>
+            Pass a member of the <see cref="T:SeasideResearch.LibCurlNet.CURLhttpVersion"/> enumeration. These
+            values force libcurl to use the specific HTTP versions. This is not
+            sensible to do unless you have a good reason. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_IOCTLFUNCTION">
+            <summary>
+            Provide an <see cref="T:SeasideResearch.LibCurlNet.Easy.IoctlFunction"/> delegate reference.
+            This delegate gets called by libcurl when an IOCTL operation,
+            such as a rewind of a file being sent via FTP, is required on
+            the client side.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_IOCTLDATA">
+            <summary>
+            Provide an object, such as a <c>FileStream</c>, upon which
+            you may need to perform an IOCTL operation. Right now, only
+            rewind is supported.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_INFILESIZE">
+            <summary>
+            When uploading a file to a remote site, this option should be used to
+            tell libcurl what the expected size of the infile is. This value should
+            be passed as an <c>int</c>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_INFILESIZE_LARGE">
+            <summary>
+            When uploading a file to a remote site, this option should be used to
+            tell libcurl what the expected size of the infile is. This value should
+            be passed as a <c>long</c>. (Added in 7.11.0) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_INTERFACE">
+            <summary>
+            Pass a <c>string</c> as parameter. This sets the interface name to use
+            as the outgoing network interface. The name can be an interface name,
+            an IP address or a host name.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_IPRESOLVE">
+            <summary>
+            Pass one of the members of the <see cref="T:SeasideResearch.LibCurlNet.CURLipResolve"/> enumeration.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_KRB4LEVEL">
+            <summary>
+            Pass a <c>string</c> as parameter. Set the kerberos4 security level;
+            this also enables kerberos4 awareness. This is a string, 'clear', 'safe',
+            'confidential' or 'private'. If the string is set but doesn't match
+            one of these, 'private' will be used. Set the string to <c>null</c>
+            to disable kerberos4. The kerberos support only works for FTP.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_LASTENTRY">
+            <summary>
+            Last numeric entry in the enumeration. Don't use this in your
+            application code.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_LOW_SPEED_LIMIT">
+            <summary>
+            Pass an <c>int</c> as parameter. It contains the transfer speed in bytes
+            per second that the transfer should be below during
+            <c>CURLOPT_LOW_SPEED_TIME</c> seconds for the library to consider it
+            too slow and abort.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_LOW_SPEED_TIME">
+            <summary>
+            Pass an <c>int</c> as parameter. It contains the time in seconds that
+            the transfer should be below the <c>CURLOPT_LOW_SPEED_LIMIT</c> for the
+            library to consider it too slow and abort.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_MAXCONNECTS">
+            <summary>
+            Pass an <c>int</c>. The set number will be the persistent connection
+            cache size. The set amount will be the maximum amount of simultaneously
+            open connections that libcurl may cache. Default is 5, and there isn't
+            much point in changing this value unless you are perfectly aware of how
+            this works and changes libcurl's behaviour. This concerns connections
+            using any of the protocols that support persistent connections. 
+            <para>
+            When reaching the maximum limit, cURL uses the <c>CURLOPT_CLOSEPOLICY</c>
+            to figure out which of the existing connections to close to prevent the
+            number of open connections to increase. 
+            </para>
+            <note>
+            if you already have performed transfers with this Easy object, setting a
+            smaller <c>CURLOPT_MAXCONNECTS</c> than before may cause open connections
+            to get closed unnecessarily.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_MAXFILESIZE">
+            <summary>
+            Pass an <c>int</c> as parameter. This allows you to specify the maximum
+            size (in bytes) of a file to download. If the file requested is larger
+            than this value, the transfer will not start and
+            <see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FILESIZE_EXCEEDED"/> will be returned.
+            <note>
+            The file size is not always known prior to download, and for such files
+            this option has no effect even if the file transfer ends up being larger
+            than this given limit. This concerns both FTP and HTTP transfers. 
+            </note> 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_MAXFILESIZE_LARGE">
+            <summary>
+            Pass a <c>long</c> as parameter. This allows you to specify the
+            maximum size (in bytes) of a file to download. If the file requested
+            is larger than this value, the transfer will not start and
+            <see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_FILESIZE_EXCEEDED"/> will be returned.
+            (Added in 7.11.0) 
+            <note>
+            The file size is not always known prior to download, and for such files
+            this option has no effect even if the file transfer ends up being larger
+            than this given limit. This concerns both FTP and HTTP transfers. 
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_MAXREDIRS">
+            <summary>
+            Pass an <c>int</c>. The set number will be the redirection limit. If
+            that many redirections have been followed, the next redirect will cause
+            an error (<c>CURLE_TOO_MANY_REDIRECTS</c>). This option only makes sense
+            if the <c>CURLOPT_FOLLOWLOCATION</c> is used at the same time.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_NETRC">
+            <summary>
+            This parameter controls the preference of libcurl between using
+            user names and passwords from your <c>~/.netrc</c> file, relative to
+            user names and passwords in the URL supplied with <c>CURLOPT_URL</c>. 
+            <note>
+            libcurl uses a user name (and supplied or prompted password)
+            supplied with <c>CURLOPT_USERPWD</c> in preference to any of the
+            options controlled by this parameter.
+            </note>
+            <para>
+            Pass a member of the <see cref="T:SeasideResearch.LibCurlNet.CURLnetrcOption"/> enumeration.
+            </para>
+            <para>
+            Only machine name, user name and password are taken into account
+            (init macros and similar things aren't supported).
+            </para>
+            <note>
+            libcurl does not verify that the file has the correct properties
+            set (as the standard Unix ftp client does). It should only be
+            readable by user.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_NETRC_FILE">
+            <summary>
+            Pass a <c>string</c> as parameter, containing the full path name to the
+            file you want libcurl to use as .netrc file. If this option is omitted,
+            and <c>CURLOPT_NETRC</c> is set, libcurl will attempt to find the a
+            .netrc file in the current user's home directory. (Added in 7.10.9) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_NOBODY">
+            <summary>
+            A <c>true</c> parameter tells the library to not include the
+            body-part in the output. This is only relevant for protocols that
+            have separate header and body parts. On HTTP(S) servers, this
+            will make libcurl do a HEAD request. 
+            <para>
+            To change back to GET, you should use <c>CURLOPT_HTTPGET</c>. To
+            change back to POST, you should use <c>CURLOPT_POST</c>. Setting
+            <c>CURLOPT_NOBODY</c> to <c>false</c> has no effect.
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_NOPROGRESS">
+            <summary>
+            A <c>true</c> parameter tells the library to shut off progress
+            reporting.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_NOSIGNAL">
+            <summary>
+            Pass a <c>bool</c>. If it is <c>true</c>, libcurl will not use any
+            functions that install signal handlers or any functions that cause
+            signals to be sent to the process. This option is mainly here to allow
+            multi-threaded unix applications to still set/use all timeout options
+            etc, without risking getting signals. (Added in 7.10)
+            <para>
+            Consider using libcurl with ares built-in to enable asynchronous DNS
+            lookups. It enables nice timeouts for name resolves without signals.
+            </para> 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PASV_HOST">
+            <summary>
+            Not supported.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PORT">
+            <summary>
+            Pass an <c>int</c> specifying what remote port number to connect to,
+            instead of the one specified in the URL or the default port for the
+            used protocol. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_POST">
+            <summary>
+            A <c>true</c> parameter tells the library to do a regular HTTP post.
+            This will also make the library use the a "Content-Type:
+            application/x-www-form-urlencoded" header. (This is by far the most
+            commonly used POST method).
+            <para>
+            Use the <c>CURLOPT_POSTFIELDS</c> option to specify what data to post
+            and <c>CURLOPT_POSTFIELDSIZE</c> to set the data size. Optionally,
+            you can provide data to POST using the <c>CURLOPT_READFUNCTION</c> and
+            <c>CURLOPT_READDATA</c> options.
+            </para>
+            <para>
+            You can override the default POST Content-Type: header by setting
+            your own with <c>CURLOPT_HTTPHEADER</c>. 
+            </para>
+            <para>
+            Using POST with HTTP 1.1 implies the use of a "Expect: 100-continue"
+            header. You can disable this header with <c>CURLOPT_HTTPHEADER</c> as usual.
+            </para> 
+            <para>
+            If you use POST to a HTTP 1.1 server, you can send data without knowing
+            the size before starting the POST if you use chunked encoding. You
+            enable this by adding a header like "Transfer-Encoding: chunked" with
+            <c>CURLOPT_HTTPHEADER</c>. With HTTP 1.0 or without chunked transfer,
+            you must specify the size in the request. 
+            </para>
+            <note>
+            if you have issued a POST request and want to make a HEAD or GET instead,
+            you must explictly pick the new request type using <c>CURLOPT_NOBODY</c>
+            or <c>CURLOPT_HTTPGET</c> or similar. 
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_POSTFIELDS">
+            <summary>
+            Pass a <c>string</c> as parameter, which should be the full data to post
+            in an HTTP POST operation. You must make sure that the data is formatted
+            the way you want the server to receive it. libcurl will not convert or
+            encode it for you. Most web servers will assume this data to be
+            url-encoded. Take note. 
+            <para>
+            This POST is a normal application/x-www-form-urlencoded kind (and
+            libcurl will set that Content-Type by default when this option is used),
+            which is the most commonly used one by HTML forms. See also the
+            <c>CURLOPT_POST</c>. Using <c>CURLOPT_POSTFIELDS</c> implies
+            <c>CURLOPT_POST</c>. 
+            </para>
+            <para>
+            Using POST with HTTP 1.1 implies the use of a "Expect: 100-continue"
+            header. You can disable this header with <c>CURLOPT_HTTPHEADER</c> as usual. 
+            </para>
+            <note>
+            to make multipart/formdata posts (aka rfc1867-posts), check out the
+            <c>CURLOPT_HTTPPOST</c> option.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_POSTFIELDSIZE">
+            <summary>
+            If you want to post data to the server without letting libcurl do a
+            <c>strlen()</c> to measure the data size, this option must be used. When
+            this option is used you can post fully binary data, which otherwise
+            is likely to fail. If this size is set to zero, the library will use
+            <c>strlen()</c> to get the size.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_POSTFIELDSIZE_LARGE">
+            <summary>
+            Pass a <c>long</c> as parameter. Use this to set the size of the
+            <c>CURLOPT_POSTFIELDS</c> data to prevent libcurl from doing
+            <c>strlen()</c> on the data to figure out the size. This is the large
+            file version of the <c>CURLOPT_POSTFIELDSIZE</c> option. (Added in 7.11.1) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_POSTQUOTE">
+            <summary>
+            Pass an <see cref="T:SeasideResearch.LibCurlNet.Slist"/> of FTP commands to pass to the server after
+            your ftp transfer request. Disable this operation again by setting this
+            option to <c>null</c>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PREQUOTE">
+            <summary>
+            Pass an <see cref="T:SeasideResearch.LibCurlNet.Slist"/> containing the FTP commands to pass to
+            the server after the transfer type is set. Disable this operation
+            again by setting a <c>null</c> to this option.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PRIVATE">
+            <summary>
+            Pass an <c>object</c> as parameter, referencing data that should be
+            associated with this <see cref="T:SeasideResearch.LibCurlNet.Easy"/> object. The object can
+            subsequently be retrieved using <see cref="M:SeasideResearch.LibCurlNet.Easy.GetInfo(SeasideResearch.LibCurlNet.CURLINFO,System.Object@)"/> 
+            with the <see cref="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_PRIVATE"/> option. libcurl itself
+            does nothing with this data. (Added in 7.10.3) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PROGRESSDATA">
+            <summary>
+            Pass an <c>object</c> reference that will be untouched by libcurl
+            and passed as the first argument in the progress delegate set with
+            <c>CURLOPT_PROGRESSFUNCTION</c>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PROGRESSFUNCTION">
+            <summary>
+            Pass an <see cref="T:SeasideResearch.LibCurlNet.Easy.ProgressFunction"/> delegate reference. This
+            delegate gets called by libcurl at a frequent interval during data
+            transfer. Unknown/unused argument values will be set to zero (like if
+            you only download data, the upload size will remain 0). Returning a
+            non-zero value from this delegate will cause libcurl to abort the
+            transfer and return <see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_ABORTED_BY_CALLBACK"/>.
+            <note>
+            <c>CURLOPT_NOPROGRESS</c> must be set to <c>false</c> to make this
+            function actually get called. 
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PROXY">
+            <summary>
+            Set HTTP proxy to use. The parameter should be a <c>string</c> holding
+            the host name or dotted IP address. To specify port number in this
+            string, append <c>:[port]</c> to the end of the host name. The proxy
+            string may be prefixed with <c>[protocol]://</c> since any such prefix
+            will be ignored. The proxy's port number may optionally be specified
+            with the separate option <c>CURLOPT_PROXYPORT</c>. 
+            <para>
+            NOTE: when you tell the library to use an HTTP proxy, libcurl will
+            transparently convert operations to HTTP even if you specify an FTP
+            URL etc. This may have an impact on what other features of the library
+            you can use, such as <c>CURLOPT_QUOTE</c> and similar FTP specifics
+            that don't work unless you tunnel through the HTTP proxy. Such tunneling
+            is activated with <c>CURLOPT_HTTPPROXYTUNNEL</c>. 
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PROXYAUTH">
+            <summary>
+            Pass a bitmask of <see cref="T:SeasideResearch.LibCurlNet.CURLhttpAuth"/> as the paramter, to tell
+            libcurl what authentication method(s) you want it to use for your proxy
+            authentication. If more than one bit is set, libcurl will first query the
+            site to see what authentication methods it supports and then pick the best
+            one you allow it to use. Note that for some methods, this will induce an
+            extra network round-trip. Set the actual name and password with the
+            <c>CURLOPT_PROXYUSERPWD</c> option. The bitmask can be constructed by
+            or'ing together the <see cref="T:SeasideResearch.LibCurlNet.CURLhttpAuth"/> bits. As of this writing,
+            only <see cref="F:SeasideResearch.LibCurlNet.CURLhttpAuth.CURLAUTH_BASIC"/> and
+            <see cref="F:SeasideResearch.LibCurlNet.CURLhttpAuth.CURLAUTH_NTLM"/> work. (Added in 7.10.7) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PROXYPORT">
+            <summary>
+            Pass an <c>int</c> with this option to set the proxy port to connect
+            to unless it is specified in the proxy string <c>CURLOPT_PROXY</c>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PROXYTYPE">
+            <summary>
+            Pass a <see cref="T:SeasideResearch.LibCurlNet.CURLproxyType"/> to set type of the proxy.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PROXYUSERPWD">
+            <summary>
+            Pass a <c>string</c> as parameter, which should be
+            <c>[user name]:[password]</c> to use for the connection to the
+            HTTP proxy. Use <c>CURLOPT_PROXYAUTH</c> to decide authentication method. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PUT">
+            <summary>
+            A <c>true</c> parameter tells the library to use HTTP PUT to transfer
+            data. The data should be set with <c>CURLOPT_READDATA</c> and
+            <c>CURLOPT_INFILESIZE</c>. 
+            <para>
+            This option is deprecated and starting with version 7.12.1 you should
+            instead use <c>CURLOPT_UPLOAD</c>. 
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_QUOTE">
+            <summary>
+            Pass a reference to an <see cref="T:SeasideResearch.LibCurlNet.Slist"/> containing FTP commands to
+            pass to the server prior to your ftp request. This will be done before
+            any other FTP commands are issued (even before the CWD command).
+            Disable this operation again by setting a null to this option.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_RANDOM_FILE">
+            <summary>
+            Pass a <c>string</c> containing the file name. The file will be used
+            to read from to seed the random engine for SSL. The more random the
+            specified file is, the more secure the SSL connection will become.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_RANGE">
+            <summary>
+            Pass a <c>string</c> as parameter, which should contain the
+            specified range you want. It should be in the format <c>X-Y</c>, where X
+            or Y may be left out. HTTP transfers also support several intervals,
+            separated with commas as in <c>X-Y,N-M</c>. Using this kind of multiple
+            intervals will cause the HTTP server to send the response document
+            in pieces (using standard MIME separation techniques). Pass a
+            <c>null</c> to this option to disable the use of ranges. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_READDATA">
+            <summary>
+            Object reference to pass to the <see cref="T:SeasideResearch.LibCurlNet.Easy.ReadFunction"/>
+            delegate. Note that if you specify the <c>CURLOPT_READFUNCTION</c>,
+            this is the reference you'll get as input.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_READFUNCTION">
+            <summary>
+            Pass a reference to an <see cref="T:SeasideResearch.LibCurlNet.Easy.ReadFunction"/> delegate.
+            This delegate gets called by libcurl as soon as it needs to read data
+            in order to send it to the peer. The data area referenced by the
+            <c>buf</c> may be filled with at most <c>size</c> multiplied with
+            <c>nmemb</c> number of bytes. Your function must return the actual
+            number of bytes that you stored in that byte array. Returning 0 will
+            signal end-of-file to the library and cause it to stop the current transfer. 
+            <para>
+            If you stop the current transfer by returning 0 "pre-maturely"
+            (i.e before the server expected it, like when you've told you will
+            upload N bytes and you upload less than N bytes), you may experience that
+            the server "hangs" waiting for the rest of the data that won't come. 
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_REFERER">
+            <summary>
+            Pass a <c>string</c> as parameter. It will be used to set the Referer:
+            header in the http request sent to the remote server. This can be used
+            to fool servers or scripts. You can also set any custom header with
+            <c>CURLOPT_HTTPHEADER</c>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_RESUME_FROM">
+            <summary>
+            Pass an <c>int</c> as parameter. It contains the offset in number of
+            bytes that you want the transfer to start from. Set this option to 0
+            to make the transfer start from the beginning (effectively disabling resume). 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_RESUME_FROM_LARGE">
+            <summary>
+            Pass a <c>long</c> as parameter. It contains the offset in number of
+            bytes that you want the transfer to start from. (Added in 7.11.0) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SHARE">
+            <summary>
+            Pass an initialized <see cref="T:SeasideResearch.LibCurlNet.Share"/> reference as a parameter.
+            Setting this option will make this <see cref="T:SeasideResearch.LibCurlNet.Easy"/> object use the
+            data from the Share object instead of keeping the data to itself. This
+            enables several Easy objects to share data. If the Easy objects are used
+            simultaneously, you MUST use the Share object's locking methods.
+            See <see cref="M:SeasideResearch.LibCurlNet.Share.SetOpt(SeasideResearch.LibCurlNet.CURLSHoption,System.Object)"/> for details.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SOURCE_HOST">
+            <summary>
+            Not supported.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SOURCE_PATH">
+            <summary>
+            Not supported.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SOURCE_PORT">
+            <summary>
+            Not supported.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SOURCE_POSTQUOTE">
+            <summary>
+            When doing a third-party transfer, set the source post-quote list,
+            as an <see cref="T:SeasideResearch.LibCurlNet.Slist"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SOURCE_PREQUOTE">
+            <summary>
+            When doing a third-party transfer, set the source pre-quote list,
+            as an <see cref="T:SeasideResearch.LibCurlNet.Slist"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SOURCE_QUOTE">
+            <summary>
+            When doing a third-party transfer, set a quote list,
+            as an <see cref="T:SeasideResearch.LibCurlNet.Slist"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SOURCE_URL">
+            <summary>
+            Set the source URL for a third-party transfer.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SOURCE_USERPWD">
+            <summary>
+            When doing 3rd party transfer, set the source user and password, as
+            a <c>string</c> with format <c>user:password</c>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSLCERT">
+            <summary>
+            Pass a <c>string</c> as parameter. The string should be the file name
+            of your certificate. The default format is "PEM" and can be changed
+            with <c>CURLOPT_SSLCERTTYPE</c>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSLCERTPASSWD">
+            <summary>
+            Pass a <c>string</c> as parameter. It will be used as the password
+            required to use the <c>CURLOPT_SSLCERT</c> certificate. 
+            <para>
+            This option is replaced by <c>CURLOPT_SSLKEYPASSWD</c> and should only
+            be used for backward compatibility. You never needed a pass phrase to
+            load a certificate but you need one to load your private key.
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSLCERTTYPE">
+            <summary>
+            Pass a <c>string</c> as parameter. The string should be the format of
+            your certificate. Supported formats are "PEM" and "DER". (Added in 7.9.3) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSLENGINE">
+            <summary>
+            Pass a <c>string</c> as parameter. It will be used as the identifier
+            for the crypto engine you want to use for your private key.
+            <note>
+            If the crypto device cannot be loaded, 
+            <see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SSL_ENGINE_NOTFOUND"/> is returned.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSLENGINE_DEFAULT">
+            <summary>
+            Sets the actual crypto engine as the default for (asymmetric)
+            crypto operations.
+            <note>
+            If the crypto device cannot be set,
+            <see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_SSL_ENGINE_SETFAILED"/> is returned. 
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSLKEY">
+            <summary>
+            Pass a <c>string</c> as parameter. The string should be the file name
+            of your private key. The default format is "PEM" and can be changed
+            with <c>CURLOPT_SSLKEYTYPE</c>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSLKEYPASSWD">
+            <summary>
+            Pass a <c>string</c> as parameter. It will be used as the password
+            required to use the <c>CURLOPT_SSLKEY</c> private key.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSLKEYTYPE">
+            <summary>
+            Pass a <c>string</c> as parameter. The string should be the format of
+            your private key. Supported formats are "PEM", "DER" and "ENG". 
+            <note>
+            The format "ENG" enables you to load the private key from a crypto
+            engine. In this case <c>CURLOPT_SSLKEY</c> is used as an identifier
+            passed to the engine. You have to set the crypto engine with
+            <c>CURLOPT_SSLENGINE</c>. "DER" format key file currently does not
+            work because of a bug in OpenSSL. 
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSLVERSION">
+            <summary>
+            Pass a member of the <see cref="T:SeasideResearch.LibCurlNet.CURLsslVersion"/> enumeration as the
+            parameter to set the SSL version to use. By default
+            the SSL library will try to solve this by itself although some servers
+            servers make this difficult why you at times may have to use this
+            option.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSL_CIPHER_LIST">
+            <summary>
+            Pass a <c>string</c> holding the list of ciphers to use for the SSL
+            connection. The list must be syntactically correct, it consists of
+            one or more cipher strings separated by colons. Commas or spaces are
+            also acceptable separators but colons are normally used, !, - and +
+            can be used as operators. Valid examples of cipher lists include
+            'RC4-SHA', ´SHA1+DES´, 'TLSv1' and 'DEFAULT'. The default list is
+            normally set when you compile OpenSSL.
+            <para>
+            You'll find more details about cipher lists on this URL:
+            http://www.openssl.org/docs/apps/ciphers.html 
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSL_CTX_DATA">
+            <summary>
+            Object reference to pass to the ssl context delegate set by the option
+            <c>CURLOPT_SSL_CTX_FUNCTION</c>, this is the pointer you'll get as the
+            second parameter, otherwise <c>null</c>. (Added in 7.11.0) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSL_CTX_FUNCTION">
+            <summary>
+            Reference to an <see cref="T:SeasideResearch.LibCurlNet.Easy.SSLContextFunction"/> delegate.
+            This delegate gets called by libcurl just before the initialization of
+            an SSL connection after having processed all other SSL related options
+            to give a last chance to an application to modify the behaviour of
+            openssl's ssl initialization. The <see cref="T:SeasideResearch.LibCurlNet.SSLContext"/> parameter
+            wraps a pointer to an openssl SSL_CTX. If an error is returned no attempt
+            to establish a connection is made and the perform operation will return
+            the error code from this callback function. Set the parm argument with
+            the <c>CURLOPT_SSL_CTX_DATA</c> option. This option was introduced
+            in 7.11.0.
+            <note>
+            To use this properly, a non-trivial amount of knowledge of the openssl
+            libraries is necessary. Using this function allows for example to use
+            openssl callbacks to add additional validation code for certificates,
+            and even to change the actual URI of an HTTPS request.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSL_VERIFYHOST">
+            <summary>
+            Pass an <c>int</c>. Set if we should verify the common name from the
+            peer certificate in the SSL handshake, set 1 to check existence, 2 to
+            ensure that it matches the provided hostname. This is by default set
+            to 2. (default changed in 7.10) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSL_VERIFYPEER">
+            <summary>
+            Pass a <c>bool</c> that is set to <c>false</c> to stop curl from
+            verifying the peer's certificate (7.10 starting setting this option
+            to non-zero by default). Alternate certificates to verify against
+            can be specified with the <c>CURLOPT_CAINFO</c> option or a
+            certificate directory can be specified with the <c>CURLOPT_CAPATH</c>
+            option. As of 7.10, curl installs a default bundle.
+            <c>CURLOPT_SSL_VERIFYHOST</c> may also need to be set to 1
+            or 0 if <c>CURLOPT_SSL_VERIFYPEER</c> is disabled (it defaults to 2). 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_STDERR">
+            <summary>
+            Not supported.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_TCP_NODELAY">
+            <summary>
+            Pass a <c>bool</c> specifying whether the TCP_NODELAY option should be
+            set or cleared (<c>true</c> = set, <c>false</c> = clear). The option is
+            cleared by default. This will have no effect after the connection has
+            been established.
+            <para>
+            Setting this option will disable TCP's Nagle algorithm. The purpose of
+            this algorithm is to try to minimize the number of small packets on the
+            network (where "small packets" means TCP segments less than the Maximum
+            Segment Size (MSS) for the network). 
+            </para>
+            <para>
+            Maximizing the amount of data sent per TCP segment is good because it
+            amortizes the overhead of the send. However, in some cases (most notably
+            telnet or rlogin) small segments may need to be sent without delay. This
+            is less efficient than sending larger amounts of data at a time, and can
+            contribute to congestion on the network if overdone. 
+            </para> 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_TELNETOPTIONS">
+            <summary>
+            Provide an <see cref="T:SeasideResearch.LibCurlNet.Slist"/> with variables to pass to the telnet
+            negotiations. The variables should be in the format "option=value".
+            libcurl supports the options 'TTYPE', 'XDISPLOC' and 'NEW_ENV'. See
+            the TELNET standard for details. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_TIMECONDITION">
+            <summary>
+            Pass a member of the <see cref="T:SeasideResearch.LibCurlNet.CURLtimeCond"/> enumeration as
+            parameter. This defines how the <c>CURLOPT_TIMEVALUE</c> time
+            value is treated. This feature applies to HTTP and FTP. 
+            <note>
+            The last modification time of a file is not always known and in such
+            instances this feature will have no effect even if the given time
+            condition would have not been met.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_TIMEOUT">
+            <summary>
+            Pass a <c>int</c> as parameter containing the maximum time in seconds
+            that you allow the libcurl transfer operation to take. Normally, name
+            lookups can take a considerable time and limiting operations to less
+            than a few minutes risk aborting perfectly normal operations. This
+            option will cause curl to use the SIGALRM to enable time-outing
+            system calls. 
+            <note>
+            this is not recommended to use in unix multi-threaded programs,
+            as it uses signals unless <c>CURLOPT_NOSIGNAL</c> (see above) is set.
+            </note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_TIMEVALUE">
+            <summary>
+            Pass a <see cref="T:System.DateTime"/> as parameter. This time will be
+            used in a condition as specified with <c>CURLOPT_TIMECONDITION</c>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_TRANSFERTEXT">
+            <summary>
+            A <c>true</c> parameter tells the library to use ASCII mode for ftp
+            transfers, instead of the default binary transfer. For LDAP transfers
+            it gets the data in plain text instead of HTML and for win32 systems
+            it does not set the stdout to binary mode. This option can be usable
+            when transferring text data between systems with different views on
+            certain characters, such as newlines or similar.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_UNRESTRICTED_AUTH">
+            <summary>
+            A <c>true</c> parameter tells the library it can continue to send
+            authentication (user+password) when following locations, even when
+            hostname changed. Note that this is meaningful only when setting
+            <c>CURLOPT_FOLLOWLOCATION</c>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_UPLOAD">
+            <summary>
+            A <c>true</c> parameter tells the library to prepare for an
+            upload. The <c>CURLOPT_READDATA</c> and <c>CURLOPT_INFILESIZE</c>
+            or <c>CURLOPT_INFILESIZE_LARGE</c> are also interesting for uploads.
+            If the protocol is HTTP, uploading means using the PUT request
+            unless you tell libcurl otherwise. 
+            <para>
+            Using PUT with HTTP 1.1 implies the use of a "Expect: 100-continue"
+            header. You can disable this header with <c>CURLOPT_HTTPHEADER</c> as usual. 
+            </para>
+            <para>
+            If you use PUT to a HTTP 1.1 server, you can upload data without
+            knowing the size before starting the transfer if you use chunked
+            encoding. You enable this by adding a header like
+            "Transfer-Encoding: chunked" with <c>CURLOPT_HTTPHEADER</c>. With
+            HTTP 1.0 or without chunked transfer, you must specify the size.
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_URL">
+            <summary>
+            The actual URL to deal with. The parameter should be a <c>string</c>.
+            If the given URL lacks the protocol part ("http://" or "ftp://" etc), it
+            will attempt to guess which protocol to use based on the given host name.
+            <para>If the given protocol of the set URL is not supported, libcurl will return
+            an error <c>CURLcode.</c>(<see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_UNSUPPORTED_PROTOCOL"/>)
+            when you call Easy's <see cref="M:SeasideResearch.LibCurlNet.Easy.Perform"/> or
+            Multi's <see cref="M:SeasideResearch.LibCurlNet.Multi.Perform(System.Int32@)"/>.</para>
+            <para>Use <see cref="M:SeasideResearch.LibCurlNet.Curl.GetVersionInfo(SeasideResearch.LibCurlNet.CURLversion)"/> for detailed info
+            on which protocols that are supported.</para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_USERAGENT">
+            <summary>
+            Pass a <c>string</c> as parameter. It will be used to set the
+            User-Agent: header in the http request sent to the remote server.
+            This can be used to fool servers or scripts. You can also set any
+            custom header with <c>CURLOPT_HTTPHEADER</c>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_USERPWD">
+            <summary>
+            Pass a <c>string</c> as parameter, which should be
+            <c>[user name]:[password]</c> to use for the connection. Use
+            <c>CURLOPT_HTTPAUTH</c> to decide authentication method. 
+            <para>
+            When using HTTP and <c>CURLOPT_FOLLOWLOCATION</c>, libcurl might
+            perform several requests to possibly different hosts. libcurl will
+            only send this user and password information to hosts using the
+            initial host name (unless <c>CURLOPT_UNRESTRICTED_AUTH</c> is set),
+            so if libcurl follows locations to other hosts it will not send the
+            user and password to those. This is enforced to prevent accidental
+            information leakage. 
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_VERBOSE">
+            <summary>
+            Set the parameter to <c>true</c> to get the library to display a lot
+            of verbose information about its operations. Very useful for libcurl
+            and/or protocol debugging and understanding. The verbose information
+            will be sent to the <see cref="T:SeasideResearch.LibCurlNet.Easy.DebugFunction"/> delegate, if it's
+            implemented. You hardly ever want this set in production use, you will
+            almost always want this when you debug/report problems. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_WRITEDATA">
+            <summary>
+            Object reference to pass to the <see cref="T:SeasideResearch.LibCurlNet.Easy.WriteFunction"/>
+            delegate. Note that if you specify the <c>CURLOPT_WRITEFUNCTION</c>,
+            this is the object you'll get as input. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_WRITEFUNCTION">
+            <summary>
+            Pass a reference to an <see cref="T:SeasideResearch.LibCurlNet.Easy.WriteFunction"/> delegate.
+            The delegate gets called by libcurl as soon as there is data received
+            that needs to be saved. The size of the data referenced by <c>buf</c>
+            is <c>size</c> multiplied with <c>nmemb</c>, it will not be zero
+            terminated. Return the number of bytes actually taken care of. If
+            that amount differs from the amount passed to your function, it'll
+            signal an error to the library and it will abort the transfer and
+            return <c>CURLcode.</c><see cref="F:SeasideResearch.LibCurlNet.CURLcode.CURLE_WRITE_ERROR"/>. 
+            <note>This function may be called with zero bytes data if the
+            transfered file is empty.</note>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_WRITEINFO">
+            <summary>
+            Pass a <c>string</c> of the output using full variable-replacement
+            as described elsewhere.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLipResolve">
+            <summary>
+            This enumeration contains values used to specify the IP resolution
+            method when using the <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_IPRESOLVE"/>
+            option in a call to <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLipResolve.CURL_IPRESOLVE_WHATEVER">
+            <summary>
+            Default, resolves addresses to all IP versions that your system
+            allows.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLipResolve.CURL_IPRESOLVE_V4">
+            <summary>
+            Resolve to ipv4 addresses.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLipResolve.CURL_IPRESOLVE_V6">
+            <summary>
+            Resolve to ipv6 addresses.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLhttpVersion">
+            <summary>
+            Contains values used to specify the HTTP version level when using
+            the <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HTTP_VERSION"/> option in a call
+            to <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLhttpVersion.CURL_HTTP_VERSION_NONE">
+            <summary>
+            We don't care about what version the library uses. libcurl will
+            use whatever it thinks fit.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLhttpVersion.CURL_HTTP_VERSION_1_0">
+            <summary>
+            Enforce HTTP 1.0 requests.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLhttpVersion.CURL_HTTP_VERSION_1_1">
+            <summary>
+            Enforce HTTP 1.1 requests.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLhttpVersion.CURL_HTTP_VERSION_LAST">
+            <summary>
+            Last entry in enumeration; do not use in application code.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLnetrcOption">
+            <summary>
+            Contains values used to specify the preference of libcurl between
+            using user names and passwords from your ~/.netrc file, relative to
+            user names and passwords in the URL supplied with
+            <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_URL"/>. This is passed when using
+            the <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_NETRC"/> option in a call
+            to <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLnetrcOption.CURL_NETRC_IGNORED">
+            <summary>
+            The library will ignore the file and use only the information
+            in the URL. This is the default. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLnetrcOption.CURL_NETRC_OPTIONAL">
+            <summary>
+            The use of your ~/.netrc file is optional, and information in the
+            URL is to be preferred. The file will be scanned with the host
+            and user name (to find the password only) or with the host only,
+            to find the first user name and password after that machine,
+            which ever information is not specified in the URL. 
+            <para>
+            Undefined values of the option will have this effect.
+            </para>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLnetrcOption.CURL_NETRC_REQUIRED">
+            <summary>
+            This value tells the library that use of the file is required,
+            to ignore the information in the URL, and to search the file
+            with the host only.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLnetrcOption.CURL_NETRC_LAST">
+            <summary>
+            Last entry in enumeration; do not use in application code.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLsslVersion">
+            <summary>
+            Contains values used to specify the SSL version level when using
+            the <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSLVERSION"/> option in a call
+            to <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLsslVersion.CURL_SSLVERSION_DEFAULT">
+            <summary>
+            Use whatever version the SSL library selects.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLsslVersion.CURL_SSLVERSION_TLSv1">
+            <summary>
+            Use TLS version 1.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLsslVersion.CURL_SSLVERSION_SSLv2">
+            <summary>
+            Use SSL version 2. This is not a good option unless it's the
+            only version supported by the remote server.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLsslVersion.CURL_SSLVERSION_SSLv3">
+            <summary>
+            Use SSL version 3. This is a preferred option.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLsslVersion.CURL_SSLVERSION_LAST">
+            <summary>
+            Last entry in enumeration; do not use in application code.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLtimeCond">
+            <summary>
+            Contains values used to specify the time condition when using
+            the <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_TIMECONDITION"/> option in a call
+            to <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLtimeCond.CURL_TIMECOND_NONE">
+            <summary>
+            Use no time condition.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLtimeCond.CURL_TIMECOND_IFMODSINCE">
+            <summary>
+            The time condition is true if the resource has been modified
+            since the date/time passed in
+            <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_TIMEVALUE"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLtimeCond.CURL_TIMECOND_IFUNMODSINCE">
+            <summary>
+            True if the resource has not been modified since the date/time
+            passed in <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_TIMEVALUE"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLtimeCond.CURL_TIMECOND_LASTMOD">
+            <summary>
+            True if the resource's last modification date/time equals that
+            passed in <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_TIMEVALUE"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLtimeCond.CURL_TIMECOND_LAST">
+            <summary>
+            Last entry in enumeration; do not use in application code.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLformoption">
+            <summary>
+            These are options available to build a multi-part form section
+            in a call to <see cref="M:SeasideResearch.LibCurlNet.MultiPartForm.AddSection(System.Object[])"/>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_ARRAY">
+            <summary>
+            Another possibility to send options to
+            <see cref="M:SeasideResearch.LibCurlNet.MultiPartForm.AddSection(System.Object[])"/> is this option, that
+            passes a <see cref="T:SeasideResearch.LibCurlNet.CurlForms"/> array reference as its value.
+            Each <see cref="T:SeasideResearch.LibCurlNet.CurlForms"/> array element has a
+            <see cref="T:SeasideResearch.LibCurlNet.CURLformoption"/> and a <c>string</c>. All available
+            options can be used in an array, except the <c>CURLFORM_ARRAY</c>
+            option itself! The last argument in such an array must always be
+            <c>CURLFORM_END</c>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_BUFFER">
+            <summary>
+            Followed by a <c>string</c>, tells libcurl that a buffer is to be
+            used to upload data instead of using a file.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_BUFFERLENGTH">
+            <summary>
+            Followed by an <c>int</c> with the size of the
+            <c>CURLFORM_BUFFERPTR</c> byte array, tells libcurl the length of
+            the data to upload. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_BUFFERPTR">
+            <summary>
+            Followed by a <c>byte[]</c> array, tells libcurl the address of
+            the buffer containing data to upload (as indicated with
+            <c>CURLFORM_BUFFER</c>). You must also use
+            <c>CURLFORM_BUFFERLENGTH</c> to set the length of the buffer area. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_CONTENTHEADER">
+            <summary>
+            Specifies extra headers for the form POST section. This takes an
+            <see cref="T:SeasideResearch.LibCurlNet.Slist"/> prepared in the usual way using
+            <see cref="M:SeasideResearch.LibCurlNet.Slist.Append(System.String)"/> and appends the list of headers to
+            those libcurl automatically generates.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_CONTENTSLENGTH">
+            <summary>
+            Followed by an <c>int</c> setting the length of the contents. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_CONTENTTYPE">
+            <summary>
+            Followed by a <c>string</c> with a content-type will make cURL
+            use this given content-type for this file upload part, possibly
+            instead of an internally chosen one. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_COPYCONTENTS">
+            <summary>
+            Followed by a <c>string</c> is used for the contents of this part, the
+            actual data to send away. If you'd like it to contain zero bytes,
+            you need to set the length of the name with
+            <c>CURLFORM_CONTENTSLENGTH</c>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_COPYNAME">
+            <summary>
+            Followed by a <c>string</c> used to set the name of this part.
+            If you'd like it to contain zero bytes, you need to set the
+            length of the name with <c>CURLFORM_NAMELENGTH</c>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_END">
+            <summary>
+            This should be the last argument to a call to
+            <see cref="M:SeasideResearch.LibCurlNet.MultiPartForm.AddSection(System.Object[])"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_FILE">
+            <summary>
+            Followed by a file name, makes this part a file upload part. It
+            sets the file name field to the actual file name used here,
+            it gets the contents of the file and passes as data and sets the
+            content-type if the given file match one of the new internally
+            known file extension. For <c>CURLFORM_FILE</c> the user may send
+            one or more files in one part by providing multiple <c>CURLFORM_FILE</c>
+            arguments each followed by the filename (and each <c>CURLFORM_FILE</c>
+            is allowed to have a <c>CURLFORM_CONTENTTYPE</c>). 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_FILECONTENT">
+            <summary>
+            Followed by a file name, and does the file read: the contents
+            will be used in as data in this part. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_FILENAME">
+            <summary>
+            Followed by a <c>string</c> file name, will make libcurl use the
+            given name in the file upload part, instead of the actual file
+            name given to <c>CURLFORM_FILE</c>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_NAMELENGTH">
+            <summary>
+            Followed by an <c>int</c> setting the length of the name. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_NOTHING">
+            <summary>
+            Not used.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_OBSOLETE">
+            <summary>
+            No longer used.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_OBSOLETE2">
+            <summary>
+            No longer used.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_PTRCONTENTS">
+            <summary>
+            Followed by a <c>byte[]</c> used for the contents of this part.
+            If you'd like it to contain zero bytes, you need to set the
+            length of the name with <c>CURLFORM_CONTENTSLENGTH</c>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLformoption.CURLFORM_PTRNAME">
+            <summary>
+            Followed by a <c>byte[]</c> used for the name of this part.
+            If you'd like it to contain zero bytes, you need to set the
+            length of the name with <c>CURLFORM_NAMELENGTH</c>. 
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLFORMcode">
+            <summary>
+            One of these is returned by <see cref="M:SeasideResearch.LibCurlNet.MultiPartForm.AddSection(System.Object[])"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLFORMcode.CURL_FORMADD_OK">
+            <summary>
+            The section was added properly.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLFORMcode.CURL_FORMADD_MEMORY">
+            <summary>
+            Out-of-memory when adding the section.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLFORMcode.CURL_FORMADD_OPTION_TWICE">
+            <summary>
+            Invalid attempt to add the same option more than once to a
+            section.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLFORMcode.CURL_FORMADD_NULL">
+            <summary>
+            Invalid attempt to pass a <c>null</c> string or byte array in
+            one of the arguments.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLFORMcode.CURL_FORMADD_UNKNOWN_OPTION">
+            <summary>
+            Invalid attempt to pass an unrecognized option in one of the
+            arguments.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLFORMcode.CURL_FORMADD_INCOMPLETE">
+            <summary>
+            Incomplete argument lists.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLFORMcode.CURL_FORMADD_ILLEGAL_ARRAY">
+            <summary>
+            Invalid attempt to provide a nested <c>CURLFORM_ARRAY</c>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLFORMcode.CURL_FORMADD_DISABLED">
+            <summary>
+            This will not be returned so long as HTTP is enabled, which
+            it always is in libcurl.NET.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLFORMcode.CURL_FORMADD_LAST">
+            <summary>
+            End-of-enumeration marker; do not use in application code.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLINFO">
+            <summary>
+            This enumeration is used to extract information associated with an
+            <see cref="T:SeasideResearch.LibCurlNet.Easy"/> transfer. Specifically, a member of this
+            enumeration is passed as the first argument to
+            <see cref="O:Easy.GetInfo"/> specifying the item to retrieve in the
+            second argument, which is a reference to an <c>int</c>, a
+            <c>double</c>, a <c>string</c>, a <c>DateTime</c> or an <c>object</c>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_CONNECT_TIME">
+            <summary>
+            The second argument receives the elapsed time, as a <c>double</c>,
+            in seconds, from the start until the connect to the remote host
+            (or proxy) was completed. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_CONTENT_LENGTH_DOWNLOAD">
+            <summary>
+            The second argument receives, as a <c>double</c>, the content-length
+            of the download. This is the value read from the Content-Length: field. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_CONTENT_LENGTH_UPLOAD">
+            <summary>
+            The second argument receives, as a <c>double</c>, the specified size
+            of the upload. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_CONTENT_TYPE">
+            <summary>
+            The second argument receives, as a <c>string</c>, the content-type of
+            the downloaded object. This is the value read from the Content-Type:
+            field. If you get <c>null</c>, it means that the server didn't
+            send a valid Content-Type header or that the protocol used
+            doesn't support this. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_EFFECTIVE_URL">
+            <summary>
+            The second argument receives, as a <c>string</c>, the last
+            used effective URL. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_FILETIME">
+            <summary>
+            The second argument receives, as a <c>long</c>, the remote time
+            of the retrieved document. You should construct a <c>DateTime</c>
+            from this value, as shown in the <c>InfoDemo</c> sample. If you
+            get a date in the distant
+            past, it can be because of many reasons (unknown, the server
+            hides it or the server doesn't support the command that tells
+            document time etc) and the time of the document is unknown. Note
+            that you must tell the server to collect this information before
+            the transfer is made, by using the 
+            <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FILETIME"/> option to
+            <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>. (Added in 7.5) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_HEADER_SIZE">
+            <summary>
+            The second argument receives an <c>int</c> specifying the total size
+            of all the headers received. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_HTTPAUTH_AVAIL">
+            <summary>
+            The second argument receives, as an <c>int</c>, a bitmask indicating
+            the authentication method(s) available. The meaning of the bits is
+            explained in the documentation of
+            <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HTTPAUTH"/>. (Added in 7.10.8) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_HTTP_CONNECTCODE">
+            <summary>
+            The second argument receives an <c>int</c> indicating the numeric
+            connect code for the HTTP request.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_LASTONE">
+            <summary>
+            End-of-enumeration marker; do not use in client applications.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_NAMELOOKUP_TIME">
+            <summary>
+            The second argument receives, as a <c>double</c>, the time, in
+            seconds it took from the start until the name resolving was
+            completed. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_NONE">
+            <summary>
+            Never used.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_NUM_CONNECTS">
+            <summary>
+            The second argument receives an <c>int</c> indicating the
+            number of current connections. (Added in 7.13.0)
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_OS_ERRNO">
+            <summary>
+            The second argument receives an <c>int</c> indicating the operating
+            system error number: <c>_errro</c> or <c>GetLastError()</c>,
+            depending on the platform. (Added in 7.12.2)
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_PRETRANSFER_TIME">
+            <summary>
+            The second argument receives, as a <c>double</c>, the time, in
+            seconds, it took from the start until the file transfer is just about
+            to begin. This includes all pre-transfer commands and negotiations
+            that are specific to the particular protocol(s) involved. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_PRIVATE">
+            <summary>
+            The second argument receives a reference to the private data
+            associated with the <see cref="T:SeasideResearch.LibCurlNet.Easy"/> object (set with the
+            <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_PRIVATE"/> option to
+            <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>. (Added in 7.10.3) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_PROXYAUTH_AVAIL">
+            <summary>
+            The second argument receives, as an <c>int</c>, a bitmask
+            indicating the authentication method(s) available for your
+            proxy authentication. This will be a bitmask of
+            <see cref="T:SeasideResearch.LibCurlNet.CURLhttpAuth"/> enumeration constants.
+            (Added in 7.10.8) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_REDIRECT_COUNT">
+            <summary>
+            The second argument receives an <c>int</c> indicating the total
+            number of redirections that were actually followed. (Added in 7.9.7) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_REDIRECT_TIME">
+            <summary>
+            The second argument receives, as a <c>double</c>, the total time, in
+            seconds, for all redirection steps include name lookup, connect,
+            pretransfer and transfer before final transaction was started.
+            <c>CURLINFO_REDIRECT_TIME</c> contains the complete execution
+            time for multiple redirections. (Added in 7.9.7) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_REQUEST_SIZE">
+            <summary>
+            The second argument receives an <c>int</c> containing the total size
+            of the issued requests. This is so far only for HTTP requests. Note
+            that this may be more than one request if
+            <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_FOLLOWLOCATION"/> is <c>true</c>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_RESPONSE_CODE">
+            <summary>
+            The second argument receives an <c>int</c> with the last received HTTP
+            or FTP code. This option was known as <c>CURLINFO_HTTP_CODE</c> in
+            libcurl 7.10.7 and earlier. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_SIZE_DOWNLOAD">
+            <summary>
+            The second argument receives a <c>double</c> with the total amount of
+            bytes that were downloaded. The amount is only for the latest transfer
+            and will be reset again for each new transfer. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_SIZE_UPLOAD">
+            <summary>
+            The second argument receives a <c>double</c> with the total amount
+            of bytes that were uploaded. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_SPEED_DOWNLOAD">
+            <summary>
+            The second argument receives a <c>double</c> with the average
+            download speed that cURL measured for the complete download. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_SPEED_UPLOAD">
+            <summary>
+            The second argument receives a <c>double</c> with the average
+            upload speed that libcurl measured for the complete upload. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_SSL_ENGINES">
+            <summary>
+            The second argument receives an <see cref="T:SeasideResearch.LibCurlNet.Slist"/> containing
+            the names of the available SSL engines.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_SSL_VERIFYRESULT">
+            <summary>
+            The second argument receives an <c>int</c> with the result of
+            the certificate verification that was requested (using the
+            <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_SSL_VERIFYPEER"/> option in
+            <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_STARTTRANSFER_TIME">
+            <summary>
+            The second argument receives a <c>double</c> specifying the time,
+            in seconds, from the start until the first byte is just about to be
+            transferred. This includes <c>CURLINFO_PRETRANSFER_TIME</c> and
+            also the time the server needs to calculate the result. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLINFO.CURLINFO_TOTAL_TIME">
+            <summary>
+            The second argument receives a <c>double</c> indicating the total transaction
+            time in seconds for the previous transfer. This time does not include
+            the connect time, so if you want the complete operation time,
+            you should add the <c>CURLINFO_CONNECT_TIME</c>. 
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLclosePolicy">
+            <summary>
+            Contains values used to specify the order in which cached connections
+            are closed. One of these is passed as the
+            <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_CLOSEPOLICY"/> option in a call
+            to <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLclosePolicy.CURLCLOSEPOLICY_NONE">
+            <summary>
+            No close policy. Never use this.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLclosePolicy.CURLCLOSEPOLICY_OLDEST">
+            <summary>
+            Close the oldest cached connections first.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLclosePolicy.CURLCLOSEPOLICY_LEAST_RECENTLY_USED">
+            <summary>
+            Close the least recently used connections first.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLclosePolicy.CURLCLOSEPOLICY_LEAST_TRAFFIC">
+            <summary>
+            Close the connections with the least traffic first.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLclosePolicy.CURLCLOSEPOLICY_SLOWEST">
+            <summary>
+            Close the slowest connections first.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLclosePolicy.CURLCLOSEPOLICY_CALLBACK">
+            <summary>
+            Currently unimplemented.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLclosePolicy.CURLCLOSEPOLICY_LAST">
+            <summary>
+            End-of-enumeration marker; do not use in application code.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLinitFlag">
+            <summary>
+            Contains values used to initialize libcurl internally. One of
+            these is passed in the call to <see cref="M:SeasideResearch.LibCurlNet.Curl.GlobalInit(System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLinitFlag.CURL_GLOBAL_NOTHING">
+            <summary>
+            Initialise nothing extra. This sets no bit.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLinitFlag.CURL_GLOBAL_SSL">
+            <summary>
+            Initialize SSL.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLinitFlag.CURL_GLOBAL_WIN32">
+            <summary>
+            Initialize the Win32 socket libraries.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLinitFlag.CURL_GLOBAL_ALL">
+            <summary>
+            Initialize everything possible. This sets all known bits.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLinitFlag.CURL_GLOBAL_DEFAULT">
+            <summary>
+            Equivalent to <c>CURL_GLOBAL_ALL</c>.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLlockData">
+            <summary>
+            Members of this enumeration should be passed to
+            <see cref="M:SeasideResearch.LibCurlNet.Share.SetOpt(SeasideResearch.LibCurlNet.CURLSHoption,System.Object)"/> when it is called with the
+            <c>CURLSHOPT_SHARE</c> or <c>CURLSHOPT_UNSHARE</c> options
+            provided in the <see cref="T:SeasideResearch.LibCurlNet.CURLSHoption"/> enumeration.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLlockData.CURL_LOCK_DATA_NONE">
+            <summary>
+            Not used.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLlockData.CURL_LOCK_DATA_SHARE">
+            <summary>
+            Used internally by libcurl.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLlockData.CURL_LOCK_DATA_COOKIE">
+            <summary>
+            Cookie data will be shared across the <see cref="T:SeasideResearch.LibCurlNet.Easy"/> objects
+            using this shared object.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLlockData.CURL_LOCK_DATA_DNS">
+            <summary>
+            Cached DNS hosts will be shared across the <see cref="T:SeasideResearch.LibCurlNet.Easy"/>
+            objects using this shared object. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLlockData.CURL_LOCK_DATA_SSL_SESSION">
+            <summary>
+            Not supported yet.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLlockData.CURL_LOCK_DATA_CONNECT">
+            <summary>
+            Not supported yet.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLlockData.CURL_LOCK_DATA_LAST">
+            <summary>
+            End-of-enumeration marker; do not use in application code.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLlockAccess">
+            <summary>
+            Values containing the type of shared access requested when libcurl
+            calls the <see cref="T:SeasideResearch.LibCurlNet.Share.LockFunction"/> delegate.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLlockAccess.CURL_LOCK_ACCESS_NONE">
+            <summary>
+            Unspecified action; the delegate should never receive this.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLlockAccess.CURL_LOCK_ACCESS_SHARED">
+            <summary>
+            The delegate receives this call when libcurl is requesting
+            read access to the shared resource.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLlockAccess.CURL_LOCK_ACCESS_SINGLE">
+            <summary>
+            The delegate receives this call when libcurl is requesting
+            write access to the shared resource.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLlockAccess.CURL_LOCK_ACCESS_LAST">
+            <summary>
+            End-of-enumeration marker; do not use in application code.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLSHcode">
+            <summary>
+            Contains return codes from many of the functions in the
+            <see cref="T:SeasideResearch.LibCurlNet.Share"/> class.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHcode.CURLSHE_OK">
+            <summary>
+            The function succeeded.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHcode.CURLSHE_BAD_OPTION">
+            <summary>
+            A bad option was passed to <see cref="M:SeasideResearch.LibCurlNet.Share.SetOpt(SeasideResearch.LibCurlNet.CURLSHoption,System.Object)"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHcode.CURLSHE_IN_USE">
+            <summary>
+            An attempt was made to pass an option to
+            <see cref="M:SeasideResearch.LibCurlNet.Share.SetOpt(SeasideResearch.LibCurlNet.CURLSHoption,System.Object)"/> while the Share object is in use.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHcode.CURLSHE_INVALID">
+            <summary>
+            The <see cref="T:SeasideResearch.LibCurlNet.Share"/> object's internal handle is invalid.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHcode.CURLSHE_NOMEM">
+            <summary>
+            Out of memory. This is a severe problem.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHcode.CURLSHE_LAST">
+            <summary>
+            End-of-enumeration marker; do not use in application code.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLSHoption">
+            <summary>
+            A member of this enumeration is passed to the function
+            <see cref="M:SeasideResearch.LibCurlNet.Share.SetOpt(SeasideResearch.LibCurlNet.CURLSHoption,System.Object)"/> to configure a <see cref="T:SeasideResearch.LibCurlNet.Share"/>
+            transfer. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHoption.CURLSHOPT_NONE">
+            <summary>
+            Start-of-enumeration; do not use in application code.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHoption.CURLSHOPT_SHARE">
+            <summary>
+            The parameter, which should be a member of the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLlockData"/> enumeration, specifies a type of
+            data that should be shared.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHoption.CURLSHOPT_UNSHARE">
+            <summary>
+            The parameter, which should be a member of the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLlockData"/> enumeration, specifies a type of
+            data that should be unshared.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHoption.CURLSHOPT_LOCKFUNC">
+            <summary>
+            The parameter should be a reference to a
+            <see cref="T:SeasideResearch.LibCurlNet.Share.LockFunction"/> delegate. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHoption.CURLSHOPT_UNLOCKFUNC">
+            <summary>
+            The parameter should be a reference to a
+            <see cref="T:SeasideResearch.LibCurlNet.Share.UnlockFunction"/> delegate. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHoption.CURLSHOPT_USERDATA">
+            <summary>
+            The parameter allows you to specify an object reference that
+            will passed to the <see cref="T:SeasideResearch.LibCurlNet.Share.LockFunction"/> delegate and
+            the <see cref="T:SeasideResearch.LibCurlNet.Share.UnlockFunction"/> delegate. 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLSHoption.CURLSHOPT_LAST">
+            <summary>
+            End-of-enumeration; do not use in application code.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLversion">
+            <summary>
+            A member of this enumeration is passed to the function
+            <see cref="M:SeasideResearch.LibCurlNet.Curl.GetVersionInfo(SeasideResearch.LibCurlNet.CURLversion)"/> 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversion.CURLVERSION_FIRST">
+            <summary>
+            Capabilities associated with the initial version of libcurl.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversion.CURLVERSION_SECOND">
+            <summary>
+            Capabilities associated with the second version of libcurl.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversion.CURLVERSION_THIRD">
+            <summary>
+            Capabilities associated with the third version of libcurl.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversion.CURLVERSION_NOW">
+            <summary>
+            Same as <c>CURLVERSION_THIRD</c>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversion.CURLVERSION_LAST">
+            <summary>
+            End-of-enumeration marker; do not use in application code.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask">
+            <summary>
+            A bitmask of libcurl features OR'd together as the value of the
+            property <see cref="P:SeasideResearch.LibCurlNet.VersionInfoData.Features"/>. The feature
+            bits are summarized in the table below.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask.CURL_VERSION_IPV6">
+            <summary>
+            Supports IPv6.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask.CURL_VERSION_KERBEROS4">
+            <summary>
+            Supports kerberos4 (when using FTP).
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask.CURL_VERSION_SSL">
+            <summary>
+            Supports SSL (HTTPS/FTPS).
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask.CURL_VERSION_LIBZ">
+            <summary>
+            Supports HTTP deflate using libz.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask.CURL_VERSION_NTLM">
+            <summary>
+            Supports HTTP NTLM (added in 7.10.6).
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask.CURL_VERSION_GSSNEGOTIATE">
+            <summary>
+            Supports HTTP GSS-Negotiate (added in 7.10.6).
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask.CURL_VERSION_DEBUG">
+            <summary>
+            libcurl was built with extra debug capabilities built-in. This
+            is mainly of interest for libcurl hackers. (added in 7.10.6) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask.CURL_VERSION_ASYNCHDNS">
+            <summary>
+            libcurl was built with support for asynchronous name lookups,
+            which allows more exact timeouts (even on Windows) and less
+            blocking when using the multi interface. (added in 7.10.7) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask.CURL_VERSION_SPNEGO">
+            <summary>
+            libcurl was built with support for SPNEGO authentication
+            (Simple and Protected GSS-API Negotiation Mechanism, defined
+            in RFC 2478.) (added in 7.10.8) 
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask.CURL_VERSION_LARGEFILE">
+            <summary>
+            libcurl was built with support for large files.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask.CURL_VERSION_IDN">
+            <summary>
+            libcurl was built with support for IDNA, domain names with
+            international letters. 
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLMSG">
+            <summary>
+            The status code associated with an <see cref="T:SeasideResearch.LibCurlNet.Easy"/> object in a
+            <see cref="T:SeasideResearch.LibCurlNet.Multi"/> operation. One of these is returned in response
+            to reading the <see cref="P:SeasideResearch.LibCurlNet.MultiInfo.Msg"/> property.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLMSG.CURLMSG_NONE">
+            <summary>
+            First entry in the enumeration, not used.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLMSG.CURLMSG_DONE">
+            <summary>
+            The associated <see cref="T:SeasideResearch.LibCurlNet.Easy"/> object completed.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLMSG.CURLMSG_LAST">
+            <summary>
+            End-of-enumeration marker, not used.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CURLMcode">
+            <summary>
+            Contains return codes for many of the functions in the
+            <see cref="T:SeasideResearch.LibCurlNet.Multi"/> class.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLMcode.CURLM_CALL_MULTI_PERFORM">
+            <summary>
+            You should call <see cref="M:SeasideResearch.LibCurlNet.Multi.Perform(System.Int32@)"/> again before calling
+            <see cref="M:SeasideResearch.LibCurlNet.Multi.Select(System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLMcode.CURLM_OK">
+            <summary>
+            The function succeded.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLMcode.CURLM_BAD_HANDLE">
+            <summary>
+            The internal <see cref="T:SeasideResearch.LibCurlNet.Multi"/> is bad.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLMcode.CURLM_BAD_EASY_HANDLE">
+            <summary>
+            One of the <see cref="T:SeasideResearch.LibCurlNet.Easy"/> handles associated with the
+            <see cref="T:SeasideResearch.LibCurlNet.Multi"/> object is bad.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLMcode.CURLM_OUT_OF_MEMORY">
+            <summary>
+            Out of memory. This is a severe problem.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLMcode.CURLM_INTERNAL_ERROR">
+            <summary>
+            Internal error deep within the libcurl library.
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CURLMcode.CURLM_LAST">
+            <summary>
+            End-of-enumeration marker, not used.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.External">
+            <summary>
+            P/Invoke signatures.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Multi">
+            <summary>
+            Implements the <c>curl_multi_xxx</c> API.
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Multi.#ctor">
+            <summary>
+            Constructor
+            </summary>
+            <exception cref="T:System.InvalidOperationException">This is thrown
+            if <see cref="T:SeasideResearch.LibCurlNet.Curl"/> hasn't bee properly initialized.</exception>
+            <exception cref="T:System.NullReferenceException">
+            This is thrown if the native <c>Multi</c> handle wasn't
+            created successfully.
+            </exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Multi.Finalize">
+            <summary>
+            Destructor
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Multi.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Multi.Dispose(System.Boolean)">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <param name="disposing"><c>true</c> if managed resources should be disposed.</param>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Multi.AddHandle(SeasideResearch.LibCurlNet.Easy)">
+            <summary>
+            Add an Easy object.
+            </summary>
+            <param name="easy">
+            <see cref="T:SeasideResearch.LibCurlNet.Easy"/> object to add.
+            </param>
+            <returns>
+            A <see cref="T:SeasideResearch.LibCurlNet.CURLMcode"/>, hopefully <c>CURLMcode.CURLM_OK</c>
+            </returns>
+            <exception cref="T:System.NullReferenceException">
+            This is thrown if the native <c>Multi</c> handle wasn't
+            created successfully.
+            </exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Multi.RemoveHandle(SeasideResearch.LibCurlNet.Easy)">
+            <summary>
+            Remove an Easy object.
+            </summary>
+            <param name="easy">
+            <see cref="T:SeasideResearch.LibCurlNet.Easy"/> object to remove.
+            </param>
+            <returns>
+            A <see cref="T:SeasideResearch.LibCurlNet.CURLMcode"/>, hopefully <c>CURLMcode.CURLM_OK</c>
+            </returns>
+            <exception cref="T:System.NullReferenceException">
+            This is thrown if the native <c>Multi</c> handle wasn't
+            created successfully.
+            </exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Multi.StrError(SeasideResearch.LibCurlNet.CURLMcode)">
+            <summary>
+            Get a string description of an error code.
+            </summary>
+            <param name="errorNum">
+            The <see cref="T:SeasideResearch.LibCurlNet.CURLMcode"/> for which to obtain the error
+            string description.
+            </param>
+            <returns>The string description.</returns>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Multi.Perform(System.Int32@)">
+            <summary>
+            Read/write data to/from each easy object.
+            </summary>
+            <param name="runningObjects">
+            The number of <see cref="T:SeasideResearch.LibCurlNet.Easy"/> objects still in process is
+            written by this function to this reference parameter.
+            </param>
+            <returns>
+            A <see cref="T:SeasideResearch.LibCurlNet.CURLMcode"/>, hopefully <c>CURLMcode.CURLM_OK</c>
+            </returns>
+            <exception cref="T:System.NullReferenceException">
+            This is thrown if the native <c>Multi</c> handle wasn't
+            created successfully.
+            </exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Multi.FDSet">
+            <summary>
+            Set internal file desriptor information before calling Select.
+            </summary>
+            <returns>
+            A <see cref="T:SeasideResearch.LibCurlNet.CURLMcode"/>, hopefully <c>CURLMcode.CURLM_OK</c>
+            </returns>
+            <exception cref="T:System.NullReferenceException">
+            This is thrown if the native <c>Multi</c> handle wasn't
+            created successfully.
+            </exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Multi.Select(System.Int32)">
+            <summary>
+            Call <c>select()</c> on the Easy objects.
+            </summary>
+            <param name="timeoutMillis">
+            The timeout for the internal <c>select()</c> call,
+            in milliseconds.
+            </param>
+            <returns>
+            Number or <see cref="T:SeasideResearch.LibCurlNet.Easy"/> objects with pending reads.
+            </returns>
+            <exception cref="T:System.NullReferenceException">
+            This is thrown if the native <c>Multi</c> handle wasn't
+            created successfully.
+            </exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Multi.InfoRead">
+            <summary>
+            Obtain status information for a Multi transfer.
+            </summary>
+            <returns>
+            An array of <see cref="T:SeasideResearch.LibCurlNet.MultiInfo"/> objects, one for each
+            <see cref="T:SeasideResearch.LibCurlNet.Easy"/> object child.
+            </returns>
+            <exception cref="T:System.NullReferenceException">
+            This is thrown if the native <c>Multi</c> handle wasn't
+            created successfully.
+            </exception>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.MultiInfo">
+            <summary>
+            Wraps the <c>cURL</c> struct <c>CURLMsg</c>. This class provides
+            status information following a <see cref="T:SeasideResearch.LibCurlNet.Multi"/> transfer.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.MultiInfo.Msg">
+            <summary>
+            Get the status code from the <see cref="T:SeasideResearch.LibCurlNet.CURLMSG"/> enumeration.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.MultiInfo.EasyHandle">
+            <summary>
+            Get the <see cref="T:SeasideResearch.LibCurlNet.Easy"/> object for this child.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.MultiInfo.Result">
+            <summary>
+            Get the return code for the transfer, as a
+            <see cref="T:SeasideResearch.LibCurlNet.CURLcode"/>.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.CurlForms">
+            <summary>
+            This trivial class wraps the internal <c>curl_forms</c> struct.
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.CurlForms.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CurlForms.opt">
+            <summary>The <see cref="T:SeasideResearch.LibCurlNet.CURLformoption"/>.</summary>
+        </member>
+        <member name="F:SeasideResearch.LibCurlNet.CurlForms.val">
+            <summary>Value for the option.</summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.MultiPartForm">
+            <summary>
+            Wraps a section of multipart form data to be submitted via the
+            <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_HTTPPOST"/> option in the
+            <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/> member of the <see cref="T:SeasideResearch.LibCurlNet.Easy"/> class.
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.MultiPartForm.#ctor">
+            <summary>
+            Constructor
+            </summary>
+            <exception cref="T:System.InvalidOperationException">This is thrown
+            if <see cref="T:SeasideResearch.LibCurlNet.Curl"/> hasn't bee properly initialized.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.MultiPartForm.Finalize">
+            <summary>
+            Destructor
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.MultiPartForm.AddSection(System.Object[])">
+            <summary>
+            Add a multi-part form section.
+            </summary>
+            <param name="args">
+            Argument list, as described in the remarks.
+            </param>
+            <returns>
+            A <see cref="T:SeasideResearch.LibCurlNet.CURLFORMcode"/>, hopefully
+            <c>CURLFORMcode.CURL_FORMADD_OK</c>.
+            </returns>
+            <remarks>
+            This is definitely the workhorse method for this class. It
+            should be called in roughly the same manner as
+            <c>curl_formadd()</c>, except you would omit the first two
+            <c>struct curl_httppost**</c> arguments (<c>firstitem</c> and
+            <c>lastitem</c>), which are wrapped in this class. So you should
+            pass arguments in the following sequence:
+            <para>
+            <c>MultiPartForm.AddSection(option1, value1, ..., optionX, valueX,
+            CURLformoption.CURLFORM_END)</c>;
+            </para>
+            <para>
+            For a complete list of possible options, see the documentation for
+            the <see cref="T:SeasideResearch.LibCurlNet.CURLformoption"/> enumeration.
+            </para>
+            <note>
+            The pointer options (<c>CURLFORM_PTRNAME</c>, etc.) make an
+            internal copy of the passed <c>byte</c> array. Therefore, any
+            changes you make to the client copy of this array AFTER calling
+            this method, won't be reflected internally with <c>cURL</c>. The
+            purpose of providing the pointer options is to support the
+            posting of non-string binary data.
+            </note>
+            </remarks>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.MultiPartForm.Free">
+            <summary>
+            Free unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Share">
+            <summary>
+            This class provides an infrastructure for serializing access to data
+            shared by multiple <see cref="T:SeasideResearch.LibCurlNet.Easy"/> objects, including cookie data
+            and DNS hosts. It implements the <c>curl_share_xxx</c> API.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Share.LockFunction">
+            <summary>
+            Called when <c>cURL</c> wants to lock a shared resource.
+            </summary>
+            <remarks>
+            For a usage example, refer to the <c>ShareDemo.cs</c> sample.
+            Arguments passed to your delegate implementation include:
+            <list type="table">
+            <listheader>
+            <term>Argument</term>
+            <term>Description</term>
+            </listheader>
+            <item>
+            <term>data</term>
+            <term>
+            Type of data to lock; one of the values in the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLlockData"/> enumeration.
+            </term>
+            </item>
+            <item>
+            <term>access</term>
+            <term>
+            Lock access requested; one of the values in the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLlockAccess"/> enumeration.
+            </term>
+            </item>
+            <item>
+            <term>userData</term>
+            <term>
+            Client-provided data that is not touched internally by
+            <c>cURL</c>. This is set via
+            <see cref="F:SeasideResearch.LibCurlNet.CURLSHoption.CURLSHOPT_USERDATA"/> when calling the
+            <see cref="M:SeasideResearch.LibCurlNet.Share.SetOpt(SeasideResearch.LibCurlNet.CURLSHoption,System.Object)"/> member of the <see cref="T:SeasideResearch.LibCurlNet.Share"/>
+            class.
+            </term>
+            </item>
+            </list> 
+            </remarks>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Share.UnlockFunction">
+            <summary>
+            Called when <c>cURL</c> wants to unlock a shared resource.
+            </summary>
+            <remarks>
+            For a usage example, refer to the <c>ShareDemo.cs</c> sample.
+            Arguments passed to your delegate implementation include:
+            <list type="table">
+            <listheader>
+            <term>Argument</term>
+            <term>Description</term>
+            </listheader>
+            <item>
+            <term>data</term>
+            <term>
+            Type of data to unlock; one of the values in the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLlockData"/> enumeration.
+            </term>
+            </item>
+            <item>
+            <term>userData</term>
+            <term>
+            Client-provided data that is not touched internally by
+            <c>cURL</c>. This is set via
+            <see cref="F:SeasideResearch.LibCurlNet.CURLSHoption.CURLSHOPT_USERDATA"/> when calling the
+            <see cref="M:SeasideResearch.LibCurlNet.Share.SetOpt(SeasideResearch.LibCurlNet.CURLSHoption,System.Object)"/> member of the <see cref="T:SeasideResearch.LibCurlNet.Share"/>
+            class.
+            </term>
+            </item>
+            </list> 
+            </remarks>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Share.#ctor">
+            <summary>
+            Constructor
+            </summary>
+            <exception cref="T:System.InvalidOperationException">This is thrown
+            if <see cref="T:SeasideResearch.LibCurlNet.Curl"/> hasn't bee properly initialized.</exception>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>share</c> handle wasn't created successfully.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Share.Finalize">
+            <summary>
+            Destructor
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Share.Cleanup">
+            <summary>
+            Cleanup unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Share.SetOpt(SeasideResearch.LibCurlNet.CURLSHoption,System.Object)">
+            <summary>
+            Set options for this object.
+            </summary>
+            <param name="option">
+            One of the values in the <see cref="T:SeasideResearch.LibCurlNet.CURLSHoption"/>
+            enumeration.
+            </param>
+            <param name="parameter">
+            An appropriate object based on the value passed in the
+            <c>option</c> argument. See <see cref="T:SeasideResearch.LibCurlNet.CURLSHoption"/>
+            for more information about the appropriate parameter type.
+            </param>
+            <returns>
+            A <see cref="T:SeasideResearch.LibCurlNet.CURLSHcode"/>, hopefully
+            <c>CURLSHcode.CURLSHE_OK</c>.
+            </returns>
+            <exception cref="T:System.NullReferenceException">This is thrown if
+            the native <c>share</c> handle wasn't created successfully.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Share.StrError(SeasideResearch.LibCurlNet.CURLSHcode)">
+            <summary>
+            Return a String description of an error code.
+            </summary>
+            <param name="errorNum">
+            The <see cref="T:SeasideResearch.LibCurlNet.CURLSHcode"/> for which to obtain the error
+            string description.
+            </param>
+            <returns>The string description.</returns>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.Slist">
+            <summary>
+            This class wraps a linked list of strings used in <c>cURL</c>. Use it
+            to build string lists where they're required, such as when calling
+            <see cref="M:SeasideResearch.LibCurlNet.Easy.SetOpt(SeasideResearch.LibCurlNet.CURLoption,System.Object)"/> with <see cref="F:SeasideResearch.LibCurlNet.CURLoption.CURLOPT_QUOTE"/>
+            as the option.
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Slist.#ctor">
+            <summary>
+            Constructor
+            </summary>
+            <exception cref="T:System.InvalidOperationException">This is thrown
+            if <see cref="T:SeasideResearch.LibCurlNet.Curl"/> hasn't bee properly initialized.</exception>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Slist.Finalize">
+            <summary>
+            Destructor
+            </summary>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Slist.Append(System.String)">
+            <summary>
+            Append a string to the list.
+            </summary>
+            <param name="str">The <c>string</c> to append.</param>
+        </member>
+        <member name="M:SeasideResearch.LibCurlNet.Slist.FreeAll">
+            <summary>
+            Free all internal strings.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.SSLContext">
+            <summary>
+            An instance of this class is passed to the delegate
+            <see cref="T:SeasideResearch.LibCurlNet.Easy.SSLContextFunction"/>, if it's implemented.
+            Within that delegate, the code will have to make native calls to
+            the <c>OpenSSL</c> library with the value returned from the
+            <see cref="P:SeasideResearch.LibCurlNet.SSLContext.Context"/> property cast to an
+            <c>SSL_CTX</c> pointer.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.SSLContext.Context">
+            <summary>
+            Get the underlying OpenSSL context.
+            </summary>
+        </member>
+        <member name="T:SeasideResearch.LibCurlNet.VersionInfoData">
+            <summary>
+            This class wraps a <c>curl_version_info_data</c> struct. An instance is
+            obtained by calling <see cref="M:SeasideResearch.LibCurlNet.Curl.GetVersionInfo(SeasideResearch.LibCurlNet.CURLversion)"/>.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.Age">
+            <summary>
+            Age of this struct, depending on how recent the linked-in
+            <c>libcurl</c> is, as a <see cref="T:SeasideResearch.LibCurlNet.CURLversion"/>.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.Version">
+            <summary>
+            Get the internal cURL version, as a <c>string</c>.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.VersionNum">
+            <summary>
+            Get the internal cURL version number, a A 24-bit number created
+            like this: [8 bits major number] | [8 bits minor number] | [8
+            bits patch number]. For example, Version 7.12.2 is <c>0x070C02</c>.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.Host">
+            <summary>
+            Get the host information on which the underlying cURL was built.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.Features">
+            <summary>
+            Get a bitmask of features, containing bits or'd from the
+            <see cref="T:SeasideResearch.LibCurlNet.CURLversionFeatureBitmask"/> enumeration.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.SSLVersion">
+            <summary>
+            Get the SSL version, if it's linked in.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.SSLVersionNum">
+            <summary>
+            Get the SSL version number, if SSL is linked in.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.LibZVersion">
+            <summary>
+            Get the libz version, if libz is linked in.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.Protocols">
+            <summary>
+            Get the names of the supported protocols.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.ARes">
+            <summary>
+            Get the ARes version, if ARes is linked in.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.AResNum">
+            <summary>
+            Get the ARes version number, if ARes is linked in.
+            </summary>
+        </member>
+        <member name="P:SeasideResearch.LibCurlNet.VersionInfoData.LibIDN">
+            <summary>
+            Get the libidn version, if libidn is linked in.
+            </summary>
+        </member>
+    </members>
+</doc>
