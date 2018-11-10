@@ -1,19 +1,19 @@
-﻿using System;
-using SeasideResearch.LibCurlNet;
+﻿using SeasideResearch.LibCurlNet;
+using System;
 
 namespace PS4_PKG_Linker
 {
     public class RPI
     {
         static string out1 = "";
-        public static string Send(string ip, string port, string type, string cmd)
+        public static string Send(string ip, string type, string cmd)
         {
             try
             {
                 Curl.GlobalInit((int)CURLinitFlag.CURL_GLOBAL_ALL);
 
                 Easy easy = new Easy();
-
+                out1 = "";
                 Easy.WriteFunction wf = new Easy.WriteFunction(OnWriteData);
                 easy.SetOpt(CURLoption.CURLOPT_WRITEFUNCTION, wf);
 
@@ -24,7 +24,7 @@ namespace PS4_PKG_Linker
                     "Mozilla 4.0 (compatible; MSIE 6.0; Win32");
                 easy.SetOpt(CURLoption.CURLOPT_FOLLOWLOCATION, true);
 
-                easy.SetOpt(CURLoption.CURLOPT_URL, "http://" + ip + port + "/api/" + type); //"http://192.168.1.15:12800/api/is_exists");
+                easy.SetOpt(CURLoption.CURLOPT_URL, "http://" + ip + ":12800" + "/api/" + type); //"http://192.168.1.15:12800/api/is_exists");
 
                 easy.SetOpt(CURLoption.CURLOPT_POST, true);
 
@@ -48,13 +48,18 @@ namespace PS4_PKG_Linker
         }
 
     }
-    
+
 
     public class Read_Exists
     {
         public string status { get; set; }
         public string error { get; set; }
+
+
+        public string exists { get; set; }
+        public long size { get; set; }
     }
+
 
     public class Check_Exists
     {
@@ -72,6 +77,15 @@ namespace PS4_PKG_Linker
         public string type { get; set; }
         public string url { get; set; }
     }
+
+    public class Read_install
+    {
+       
+        public string status { get; set; }
+        public int task_id { get; set; }
+        public string title { get; set; }
+    }
+
 
     public class Uninstall_tid
     {

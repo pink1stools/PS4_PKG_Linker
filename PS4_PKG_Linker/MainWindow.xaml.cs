@@ -28,6 +28,7 @@ using Newtonsoft.Json;
 using WPFFolderBrowser;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace PS4_PKG_Linker
 {
@@ -285,6 +286,7 @@ namespace PS4_PKG_Linker
             folder = Properties.Settings.Default.folder;
             ps4_ip = Properties.Settings.Default.ps4_ip;
         }
+
         private void SaveSettings()
         {
             Properties.Settings.Default.ip = ip;
@@ -789,10 +791,10 @@ namespace PS4_PKG_Linker
                             dr["tool"] = "  " + s + "  " + scid + "  " + sz;
                             dr["count"] = i;
                             dr["bl"] = stid;
-                            dr["tileh"] = "50";
-                            dr["tilew"] = "800";
-                            dr["column1w"] = "150";
-                            dr["column2w"] = "650";
+                            dr["tileh"] = "";
+                            dr["tilew"] = "";
+                            dr["column1w"] = "";
+                            dr["column2w"] = "";
                             dr["roww"] = "25";
                             dr["imags"] = "50";
                             dr["text1s"] = "pkg";
@@ -863,10 +865,10 @@ namespace PS4_PKG_Linker
                         dr["tool"] = "  " + s + "  " + scid;
                         dr["count"] = i;
                         dr["bl"] = stid;
-                        dr["tileh"] = "50";
-                        dr["tilew"] = "800";
-                        dr["column1w"] = "150";
-                        dr["column2w"] = "650";
+                        dr["tileh"] = "";
+                        dr["tilew"] = "";
+                        dr["column1w"] = "";
+                        dr["column2w"] = "";
                         dr["roww"] = "25";
                         dr["imags"] = "50";
                         dr["text1s"] = "json";
@@ -961,10 +963,10 @@ namespace PS4_PKG_Linker
                                     dr["tool"] = "  " + s + "  " + scid + "  " + sz;
                                     dr["count"] = i;
                                     dr["bl"] = stid;
-                                    dr["tileh"] = "50";
-                                    dr["tilew"] = "800";
-                                    dr["column1w"] = "150";
-                                    dr["column2w"] = "650";
+                                    dr["tileh"] = "";
+                                    dr["tilew"] = "";
+                                    dr["column1w"] = "";
+                                    dr["column2w"] = "";
                                     dr["roww"] = "25";
                                     dr["imags"] = "50";
                                     dr["text1s"] = "split";
@@ -1052,10 +1054,10 @@ namespace PS4_PKG_Linker
                                 dr["tool"] = "  " + s + "  " + scid;
                                 dr["count"] = i;
                                 dr["bl"] = stid;
-                                dr["tileh"] = "50";
-                                dr["tilew"] = "800";
-                                dr["column1w"] = "150";
-                                dr["column2w"] = "650";
+                                dr["tileh"] = "";
+                                dr["tilew"] = "";
+                                dr["column1w"] = "";
+                                dr["column2w"] = "";
                                 dr["roww"] = "25";
                                 dr["imags"] = "50";
                                 dr["text1s"] = filelink;
@@ -1425,6 +1427,7 @@ namespace PS4_PKG_Linker
 
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
+            SaveSettings();
             MyNotifyIcon.Visible = false;
             check_processes();
         }
@@ -1536,7 +1539,8 @@ namespace PS4_PKG_Linker
         {
             //  curl--data '{"title_id":"CUSA09311"}' 'http://<PS4 IP>:12800/api/is_exists'
             //string out1 = RPI.Send(ip, port, "is_exists", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
-            Check_game();
+            string out1 = Check_game();
+
         }
 
         private void button_2_Click(object sender, RoutedEventArgs e)
@@ -1544,13 +1548,18 @@ namespace PS4_PKG_Linker
             string link_name = textBoxname.Text;
             string file_type = textBoxfile_type.Text;
             string link_type = textBoxlink_type.Text;
-            Send_File(link_name, link_type, file_type);
+            string out1 = Send_File(link_name, link_type, file_type);
+            if(out1 != "")
+            {
+
+            }
         }
 
-        private void Check_game()
+        private string Check_game()
         {
             //  curl--data '{"title_id":"CUSA09311"}' 'http://<PS4 IP>:12800/api/is_exists'
-            string out1 = RPI.Send(ip, port, "is_exists", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
+            string tid = textBoxtid.Text.Remove(9, 3);
+            string out1 = RPI.Send(ps4_ip, "is_exists", "{\"title_id\":\"" + tid + "\"}");
 
 
             try
@@ -1558,12 +1567,14 @@ namespace PS4_PKG_Linker
                 var json = _serialized_json_data<Read_Exists>(out1);
                 string status = json.status;
                 string error = json.error;
-                if (json.error == "true")
+                string exists = json.exists;
+                //string size = GetFileSize(json.size);
+                if (json.exists == "true")
                 {
                     try
                     {
                         button_1.Content = null;
-                        button_1.Content = textBoxtid.Text + "is on the PS4";
+                        button_1.Content = textBoxtid.Text + " is on the PS4";
                     }
                     catch (Exception ex)
                     {
@@ -1575,7 +1586,7 @@ namespace PS4_PKG_Linker
                     try
                     {
                         button_1.Content = null;
-                        button_1.Content = textBoxtid.Text + "is not on the PS4";
+                        button_1.Content = textBoxtid.Text + " is not on the PS4";
                     }
                     catch (Exception ex)
                     {
@@ -1588,28 +1599,35 @@ namespace PS4_PKG_Linker
                 /*added a try catch for this enitire method as well as something is causing it to fall over on some of the pkg's i tested */
             }
 
-
+            return (out1);
         }
 
-        private void Send_File(string link_name, string link_type, string file_type)
+        private string Send_File(string link_name, string link_type, string file_type)
         {
+            string out1 = "";
             if (link_type == "PKG")
             {
                 //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
 
-                RPI.Send(ip, port, "install", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
+                string tid = textBoxtid.Text.Remove(9, 3);
+                return RPI.Send(ps4_ip, "install", "{ \"type\":\"direct\",\"packages\":[\"http://" + ip + ":" + port + "//" + link_name + "\"]}");   //"{\"type\":\"" + tid + "\"}"); 
+                
             }
             else if (link_type == "JSON")
             {
                 //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
 
-                RPI.Send(ip, port, "install", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
+                string tid = textBoxtid.Text.Remove(9, 3);
+                return RPI.Send(ps4_ip, "install", "{\"title_id\":\"" + tid + "\"}");
+                
             }
             else if (link_type == "Split")
             {
                 //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_0.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_1.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_2.pkg"]}'
 
-                RPI.Send(ip, port, "install", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
+                string tid = textBoxtid.Text.Remove(9, 3);
+                return RPI.Send(ps4_ip, "install", "{\"title_id\":\"" + tid + "\"}");
+                
             }
             else if (link_type == "Link")
             {
@@ -1619,39 +1637,93 @@ namespace PS4_PKG_Linker
                 {
                     //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
 
-                    RPI.Send(ip, port, "install", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
+                    string tid = textBoxtid.Text.Remove(9, 3);
+                    return RPI.Send(ps4_ip, "install", "{\"title_id\":\"" + tid + "\"}");
+                    
                 }
                 else if (endsInPKG == true)
                 {
                     //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
 
-                    RPI.Send(ip, port, "install", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
+                    string tid = textBoxtid.Text.Remove(9, 3);
+                    return RPI.Send(ps4_ip, "install", "{\"title_id\":\"" + tid + "\"}");
+                    
                 }
             }
+            return out1;
+
         }
 
-        private void Uninstall_game()
+        private string Uninstall_game()
+        {
+            string tid = textBoxtid.Text.Remove(9, 3);
+            string out1 = RPI.Send(ps4_ip, "uninstall_game", "{\"title_id\":\"" + tid + "\"}");
+
+            try
+            {
+                var json = _serialized_json_data<Read_Exists>(out1);
+                string status = json.status;
+                string error = json.error;
+                string exists = json.exists;
+                //string size = GetFileSize(json.size);
+                if (json.status == "success")
+                {
+                    try
+                    {
+                        LongRunningOperationAsync("Success", "Uninstalled " + textBoxtid.Text);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        LongRunningOperationAsync("Error", "Error uninstalling " + textBoxtid.Text);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                /*added a try catch for this enitire method as well as something is causing it to fall over on some of the pkg's i tested */
+            }
+
+            return (out1);
+
+        }
+       
+        private string Uninstall_patch()
         {
 
-            string out1 = RPI.Send(ip, port, "uninstall_game", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
+            string tid = textBoxtid.Text.Remove(9, 3);
+            return RPI.Send(ps4_ip, "uninstall_patch", "{\"title_id\":\"" + tid + "\"}");
         }
 
-        private void Uninstall_patch()
+        private string Uninstall_theme()
         {
 
-            string out1 = RPI.Send(ip, port, "uninstall_patch", "{\"title_id\":\"" + textBoxtid.Text + "\"}");
+           // string tid = textBoxtid.Text.Remove(9, 3);
+            return RPI.Send(ps4_ip, "uninstall_theme", "{\"content_id\":\"" + textBoxcid.Text + "\"}");
         }
 
-        private void Uninstall_theme()
+        private string Uninstall_ac()
         {
 
-            string out1 = RPI.Send(ip, port, "uninstall_theme", "{\"content_id\":\"" + textBoxcid.Text + "\"}");
+            //string tid = textBoxtid.Text.Remove(9, 3);
+            return RPI.Send(ps4_ip, "uninstall_ac", "{\"content_id\":\"" + textBoxcid.Text + "\"}");
         }
 
-        private void Uninstall_ac()
+        public async Task<int> LongRunningOperationAsync(string title, string message) // assume we return an int from this long running operation 
         {
+            var controller = await this.ShowMessageAsync(title, message);
 
-            string out1 = RPI.Send(ip, port, "uninstall_ac", "{\"content_id\":\"" + textBoxcid.Text + "\"}");
+            return 1;
         }
 
         #endregion<<>>
@@ -2030,5 +2102,50 @@ namespace PS4_PKG_Linker
             Process exeProcess = Process.Start(startInfo);
         }
 
+        private void button_7_Click(object sender, RoutedEventArgs e)
+        {
+           string out1 = Uninstall_game();
+
+        }
+
+        private void button_8_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void button_9_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void button_10_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void button_11_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void button_12_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void button_13_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void button_14_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void button_15_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

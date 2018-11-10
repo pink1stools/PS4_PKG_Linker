@@ -481,7 +481,7 @@
                                 <UniformGrid Columns="1">
 
 
-                                    <Button x:Name="button_1"  Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                    <Button x:Name="button_1"  Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" mah:ControlsHelper.ContentCharacterCasing="Normal" >
                                         <DockPanel LastChildFill="True">
                                             <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
@@ -582,7 +582,7 @@
 
                                 <UniformGrid Name="UgUninstall" Columns="2" Margin="0,20,0,0">
 
-                                    <Button x:Name="button_7"  Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                    <Button x:Name="button_7"  Style="{StaticResource AccentedSquareButtonStyle}" Click="button_7_Click"  Margin="5" >
                                         <DockPanel LastChildFill="True">
                                             <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
@@ -592,12 +592,12 @@
                                             <TextBlock VerticalAlignment="Center"
                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                     FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                       ><Run Text="Uninstall game"/></TextBlock>
+                                       ><Run Text="Uninstall Game"/></TextBlock>
 
                                         </DockPanel>
                                     </Button>
 
-                                    <Button x:Name="button_8" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                    <Button x:Name="button_8" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_8_Click"  Margin="5" >
                                         <DockPanel LastChildFill="True">
                                             <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
@@ -607,12 +607,12 @@
                                             <TextBlock VerticalAlignment="Center"
                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                     FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                       ><Run Text="Uninstall patch"/></TextBlock>
+                                       ><Run Text="Uninstall Patch"/></TextBlock>
 
                                         </DockPanel>
                                     </Button>
 
-                                    <Button x:Name="button_9" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                    <Button x:Name="button_9" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_9_Click"  Margin="5" >
                                         <DockPanel LastChildFill="True">
                                             <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
@@ -622,12 +622,12 @@
                                             <TextBlock VerticalAlignment="Center"
                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                     FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                       ><Run Text="Uninstall additional content"/></TextBlock>
+                                       ><Run Text="Uninstall Additional Content"/></TextBlock>
 
                                         </DockPanel>
                                     </Button>
 
-                                    <Button x:Name="button_10" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                    <Button x:Name="button_10" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_10_Click"  Margin="5" >
                                         <DockPanel LastChildFill="True">
                                             <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
@@ -637,7 +637,7 @@
                                             <TextBlock VerticalAlignment="Center"
                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                     FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                       ><Run Text="Uninstall theme"/></TextBlock>
+                                       ><Run Text="Uninstall Theme"/></TextBlock>
 
                                         </DockPanel>
                                     </Button>
@@ -646,9 +646,9 @@
                                 </UniformGrid>
 
 
-                                <UniformGrid Name="UgTask" Visibility="Collapsed" Columns="2" Margin="0,20,0,0">
+                                <UniformGrid Name="UgTask" Visibility="Visible" Columns="2" Margin="0,20,0,0">
 
-                                    <Button x:Name="button_11" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                    <Button x:Name="button_11" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_11_Click"  Margin="5" >
                                         <DockPanel LastChildFill="True">
                                             <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
@@ -658,12 +658,12 @@
                                             <TextBlock VerticalAlignment="Center"
                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                     FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                       ><Run Text="Start task"/></TextBlock>
+                                       ><Run Text="Start Task"/></TextBlock>
 
                                         </DockPanel>
                                     </Button>
 
-                                    <Button x:Name="button_12" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                    <Button x:Name="button_12" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_12_Click"  Margin="5" >
                                         <DockPanel LastChildFill="True">
                                             <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
@@ -673,12 +673,12 @@
                                             <TextBlock VerticalAlignment="Center"
                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                     FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                       ><Run Text="Stop task"/></TextBlock>
+                                       ><Run Text="Stop Task"/></TextBlock>
 
                                         </DockPanel>
                                     </Button>
 
-                                    <Button x:Name="button_13" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                    <Button x:Name="button_13" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_13_Click"  Margin="5" >
                                         <DockPanel LastChildFill="True">
                                             <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
@@ -688,12 +688,12 @@
                                             <TextBlock VerticalAlignment="Center"
                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                     FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                       ><Run Text="Pause task"/></TextBlock>
+                                       ><Run Text="Pause Task"/></TextBlock>
 
                                         </DockPanel>
                                     </Button>
 
-                                    <Button x:Name="button_14" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                    <Button x:Name="button_14" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_14_Click"  Margin="5" >
                                         <DockPanel LastChildFill="True">
                                             <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
@@ -703,12 +703,12 @@
                                             <TextBlock VerticalAlignment="Center"
                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                     FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                       ><Run Text="Resuming task"/></TextBlock>
+                                       ><Run Text="Resuming Task"/></TextBlock>
 
                                         </DockPanel>
                                     </Button>
 
-                                    <Button x:Name="button_15" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_1_Click" Margin="5" >
+                                    <Button x:Name="button_15" IsEnabled="False" Style="{StaticResource AccentedSquareButtonStyle}" Click="button_15_Click"  Margin="5" >
                                         <DockPanel LastChildFill="True">
                                             <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                                         <Rectangle.OpacityMask>
@@ -718,7 +718,7 @@
                                             <TextBlock VerticalAlignment="Center"
                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                                     FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                                       ><Run Text="Remove task"/></TextBlock>
+                                       ><Run Text="Remove Task"/></TextBlock>
 
                                         </DockPanel>
                                     </Button>
