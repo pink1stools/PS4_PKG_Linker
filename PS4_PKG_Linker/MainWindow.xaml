@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-        Title="" Loaded="MetroWindow_Loaded" StateChanged="Window_StateChanged" Closed="MetroWindow_Closed" Closing="MetroWindow_Closing" Height="450" Width="800"  >
+        Title="" Loaded="MetroWindow_Loaded" ShowIconOnTitleBar="False" StateChanged="Window_StateChanged" Closed="MetroWindow_Closed" Closing="MetroWindow_Closing" Height="450" Width="800"  >
 
     <Controls:MetroWindow.LeftWindowCommands>
         <Controls:WindowCommands>
@@ -105,7 +105,7 @@
                         </Rectangle.OpacityMask>
                     </Rectangle>-->
 
-                    <TextBox Width="120" Name="textBox1" mah:TextBoxHelper.Watermark="PS4 IP" mah:TextBoxHelper.AutoWatermark="True" TextChanged="textBox1_TextChanged"/>
+                    <TextBox Width="120" Name="textBox1" mah:TextBoxHelper.Watermark="PS4 IP" mah:TextBoxHelper.AutoWatermark="True" TextChanged="textBox1_TextChanged" LostMouseCapture="textBox1_LostMouseCapture" LostFocus="textBox1_LostFocus"/>
 
                 </DockPanel>
 
@@ -727,8 +727,8 @@
                                 </UniformGrid>
 
                             </ListBox>
-                            <mah:MetroProgressBar HorizontalAlignment="Center" Grid.Row="2" Height="20" Margin="0,0,0,0" VerticalAlignment="Center" Width="500"/>
-
+                            <!-- <mah:MetroProgressBar HorizontalAlignment="Center" Grid.Row="2" Height="20" Margin="0,0,0,0" VerticalAlignment="Center" Width="500"/>
+                             -->
                         </Grid>
                     </Border>
                     <GroupBox x:Name="groupBox2" Visibility="Hidden" Grid.Column="1" Margin="0,0,0,0"/>
