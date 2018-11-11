@@ -8,8 +8,8 @@
         mc:Ignorable="d"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-        Title="" Loaded="MetroWindow_Loaded" ShowIconOnTitleBar="False" StateChanged="Window_StateChanged" Closed="MetroWindow_Closed" Closing="MetroWindow_Closing" Height="450" Width="800"  >
-
+        Title="" Loaded="MetroWindow_Loaded"  ShowIconOnTitleBar="False" StateChanged="Window_StateChanged" Closed="MetroWindow_Closed" Closing="MetroWindow_Closing" Height="450" Width="800" Icon="tools/resources/bitmap2.png"   >
+    
     <Controls:MetroWindow.LeftWindowCommands>
         <Controls:WindowCommands>
             <Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Height="150" Margin="5,0" VerticalAlignment="Center">
@@ -81,11 +81,11 @@
             -->
             <Button Name="button" Click="Button_Click">
                 <DockPanel LastChildFill="True">
-                    <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
+                   <!-- <Rectangle DockPanel.Dock="Left" Width="12" Height="12" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" >
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill" Visual="{iconPacks:Material Kind=CubeSend}" />
                         </Rectangle.OpacityMask>
-                    </Rectangle>
+                    </Rectangle>-->
                     <TextBlock Name="b1tb1" VerticalAlignment="Center" Padding="5"
                                        Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                        FontSize="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=FontSize}"
@@ -124,7 +124,7 @@
         <ContextMenu x:Key="NotifierContextMenu" Loaded="ContextMenu_Loaded" MouseLeave="ContextMenu_MouseLeave" Placement="MousePoint" StaysOpen="False">
 
 
-            <MenuItem Header="Open Help" Click="Menu_Open_help">
+            <MenuItem Header="Open About" Click="Menu_Open_help">
                 <!--  <MenuItem.Icon>
                     <Rectangle DockPanel.Dock="Left" Width="16" Height="16" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
                         <Rectangle.OpacityMask>
@@ -159,7 +159,7 @@
             </MenuItem>
 
 
-            <MenuItem Header="Start Server"  Click="Menu_Start_Stop"  Name="start_stop">
+            <!--<MenuItem Header="Start Server"  Click="Menu_Start_Stop"  Name="start_stop">
                 <MenuItem.Icon>
                     <Rectangle DockPanel.Dock="Left" Width="16" Height="16" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
                         <Rectangle.OpacityMask>
@@ -168,20 +168,21 @@
                     </Rectangle>
                 </MenuItem.Icon>
             </MenuItem>
+            -->
             <MenuItem Header="Close" Click="Menu_Close">
-                <MenuItem.Icon>
+               <!-- <MenuItem.Icon>
                     <Rectangle DockPanel.Dock="Left" Width="16" Height="16" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill" Visual="{iconPacks:Material Kind=CloseBoxOutline}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
-                </MenuItem.Icon>
+                </MenuItem.Icon>-->
             </MenuItem>
 
         </ContextMenu>
 
         <ContextMenu x:Key="NotifierContextMenu2" Loaded="ContextMenu_Loaded" MouseLeave="ContextMenu_MouseLeave" Placement="MousePoint" StaysOpen="False">
-            <MenuItem Header="Open Help" Click="Menu_Open_help">
+            <MenuItem Header="Open About" Click="Menu_Open_help">
                 <!--<MenuItem.Icon>
                     <Rectangle DockPanel.Dock="Left" Width="16" Height="16" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
                         <Rectangle.OpacityMask>
@@ -211,15 +212,16 @@
                 </MenuItem.Icon>-->
             </MenuItem>
 
-            <MenuItem Header="Stop Server"  Click="Menu_Start_Stop">
-                <!-- <MenuItem.Icon>
+            <!-- <MenuItem Header="Stop Server"  Click="Menu_Start_Stop">
+                <MenuItem.Icon>
                     <Rectangle DockPanel.Dock="Left" Width="16" Height="16" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill" Visual="{iconPacks:Material Kind=CubeSend}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
-                </MenuItem.Icon>-->
-            </MenuItem>
+                </MenuItem.Icon>
+            </MenuItem>-->
+            
             <MenuItem Header="Close" Click="Menu_Close">
                 <!--  <MenuItem.Icon>
                     <Rectangle DockPanel.Dock="Left" Width="16" Height="16" Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}, Path=(TextElement.Foreground)}" >
@@ -260,7 +262,7 @@
 
         <Controls:MetroAnimatedSingleRowTabControl Background="Transparent" Visibility="Visible" x:Name="metroAnimatedTabControl" Grid.ColumnSpan="2" >
 
-            <TabItem Header="PKG List">
+            <TabItem Header=" PKG List">
                 <TabItem.HeaderTemplate>
                     <DataTemplate>
                         <DockPanel LastChildFill="True">
@@ -742,7 +744,7 @@
 
             </TabItem>
 
-            <TabItem Header="Tools">
+            <TabItem Header=" Tools">
                 <TabItem.HeaderTemplate>
                     <DataTemplate>
                         <DockPanel LastChildFill="True">
@@ -1202,7 +1204,7 @@
 
             </TabItem>
 
-            <TabItem Header="About">
+            <TabItem Header=" About">
 
                 <TabItem.HeaderTemplate>
                     <DataTemplate>
@@ -1259,7 +1261,7 @@
                                     <Label FontSize="20">
                                         By
                                     </Label>
-                                    <local:ClickableLabel x:Name="pink1" FontSize="20" Foreground="Blue" Cursor="Hand" Click="pink1_MouseDoubleClick">
+                                    <local:ClickableLabel x:Name="pink1" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="pink1_MouseDoubleClick">
                                         pink1
                                     </local:ClickableLabel>
                                 </StackPanel>
@@ -1272,32 +1274,32 @@
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,150,0,0" Height="50" VerticalAlignment="Top">
 
-                                    <local:ClickableLabel x:Name="Octolus" FontSize="20" Foreground="Blue" Click="Octolus_MouseDoubleClick" Cursor="Hand">
+                                    <local:ClickableLabel x:Name="Octolus" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Click="Octolus_MouseDoubleClick" Cursor="Hand">
                                         Octolus
                                     </local:ClickableLabel>
                                     <Label FontSize="20">
                                         for
                                     </Label>
-                                    <local:ClickableLabel x:Name="ps4database" FontSize="20" Foreground="Blue" Click="ps4database_MouseDoubleClick" Cursor="Hand">
+                                    <local:ClickableLabel x:Name="ps4database" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Click="ps4database_MouseDoubleClick" Cursor="Hand">
                                         https://ps4database.io/
                                     </local:ClickableLabel>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,200,0,0" Height="50" VerticalAlignment="Top">
 
-                                    <local:ClickableLabel x:Name="flatz" FontSize="20" Foreground="Blue" Cursor="Hand" Click="flatz_MouseDoubleClick">
+                                    <local:ClickableLabel x:Name="flatz" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="flatz_MouseDoubleClick">
                                         flatz
                                     </local:ClickableLabel>
                                     <Label FontSize="20">
                                         for his
                                     </Label>
-                                    <local:ClickableLabel x:Name="rpi" FontSize="20" Foreground="Blue" Cursor="Hand" Click="rpi_MouseDoubleClick">
+                                    <local:ClickableLabel x:Name="rpi" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="rpi_MouseDoubleClick">
                                         Remote Package Installer
                                     </local:ClickableLabel>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,250,0,0" Height="50" VerticalAlignment="Top">
-                                    <local:ClickableLabel x:Name="sandungas" FontSize="20" Foreground="Blue" Cursor="Hand" Click="sandungas_Click">
+                                    <local:ClickableLabel x:Name="sandungas" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="sandungas_Click">
                                         sandungas
                                     </local:ClickableLabel>
                                     <Label FontSize="20" Content="for the Background image"/>
@@ -1305,11 +1307,11 @@
 
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,300,0,0" Height="50" VerticalAlignment="Top">
-                                    <local:ClickableLabel x:Name="CelesteBlue" FontSize="20" Foreground="Blue" Cursor="Hand" Click="CelesteBlue_Click">
+                                    <local:ClickableLabel x:Name="CelesteBlue" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="CelesteBlue_Click">
                                         φ CelesteBlue φ
                                     </local:ClickableLabel>
                                     <Label Content="&amp;"  FontSize="20"/>
-                                    <local:ClickableLabel x:Name="Centrino" FontSize="20" Foreground="Blue" Cursor="Hand" Click="Centrino_Click">
+                                    <local:ClickableLabel x:Name="Centrino" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="Centrino_Click">
                                         Centrino
                                     </local:ClickableLabel>
                                     <Label FontSize="20">
@@ -1318,14 +1320,14 @@
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,350,0,0" Height="50" VerticalAlignment="Top">
-                                    <local:ClickableLabel x:Name="mah" FontSize="20" Foreground="Blue" Cursor="Hand" Click="mah_MouseDoubleClick">
+                                    <local:ClickableLabel x:Name="mah" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="mah_MouseDoubleClick">
                                         MahApps.Metro,
                                     </local:ClickableLabel>
-                                    <local:ClickableLabel x:Name="wfb" FontSize="20" Foreground="Blue" Cursor="Hand" Click="wfb_MouseDoubleClick">
+                                    <local:ClickableLabel x:Name="wfb" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="wfb_MouseDoubleClick">
                                         WPFFolderBrowser
                                     </local:ClickableLabel>
                                     <Label Content="&amp;"  FontSize="20"/>
-                                    <local:ClickableLabel x:Name="jnet" FontSize="20" Foreground="Blue" Cursor="Hand" Click="jnet_MouseDoubleClick">
+                                    <local:ClickableLabel x:Name="jnet" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="jnet_MouseDoubleClick">
                                         JSON.NET
                                     </local:ClickableLabel>
                                 </StackPanel>
@@ -1338,12 +1340,12 @@
 
                                 <StackPanel Orientation="Horizontal" Height="70" HorizontalAlignment="Center" Margin="0,450,0,0" VerticalAlignment="Top">
 
-                                    <local:ClickableLabel x:Name="place" FontSize="20" Height="60" Foreground="Blue" Cursor="Hand" Click="place_MouseDoubleClick">
+                                    <local:ClickableLabel x:Name="place" FontSize="20" Height="60" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="place_MouseDoubleClick">
                                         <Image  Source="/PS4_PKG_Linker;component/tools/resources/logo.png " />
                                        <!--PSX-PLACE-->
                                     </local:ClickableLabel>
                                     <Label Content="&amp;"  FontSize="20"/>
-                                    <local:ClickableLabel x:Name="hax" FontSize="20" Height="60" Foreground="Blue" Cursor="Hand" Click="hax_MouseDoubleClick">
+                                    <local:ClickableLabel x:Name="hax" FontSize="20" Height="60" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="hax_MouseDoubleClick">
                                         <Image  Source="/PS4_PKG_Linker;component/tools/resources/hax.png " />
                                         <!--playstationhax-->
                                     </local:ClickableLabel>
@@ -1353,7 +1355,7 @@
                                     <Label FontSize="20">
                                         For help and support with uniformserver
                                     </Label>
-                                    <local:ClickableLabel x:Name="uniform" FontSize="20" Foreground="Blue" Cursor="Hand" Click="uniform_Click">
+                                    <local:ClickableLabel x:Name="uniform" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="Hand" Click="uniform_Click">
                                         http://www.uniformserver.com
                                     </local:ClickableLabel>
                                 </StackPanel>

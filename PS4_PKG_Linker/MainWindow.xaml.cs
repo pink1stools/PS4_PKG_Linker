@@ -239,10 +239,10 @@ namespace PS4_PKG_Linker
                  {
                      MyNotifyIcon.Icon = new System.Drawing.Icon("bin\\package.ico");
                  }*/
-                changicon();
-                this.ShowInTaskbar = false;
-                MyNotifyIcon.BalloonTipText = "Minimize Sucessful";
-                MyNotifyIcon.BalloonTipText = "Minimized the app ";
+                //changicon();
+               // this.ShowInTaskbar = false;
+                //MyNotifyIcon.BalloonTipText = "Minimize Sucessful";
+                //MyNotifyIcon.BalloonTipText = "Minimized the app ";
                 //MyNotifyIcon.Visible = true;
                 //MyNotifyIcon.ShowBalloonTip(10000, "Minimize Sucessful", "Minimize Sucessful", System.Windows.Forms.ToolTipIcon.Error);
 
@@ -252,7 +252,7 @@ namespace PS4_PKG_Linker
                 dispatcherTimer.Stop();
                 // MyNotifyIcon.Visible = true;
                 this.ShowInTaskbar = true;
-
+                MyNotifyIcon.Visible = false;
                 //this.WindowState = WindowState.Maximized;
                 // normButton.Visibility = Visibility.Visible;
                 // maxButton.Visibility = Visibility.Hidden;
@@ -1333,6 +1333,7 @@ namespace PS4_PKG_Linker
             this.Focus();
             this.Activate();
             this.WindowState = WindowState.Normal;
+            Dispatcher.BeginInvoke((Action)(() => metroAnimatedTabControl.SelectedIndex = 0));
 
             //this.tabItem1.IsSelected = true;
             //MyNotifyIcon.Visible = false;
@@ -1347,6 +1348,8 @@ namespace PS4_PKG_Linker
             this.Activate();
             //MessageBox.Show("Open");
             this.WindowState = WindowState.Normal;
+            Dispatcher.BeginInvoke((Action)(() => metroAnimatedTabControl.SelectedIndex = 1));
+
             //this.tabItem2.IsSelected = true;
             //  MyNotifyIcon.Visible = false;
             this.ShowInTaskbar = true;
@@ -1360,6 +1363,8 @@ namespace PS4_PKG_Linker
             this.Activate();
             //MessageBox.Show("Open");
             this.WindowState = WindowState.Normal;
+            Dispatcher.BeginInvoke((Action)(() => metroAnimatedTabControl.SelectedIndex = 1));
+
             // this.tabItem3.IsSelected = true;
             //  MyNotifyIcon.Visible = false;
             this.ShowInTaskbar = true;
@@ -1373,8 +1378,10 @@ namespace PS4_PKG_Linker
             this.Activate();
             //MessageBox.Show("Open");
             this.WindowState = WindowState.Normal;
-            // this.tabItem4.IsSelected = true;
+            //this..IsSelected = true;
             //   MyNotifyIcon.Visible = false;
+            //this.tabItem2.IsSelected = true;
+            Dispatcher.BeginInvoke((Action)(() => metroAnimatedTabControl.SelectedIndex = 2));
             this.ShowInTaskbar = true;
 
 
@@ -1418,6 +1425,7 @@ namespace PS4_PKG_Linker
         private void Exit_Tray_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
+            this.ShowInTaskbar = false;
             changicon();
         }
 
@@ -1980,7 +1988,7 @@ namespace PS4_PKG_Linker
 
                 
                 //System.Windows.Media.ImageSource temp = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/tools/resources/default.png"));
-                this.Icon = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/Icon.ico"));
+               // this.Icon = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/Icon.ico"));
 
                 //button7.Content = "Light Theme";
                 //b7tb1.Text = "Light Theme";
@@ -1992,7 +2000,7 @@ namespace PS4_PKG_Linker
                 page_icon.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
                 abouthead.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
 
-                this.Icon = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/tools/resources/default.png"));
+                //this.Icon = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/tools/resources/default.png"));
 
                 //button7.Content = "Dark Theme";
                 // b7tb1.Text = "Dark Theme";
@@ -2004,7 +2012,7 @@ namespace PS4_PKG_Linker
                 color2.Background = System.Windows.Media.Brushes.White;
                 page_icon.Fill = System.Windows.Media.Brushes.White;
 
-                this.Icon = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/tools/resources/0.ico"));
+               // this.Icon = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/tools/resources/blue.ico"));
 
                 //button7.Content = "Light Theme";
                 //b7tb1.Text = "Light Theme";
@@ -2022,7 +2030,7 @@ namespace PS4_PKG_Linker
 
                                         ThemeManager.GetAppTheme(ctheme));
 
-
+            //pink1.Foreground = color;
 
         }
 
