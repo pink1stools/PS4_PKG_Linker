@@ -4,8 +4,6 @@ VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PS4_PKG_Linker", "PS4_PKG_Linker\PS4_PKG_Linker.csproj", "{9D424E23-25F6-4246-8812-C0D8631F4F39}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PS4_PKG_Linker_Installer", "PS4_PKG_Linker_Installer\PS4_PKG_Linker_Installer.vdproj", "{508F557E-07BC-4549-AE61-D42BB031666D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,8 +14,6 @@ Global
 		{9D424E23-25F6-4246-8812-C0D8631F4F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D424E23-25F6-4246-8812-C0D8631F4F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D424E23-25F6-4246-8812-C0D8631F4F39}.Release|Any CPU.Build.0 = Release|Any CPU
-		{508F557E-07BC-4549-AE61-D42BB031666D}.Debug|Any CPU.ActiveCfg = Debug
-		{508F557E-07BC-4549-AE61-D42BB031666D}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

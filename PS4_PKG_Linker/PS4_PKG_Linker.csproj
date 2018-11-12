@@ -51,7 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>cube_svg_E8K_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>PS4_PKG_Linker.App</StartupObject>
@@ -192,6 +192,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="tools\resources\ICON.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="tools\resources\PINK1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="pink1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="blue.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="cube_svg_E8K_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\libcurl.NET.x86.1.4.1.0\build\libcurl.NET.x86.targets" Condition="Exists('..\packages\libcurl.NET.x86.1.4.1.0\build\libcurl.NET.x86.targets')" />

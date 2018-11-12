@@ -1554,16 +1554,30 @@ namespace PS4_PKG_Linker
                 textBoxfile_type.Text = items2[14].ToString();
                 textBoxlink_type.Text = items2[2].ToString();
                 button_list.Visibility = Visibility.Visible;
-                string out1 = Check_game();
-                if(out1 == "TimedOut")
+                if (ps4_ip != "")
                 {
-                    try
+                    string out1 = Check_game();
+                    if (out1 == "TimedOut")
                     {
-                        LongRunningOperationAsync("Request TimedOut", "Request to " + ps4_ip + " TimedOut");
-                    }
-                    catch (Exception ex)
-                    {
+                        try
+                        {
+                            LongRunningOperationAsync("Request TimedOut", "Request to " + ps4_ip + " TimedOut");
+                        }
+                        catch (Exception ex)
+                        {
 
+                        }
+                    }
+                    if (out1 == "BadIP")
+                    {
+                        try
+                        {
+                            LongRunningOperationAsync("Invalid IP", ps4_ip + " is not a valide ip address");
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
                     }
                 }
 
@@ -1611,9 +1625,9 @@ namespace PS4_PKG_Linker
             //  curl--data '{"title_id":"CUSA09311"}' 'http://<PS4 IP>:12800/api/is_exists'
             string tid = textBoxtid.Text.Remove(9, 3);
             string out1 = RPI.Send(ps4_ip, "is_exists", "{\"title_id\":\"" + tid + "\"}");
-
-            if (out1 != "TimedOut")
-            {
+            
+                if (out1 != "TimedOut" && out1 != "BadIP")
+                {
                 try
                 {
                     var json = _serialized_json_data<Read_Exists>(out1);
@@ -1646,24 +1660,27 @@ namespace PS4_PKG_Linker
                         }
                     }
                 }
+
                 catch (Exception ex)
                 {
                     /*added a try catch for this enitire method as well as something is causing it to fall over on some of the pkg's i tested */
                 }
-            }
-
-            if (out1 == "TimedOut")
-            {
-                try
-                {
-                    button_1.Content = null;
-                    button_1.Content = "Check if app exists";
                 }
-                catch (Exception ex)
-                {
 
+                if (out1 == "TimedOut" || out1 == "BadIP")
+                {
+                    try
+                    {
+                        button_1.Content = null;
+                        button_1.Content = "Check if app exists";
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
                 }
-            }
+
+            
             return (out1);
         }
 
