@@ -1700,16 +1700,16 @@ namespace PS4_PKG_Linker
                 //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
 
                 string tid = textBoxtid.Text.Remove(9, 3);
-                return RPI.Send(ps4_ip, "install", "{\"title_id\":\"" + tid + "\"}");
-                
+                return RPI.Send(ps4_ip, "install", "{ \"type\":\"ref_pkg_url\",\"url\":[\"http://" + ip + ":" + port + "//" + link_name + "\"]}");   //"{\"type\":\"" + tid + "\"}"); 
+
             }
             else if (link_type == "Split")
             {
                 //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_0.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_1.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_2.pkg"]}'
 
                 string tid = textBoxtid.Text.Remove(9, 3);
-                return RPI.Send(ps4_ip, "install", "{\"title_id\":\"" + tid + "\"}");
-                
+                return RPI.Send(ps4_ip, "install", "{ \"type\":\"direct\",\"packages\":[\"http://" + ip + ":" + port + "//" + link_name + "\"]}");   //"{\"type\":\"" + tid + "\"}"); 
+
             }
             else if (link_type == "Link")
             {
@@ -1720,16 +1720,16 @@ namespace PS4_PKG_Linker
                     //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
 
                     string tid = textBoxtid.Text.Remove(9, 3);
-                    return RPI.Send(ps4_ip, "install", "{\"title_id\":\"" + tid + "\"}");
-                    
+                    return RPI.Send(ps4_ip, "install", "{ \"type\":\"ref_pkg_url\",\"url\":[\"http://" + ip + ":" + port + "//" + link_name + "\"]}");   //"{\"type\":\"" + tid + "\"}"); 
+
                 }
                 else if (endsInPKG == true)
                 {
                     //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
 
                     string tid = textBoxtid.Text.Remove(9, 3);
-                    return RPI.Send(ps4_ip, "install", "{\"title_id\":\"" + tid + "\"}");
-                    
+                    return RPI.Send(ps4_ip, "install", "{ \"type\":\"direct\",\"packages\":[\"http://" + ip + ":" + port + "//" + link_name + "\"]}");   //"{\"type\":\"" + tid + "\"}"); 
+
                 }
             }
             return out1;
@@ -1784,21 +1784,134 @@ namespace PS4_PKG_Linker
         {
 
             string tid = textBoxtid.Text.Remove(9, 3);
-            return RPI.Send(ps4_ip, "uninstall_patch", "{\"title_id\":\"" + tid + "\"}");
+            string out1 = RPI.Send(ps4_ip, "uninstall_patch", "{\"title_id\":\"" + tid + "\"}");
+
+            try
+            {
+                var json = _serialized_json_data<Read_Exists>(out1);
+                string status = json.status;
+                string error = json.error;
+                string exists = json.exists;
+                //string size = GetFileSize(json.size);
+                if (json.status == "success")
+                {
+                    try
+                    {
+                        LongRunningOperationAsync("Success", "Uninstalled " + textBoxtid.Text);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        LongRunningOperationAsync("Error", "Error uninstalling " + textBoxtid.Text);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                /*added a try catch for this enitire method as well as something is causing it to fall over on some of the pkg's i tested */
+            }
+
+            return (out1);
         }
 
         private string Uninstall_theme()
         {
 
            // string tid = textBoxtid.Text.Remove(9, 3);
-            return RPI.Send(ps4_ip, "uninstall_theme", "{\"content_id\":\"" + textBoxcid.Text + "\"}");
+            string out1 = RPI.Send(ps4_ip, "uninstall_theme", "{\"content_id\":\"" + textBoxcid.Text + "\"}");
+
+
+            try
+            {
+                var json = _serialized_json_data<Read_Exists>(out1);
+                string status = json.status;
+                string error = json.error;
+                string exists = json.exists;
+                //string size = GetFileSize(json.size);
+                if (json.status == "success")
+                {
+                    try
+                    {
+                        LongRunningOperationAsync("Success", "Uninstalled " + textBoxcid.Text);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        LongRunningOperationAsync("Error", "Error uninstalling " + textBoxcid.Text);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                /*added a try catch for this enitire method as well as something is causing it to fall over on some of the pkg's i tested */
+            }
+
+            return (out1);
         }
 
         private string Uninstall_ac()
         {
 
             //string tid = textBoxtid.Text.Remove(9, 3);
-            return RPI.Send(ps4_ip, "uninstall_ac", "{\"content_id\":\"" + textBoxcid.Text + "\"}");
+            string out1 = RPI.Send(ps4_ip, "uninstall_ac", "{\"content_id\":\"" + textBoxcid.Text + "\"}");
+
+
+            try
+            {
+                var json = _serialized_json_data<Read_Exists>(out1);
+                string status = json.status;
+                string error = json.error;
+                string exists = json.exists;
+                //string size = GetFileSize(json.size);
+                if (json.status == "success")
+                {
+                    try
+                    {
+                        LongRunningOperationAsync("Success", "Uninstalled " + textBoxcid.Text);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        LongRunningOperationAsync("Error", "Error uninstalling " + textBoxcid.Text);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                /*added a try catch for this enitire method as well as something is causing it to fall over on some of the pkg's i tested */
+            }
+
+            return (out1);
         }
 
         public async Task<int> LongRunningOperationAsync(string title, string message) // assume we return an int from this long running operation 
