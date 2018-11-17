@@ -5,6 +5,9 @@
 
 Follow the progress at [psx-place](http://www.psx-place.com/threads/wip-ps4-pkg-linker.21301/)
 
+ #### 11/17/2018
+  * First test build https://mega.nz/#!U2BHmACS.
+
 * #### 11/07/2018
   * Added close to tray option with menu & fading effect while the server is running.
   * Added about tab.(image below)
