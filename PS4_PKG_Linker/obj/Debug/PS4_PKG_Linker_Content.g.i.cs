@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("cube_svg_e8k_icon.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("tools/resources/dr1ccesxgaoh1vl.jpg")]
 
 

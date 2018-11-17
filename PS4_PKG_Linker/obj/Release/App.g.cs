@@ -77,7 +77,7 @@ namespace PS4_PKG_Linker {
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "4.0.0.0")]
         public static void Main() {
-            SplashScreen splashScreen = new SplashScreen("tools/resources/splash.jpg");
+            SplashScreen splashScreen = new SplashScreen("tools/resources/dr1ccesxgaoh1vl.jpg");
             splashScreen.Show(true);
             PS4_PKG_Linker.App app = new PS4_PKG_Linker.App();
             app.InitializeComponent();

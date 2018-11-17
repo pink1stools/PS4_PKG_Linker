@@ -1609,7 +1609,7 @@ namespace PS4_PKG_Linker
         {
             if (textBoxtid.Text != "")
             {
-                string link_name = textBoxname.Text;
+                string link_name =  textBoxname.Text;
                 string file_type = textBoxfile_type.Text;
                 string link_type = textBoxlink_type.Text;
                 string out1 = Send_File(link_name, link_type, file_type);
@@ -1689,17 +1689,19 @@ namespace PS4_PKG_Linker
             string out1 = "";
             if (link_type == "PKG")
             {
+                link_name = "PS4//" + link_name;
                 //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
 
-                string tid = textBoxtid.Text.Remove(9, 3);
+                //string tid = textBoxtid.Text.Remove(9, 3);
                 return RPI.Send(ps4_ip, "install", "{ \"type\":\"direct\",\"packages\":[\"http://" + ip + ":" + port + "//" + link_name + "\"]}");   //"{\"type\":\"" + tid + "\"}"); 
                 
             }
             else if (link_type == "JSON")
             {
+                link_name = "PS4//" + link_name;
                 //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
 
-                string tid = textBoxtid.Text.Remove(9, 3);
+                //string tid = textBoxtid.Text.Remove(9, 3);
                 return RPI.Send(ps4_ip, "install", "{ \"type\":\"ref_pkg_url\",\"url\":[\"http://" + ip + ":" + port + "//" + link_name + "\"]}");   //"{\"type\":\"" + tid + "\"}"); 
 
             }
@@ -1707,7 +1709,7 @@ namespace PS4_PKG_Linker
             {
                 //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_0.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_1.pkg","http://<local ip>:<local port>/UP9000-CUSA02299_00-MARVELSSPIDERMAN-A0108-V0100_2.pkg"]}'
 
-                string tid = textBoxtid.Text.Remove(9, 3);
+                //string tid = textBoxtid.Text.Remove(9, 3);
                 return RPI.Send(ps4_ip, "install", "{ \"type\":\"direct\",\"packages\":[\"http://" + ip + ":" + port + "//" + link_name + "\"]}");   //"{\"type\":\"" + tid + "\"}"); 
 
             }
@@ -1719,7 +1721,7 @@ namespace PS4_PKG_Linker
                 {
                     //'http://<PS4 IP>:12800/api/install' --data '{"type":"ref_pkg_url","url":"http://gs2.ww.prod.dl.playstation.net/gs2/appkgo/prod/CUSA02299_00/2/f_b215964ca72fc114da7ed38b3a8e16ca79bd1a3538bd4160b230867b2f0a92e0/f/UP9000-CUSA02299_00-MARVELSSPIDERMAN.json"}'
 
-                    string tid = textBoxtid.Text.Remove(9, 3);
+                    //string tid = textBoxtid.Text.Remove(9, 3);
                     return RPI.Send(ps4_ip, "install", "{ \"type\":\"ref_pkg_url\",\"url\":[\"http://" + ip + ":" + port + "//" + link_name + "\"]}");   //"{\"type\":\"" + tid + "\"}"); 
 
                 }
@@ -1727,7 +1729,7 @@ namespace PS4_PKG_Linker
                 {
                     //'http://<PS4 IP>:12800/api/install' --data '{"type":"direct","packages":["http://<local ip>:<local port>/UP1004-CUSA03041_00-REDEMPTION000002.pkg"]}'
 
-                    string tid = textBoxtid.Text.Remove(9, 3);
+                   // string tid = textBoxtid.Text.Remove(9, 3);
                     return RPI.Send(ps4_ip, "install", "{ \"type\":\"direct\",\"packages\":[\"http://" + ip + ":" + port + "//" + link_name + "\"]}");   //"{\"type\":\"" + tid + "\"}"); 
 
                 }
