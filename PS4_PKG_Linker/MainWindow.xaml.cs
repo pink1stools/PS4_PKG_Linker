@@ -29,6 +29,8 @@ using WPFFolderBrowser;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using MahApps.Metro.Controls.Dialogs;
+using System.Windows.Resources;
+using System.ComponentModel;
 
 namespace PS4_PKG_Linker
 {
@@ -41,6 +43,10 @@ namespace PS4_PKG_Linker
         DataTable[] dtpkg = new DataTable[1];
         DataTable dtpkg2 = new DataTable();
         DataTable dtlinks = new DataTable();
+        DataTable COLORS = new DataTable();
+
+        TestObject t = new TestObject();
+        Cursor Cursor2;
 
         System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
         private System.Drawing.Icon[] icons = new System.Drawing.Icon[16];
@@ -68,7 +74,7 @@ namespace PS4_PKG_Linker
             InitializeComponent();
             LoadSettings();
             ChangeAppStyle();
-
+            set_colors();
             MyNotifyIcon = new System.Windows.Forms.NotifyIcon();
             Assembly myAssembly = Assembly.GetExecutingAssembly();
             Stream myStream = myAssembly.GetManifestResourceStream("PS4_PKG_Linker.tools.resources." + "0.ico");
@@ -138,6 +144,7 @@ namespace PS4_PKG_Linker
 
             set_ip();
             Load();
+            Set_cursor();
             //this.child01.IsOpen = true;
         }
 
@@ -304,6 +311,22 @@ namespace PS4_PKG_Linker
         #endregion<<settings>>
 
         #region<<set_up>>
+
+        private void Set_cursor()
+        {
+           
+                StreamResourceInfo sriCurs = Application.GetResourceStream(
+                    new Uri("/tools/resources/aero-middle-finger-2.cur", UriKind.Relative));
+                // Cursor1 = new Cursor();
+                Cursor2 = new Cursor(sriCurs.Stream);
+
+                t.Cursor1 = Cursors.Hand;
+            
+            sva.DataContext = t;
+            spl.DataContext = t;
+        }
+       
+
 
         static string SizeSuffix(Int64 value, int decimalPlaces = 1)
         {
@@ -1536,6 +1559,8 @@ namespace PS4_PKG_Linker
 
         #endregion<<>>
 
+
+
         #region<<pkg list>>
 
         private void lbtest_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2115,7 +2140,7 @@ namespace PS4_PKG_Linker
             {
 
                 color2.Background = System.Windows.Media.Brushes.White;
-                page_icon.Fill = System.Windows.Media.Brushes.White;
+                //page_icon.Fill = System.Windows.Media.Brushes.White;
                 abouthead.Fill = System.Windows.Media.Brushes.White;
 
                 
@@ -2129,7 +2154,7 @@ namespace PS4_PKG_Linker
             else if (ctheme == "BaseLight")
             {
                 color2.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
-                page_icon.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
+                //page_icon.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
                 abouthead.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x25, 0x25, 0x25));
 
                 //this.Icon = new BitmapImage(new Uri("pack://application:,,,/PS4_PKG_Linker;component/tools/resources/default.png"));
@@ -2155,7 +2180,7 @@ namespace PS4_PKG_Linker
 
             if (color == null || color == "")
             {
-                color = "Crimson";
+                color = "Pink";
             }
             ThemeManager.ChangeAppStyle(System.Windows.Application.Current,
                                         ThemeManager.GetAccent(color),
@@ -2279,8 +2304,51 @@ namespace PS4_PKG_Linker
 
         }
 
+        private void StarMelter_Click(object sender, RoutedEventArgs e)
+        {
+
+            Process.Start(new ProcessStartInfo("https://twitter.com/StarMelter"));
+
+        }
 
         #endregion<<>>
+
+
+
+        public void set_colors()
+        {
+            string colors = "[{\"name\":\"Red\",\"fill\":\"Red\",\"text\":\"Red\",\"bg\":\"Transparent\",\"count\":\"0\"}, {\"name\":\"Green\",\"fill\":\"Green\",\"text\":\"Green\",\"bg\":\"Transparent\",\"count\":\"1\"}, {\"name\":\"Blue\",\"fill\":\"Blue\",\"text\":\"Blue\",\"bg\":\"Transparent\",\"count\":\"2\"}, {\"name\":\"Purple\",\"fill\":\"Purple\",\"text\":\"Purple\",\"bg\":\"Transparent\",\"count\":\"3\"}, {\"name\":\"Orange\",\"fill\":\"Orange\",\"text\":\"Orange\",\"bg\":\"Transparent\",\"count\":\"4\"}, {\"name\":\"Lime\",\"fill\":\"Lime\",\"text\":\"Lime\",\"bg\":\"Transparent\",\"count\":\"5\"}, {\"name\":\"Emerald\",\"fill\":\"#FF077517\",\"text\":\"Emerald\",\"bg\":\"Transparent\",\"count\":\"6\"}, {\"name\":\"Teal\",\"fill\":\"Teal\",\"text\":\"Teal\",\"bg\":\"Transparent\",\"count\":\"7\"}, {\"name\":\"Cyan\",\"fill\":\"Cyan\",\"text\":\"Cyan\",\"bg\":\"Transparent\",\"count\":\"8\"}, {\"name\":\"Cobalt\",\"fill\":\"#FF0747C6\",\"text\":\"Cobalt\",\"bg\":\"Transparent\",\"count\":\"9\"}, {\"name\":\"Indigo\",\"fill\":\"Indigo\",\"text\":\"Indigo\",\"bg\":\"Transparent\",\"count\":\"10\"}, {\"name\":\"Violet\",\"fill\":\"Violet\",\"text\":\"Violet\",\"bg\":\"Transparent\",\"count\":\"11\"}, {\"name\":\"Pink\",\"fill\":\"Pink\",\"text\":\"Pink\",\"bg\":\"Transparent\",\"count\":\"12\"}, {\"name\":\"Magenta\",\"fill\":\"Magenta\",\"text\":\"Magenta\",\"bg\":\"Transparent\",\"count\":\"13\"}, {\"name\":\"Crimson\",\"fill\":\"Crimson\",\"text\":\"Crimson\",\"bg\":\"Transparent\",\"count\":\"14\"}, {\"name\":\"Amber\",\"fill\":\"#FFC7890F\",\"text\":\"Amber\",\"bg\":\"Transparent\",\"count\":\"15\"}, {\"name\":\"Yellow\",\"fill\":\"Yellow\",\"text\":\"Yellow\",\"bg\":\"Transparent\",\"count\":\"16\"}, {\"name\":\"Brown\",\"fill\":\"Brown\",\"text\":\"Brown\",\"bg\":\"Transparent\",\"count\":\"17\"}, {\"name\":\"Olive\",\"fill\":\"Olive\",\"text\":\"Olive\",\"bg\":\"Transparent\",\"count\":\"18\"}, {\"name\":\"Steel\",\"fill\":\"#FF576573\",\"text\":\"Steel\",\"bg\":\"Transparent\",\"count\":\"19\"}, {\"name\":\"Mauve\",\"fill\":\"#FF655475\",\"text\":\"Mauve\",\"bg\":\"Transparent\",\"count\":\"20\"}, {\"name\":\"Taupe\",\"fill\":\"#FF736845\",\"text\":\"Taupe\",\"bg\":\"Transparent\",\"count\":\"21\"}, {\"name\":\"Sienna\",\"fill\":\"Sienna\",\"text\":\"Sienna\",\"bg\":\"Transparent\",\"count\":\"22\"}]";
+            COLORS = (DataTable)JsonConvert.DeserializeObject(colors, (typeof(DataTable)));
+            Color_Grid.DataContext = null;
+            Color_Grid.DataContext = COLORS.DefaultView;
+        }
+
+        private void MouseEnter2(object sender, MouseEventArgs e)
+        {
+
+            Tile t = sender as Tile;
+            string n = t.Title;
+            string x = "name = " + '\'' + n + '\'';
+
+            if (e.RoutedEvent.Name == "MouseEnter")
+            {
+                COLORS.Select(x)[0]["bg"] = t.BorderBrush;
+            }
+            else
+                COLORS.Select(x)[0]["bg"] = System.Windows.Media.Brushes.Transparent;
+
+        }
+
+        private void TILE1_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Tile t = sender as Tile;
+            string n = t.Title;
+            color = n;
+            ChangeAppStyle();
+            string x = "name = " + '\'' + n + '\'';
+            COLORS.Select(x)[0]["bg"] = t.BorderBrush;
+        }
+
 
         private void make_shortcut(string file_name)
         {
@@ -2361,5 +2429,298 @@ namespace PS4_PKG_Linker
         {
             
         }
+
+        private void twitter_lable_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://twitter.com/Pink1mods"));
+        }
+
+        private void github_lable_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://github.com/pink1stools"));
+        }
+
+        private void curser_Click(object sender, RoutedEventArgs e)
+        {
+            Set_cursor();
+        }
+
+        private void CursorTypeChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox source = e.Source as ComboBox;
+
+            if (source != null)
+            {
+                ComboBoxItem selectedCursor = source.SelectedItem as ComboBoxItem;
+
+                // Changing the cursor of the Border control 
+                // by setting the Cursor property
+                switch (selectedCursor.Content.ToString())
+                {
+                    case "AppStarting":
+                        t.Cursor1 = Cursors.AppStarting;
+                        break;
+                    case "ArrowCD":
+                        t.Cursor1 = Cursors.ArrowCD;
+                        break;
+                    case "Arrow":
+                        t.Cursor1 = Cursors.Arrow;
+                        break;
+                    case "Cross":
+                        t.Cursor1 = Cursors.Cross;
+                        break;
+                    case "HandCursor":
+                        t.Cursor1 = Cursors.Hand;
+                        break;
+                    case "Help":
+                        t.Cursor1 = Cursors.Help;
+                        break;
+                    case "IBeam":
+                        t.Cursor1 = Cursors.IBeam;
+                        break;
+                    case "No":
+                        t.Cursor1 = Cursors.No;
+                        break;
+                    case "None":
+                        t.Cursor1 = Cursors.None;
+                        break;
+                    case "Pen":
+                        t.Cursor1 = Cursors.Pen;
+                        break;
+                    case "ScrollSE":
+                        t.Cursor1 = Cursors.ScrollSE;
+                        break;
+                    case "ScrollWE":
+                        t.Cursor1 = Cursors.ScrollWE;
+                        break;
+                    case "SizeAll":
+                        t.Cursor1 = Cursors.SizeAll;
+                        break;
+                    case "SizeNESW":
+                        t.Cursor1 = Cursors.SizeNESW;
+                        break;
+                    case "SizeNS":
+                        t.Cursor1 = Cursors.SizeNS;
+                        break;
+                    case "SizeNWSE":
+                        t.Cursor1 = Cursors.SizeNWSE;
+                        break;
+                    case "SizeWE":
+                        t.Cursor1 = Cursors.SizeWE;
+                        break;
+                    case "UpArrow":
+                        t.Cursor1 = Cursors.UpArrow;
+                        break;
+                    case "WaitCursor":
+                        t.Cursor1 = Cursors.Wait;
+                        break;
+                    case "Middle Finger":
+                        t.Cursor1 = Cursor2;
+                        break;
+                    default:
+                        break;
+                }
+
+                
+            }
+        }
+
+        private void CursorSelector2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox source = e.Source as ComboBox;
+
+            if (source != null)
+            {
+                ComboBoxItem selectedCursor = source.SelectedItem as ComboBoxItem;
+
+                // Changing the cursor of the Border control 
+                // by setting the Cursor property
+                switch (selectedCursor.Content.ToString())
+                {
+                    case "AppStarting":
+                        t.Cursor1 = Cursors.AppStarting;
+                        break;
+                    case "ArrowCD":
+                        t.Cursor1 = Cursors.ArrowCD;
+                        break;
+                    case "Arrow":
+                        t.Cursor1 = Cursors.Arrow;
+                        break;
+                    case "Cross":
+                        t.Cursor1 = Cursors.Cross;
+                        break;
+                    case "HandCursor":
+                        t.Cursor1 = Cursors.Hand;
+                        break;
+                    case "Help":
+                        t.Cursor1 = Cursors.Help;
+                        break;
+                    case "IBeam":
+                        t.Cursor1 = Cursors.IBeam;
+                        break;
+                    case "No":
+                        t.Cursor1 = Cursors.No;
+                        break;
+                    case "None":
+                        t.Cursor1 = Cursors.None;
+                        break;
+                    case "Pen":
+                        t.Cursor1 = Cursors.Pen;
+                        break;
+                    case "ScrollSE":
+                        t.Cursor1 = Cursors.ScrollSE;
+                        break;
+                    case "ScrollWE":
+                        t.Cursor1 = Cursors.ScrollWE;
+                        break;
+                    case "SizeAll":
+                        t.Cursor1 = Cursors.SizeAll;
+                        break;
+                    case "SizeNESW":
+                        t.Cursor1 = Cursors.SizeNESW;
+                        break;
+                    case "SizeNS":
+                        t.Cursor1 = Cursors.SizeNS;
+                        break;
+                    case "SizeNWSE":
+                        t.Cursor1 = Cursors.SizeNWSE;
+                        break;
+                    case "SizeWE":
+                        t.Cursor1 = Cursors.SizeWE;
+                        break;
+                    case "UpArrow":
+                        t.Cursor1 = Cursors.UpArrow;
+                        break;
+                    case "WaitCursor":
+                        t.Cursor1 = Cursors.Wait;
+                        break;
+                    case "Middle Finger":
+                        t.Cursor1 = Cursor2;
+                        break;
+                    default:
+                        break;
+                }
+
+
+            }
+        }
+
+        private void CursorSelector2_Click(object sender, RoutedEventArgs e)
+        {
+            DropDownButton Q = sender as DropDownButton;
+            ClickableLabel source = e.Source as ClickableLabel;
+
+            if (source != null)
+            {
+
+                CursorSelector2.IsExpanded = false;
+                // Changing the cursor of the Border control 
+                // by setting the Cursor property
+                switch (source.Content.ToString())
+                {
+                    case "AppStarting":
+                        t.Cursor1 = Cursors.AppStarting;
+                        break;
+                    case "ArrowCD":
+                        t.Cursor1 = Cursors.ArrowCD;
+                        break;
+                    case "Arrow":
+                        t.Cursor1 = Cursors.Arrow;
+                        break;
+                    case "Cross":
+                        t.Cursor1 = Cursors.Cross;
+                        break;
+                    case "HandCursor":
+                        t.Cursor1 = Cursors.Hand;
+                        break;
+                    case "Help":
+                        t.Cursor1 = Cursors.Help;
+                        break;
+                    case "IBeam":
+                        t.Cursor1 = Cursors.IBeam;
+                        break;
+                    case "No":
+                        t.Cursor1 = Cursors.No;
+                        break;
+                    case "None":
+                        t.Cursor1 = Cursors.None;
+                        break;
+                    case "Pen":
+                        t.Cursor1 = Cursors.Pen;
+                        break;
+                    case "ScrollSE":
+                        t.Cursor1 = Cursors.ScrollSE;
+                        break;
+                    case "ScrollWE":
+                        t.Cursor1 = Cursors.ScrollWE;
+                        break;
+                    case "SizeAll":
+                        t.Cursor1 = Cursors.SizeAll;
+                        break;
+                    case "SizeNESW":
+                        t.Cursor1 = Cursors.SizeNESW;
+                        break;
+                    case "SizeNS":
+                        t.Cursor1 = Cursors.SizeNS;
+                        break;
+                    case "SizeNWSE":
+                        t.Cursor1 = Cursors.SizeNWSE;
+                        break;
+                    case "SizeWE":
+                        t.Cursor1 = Cursors.SizeWE;
+                        break;
+                    case "UpArrow":
+                        t.Cursor1 = Cursors.UpArrow;
+                        break;
+                    case "WaitCursor":
+                        t.Cursor1 = Cursors.Wait;
+                        break;
+                    case "Middle Finger":
+                        t.Cursor1 = Cursor2;
+                        break;
+                    default:
+                        break;
+                }
+
+
+            }
+        }
     }
+
+
+    class TestObject : INotifyPropertyChanged
+    {
+        private Cursor _cursor;
+        public Cursor Cursor1
+        {
+            get
+            {
+                return _cursor;
+            }
+
+            set
+            {
+                if (_cursor == value) return;
+
+                _cursor = value;
+                OnPropertyChanged("Cursor1");
+            }
+        }
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
+    }
+
+
+
 }

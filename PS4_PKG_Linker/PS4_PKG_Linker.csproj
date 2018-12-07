@@ -191,6 +191,9 @@
   <ItemGroup>
     <Folder Include="tools\icons\" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="tools\resources\aero-middle-finger-2.cur" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\libcurl.NET.x86.1.4.1.0\build\libcurl.NET.x86.targets" Condition="Exists('..\packages\libcurl.NET.x86.1.4.1.0\build\libcurl.NET.x86.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
