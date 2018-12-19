@@ -144,11 +144,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <AdditionalFiles Include=".htaccess">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <AdditionalFiles Include="server-status.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AdditionalFiles>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

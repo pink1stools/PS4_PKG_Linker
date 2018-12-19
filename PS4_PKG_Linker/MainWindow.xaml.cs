@@ -40,25 +40,25 @@ namespace PS4_PKG_Linker
     public partial class MainWindow : MetroWindow
     {
         private System.Windows.Forms.NotifyIcon MyNotifyIcon;
-        DataTable[] dtpkg = new DataTable[1];
-        DataTable dtpkg2 = new DataTable();
-        DataTable dtlinks = new DataTable();
-        DataTable COLORS = new DataTable();
+        public DataTable[] dtpkg = new DataTable[1];
+        public DataTable dtpkg2 = new DataTable();
+        public DataTable dtlinks = new DataTable();
+        public DataTable COLORS = new DataTable();
 
         TestObject t = new TestObject();
         Cursor Cursor2;
 
         System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-        private System.Drawing.Icon[] icons = new System.Drawing.Icon[16];
+        public System.Drawing.Icon[] icons = new System.Drawing.Icon[16];
         private int currentIcon = 0;
-        string ip = "";
-        string port = "";
+       public string ip = "";
+       public string port = "";
         string server = "";
         string ps4_ip = "";
         string folder = "";
 
-        string color;
-        string ctheme = "BaseDark";
+        public string color;
+        public string ctheme = "BaseDark";
 
         int port1;
 
@@ -312,7 +312,7 @@ namespace PS4_PKG_Linker
 
         #region<<set_up>>
 
-        private void Set_cursor()
+        public void Set_cursor()
         {
            
                 StreamResourceInfo sriCurs = Application.GetResourceStream(
@@ -737,7 +737,7 @@ namespace PS4_PKG_Linker
 
         #region<<loading>>
 
-        private void Add_pkg()
+        public void Add_pkg()
         {
             DirectoryInfo dinfo;
             DirectoryInfo split_dinfo;
@@ -817,7 +817,7 @@ namespace PS4_PKG_Linker
                                 dr["type"] = pkgtype;
                                 dr["size"] = sz;
                                 dr["icon"] = iconpath;
-                                dr["tool"] = "  " + s + "  " + scid + "  " + sz;
+                                dr["tool"] = "  " + s + "\n  " + scid + "  " + sz;
                                 dr["count"] = i;
                                 dr["bl"] = stid;
                                 dr["tileh"] = "";
@@ -1219,7 +1219,7 @@ namespace PS4_PKG_Linker
 
         }
 
-        private void Wjson()
+        public void Wjson()
         {
             DataSet dataSet = new DataSet("dataSet");
             dataSet.Namespace = "NetFrameWork";
@@ -1709,7 +1709,7 @@ namespace PS4_PKG_Linker
             return (out1);
         }
 
-        private string Send_File(string link_name, string link_type, string file_type)
+        public string Send_File(string link_name, string link_type, string file_type)
         {
             string out1 = "";
             if (link_type == "PKG")
@@ -1969,12 +1969,19 @@ namespace PS4_PKG_Linker
 
         private void textBox2_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (b1tb1.Text == "Stop Server")
+            {
 
+                MyNotifyIcon.ShowBalloonTip(10000, "Server Restart Required", "Server Restart Required for Changes to Take Effect", System.Windows.Forms.ToolTipIcon.Info);
+
+            }
         }
 
         private void textBox2_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-
+            port1 = GetAvailablePort(81);
+            port = port1.ToString();
+            textBox2.Text = port;
         }
 
         #endregion<<>>
@@ -2683,6 +2690,38 @@ namespace PS4_PKG_Linker
                 }
 
 
+            }
+        }
+
+        private void textBoxtid_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(textBoxtid.Text.Length == 12)
+            {
+                LB1.Visibility = Visibility.Visible;
+            }
+            else if (textBoxcid.Text.Length == 36)
+            {
+                LB1.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                LB1.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void textBoxcid_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (textBoxcid.Text.Length == 36)
+            {
+                LB1.Visibility = Visibility.Visible;
+            }
+            else if (textBoxtid.Text.Length == 12)
+            {
+                LB1.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                LB1.Visibility = Visibility.Hidden;
             }
         }
     }

@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PS4_PKG_Linker"
         mc:Ignorable="d"
-        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         Title="" Loaded="MetroWindow_Loaded"  ShowIconOnTitleBar="False" StateChanged="Window_StateChanged" Closed="MetroWindow_Closed" Closing="MetroWindow_Closing" Height="450" Width="800" Icon="tools/resources/blue1.ico"   >
     
@@ -350,7 +350,9 @@
 
                                 <Style TargetType="{x:Type ListBoxItem}">
                                     <Setter Property="Background" Value="{DynamicResource AccentColorBrush}" />
-                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="BorderThickness" Value="1,0" />
+                                    
+                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentColorBrush}"/>
                                     <Setter Property="Controls:ItemHelper.ActiveSelectionBackgroundBrush" Value="{DynamicResource AccentColorBrush}" />
                                     <Setter Property="Controls:ItemHelper.ActiveSelectionForegroundBrush" Value="{DynamicResource AccentSelectedColorBrush}" />
                                     <Setter Property="Controls:ItemHelper.DisabledForegroundBrush" Value="{DynamicResource GrayNormalBrush}" />
@@ -448,12 +450,12 @@
                             <ListBox.ItemTemplate >
                                 <DataTemplate>
                                     <Border>
-                                        <StackPanel x:Name="plist"  ToolTip="{Binding tool }" HorizontalAlignment="Left">
+                                        <StackPanel x:Name="plist"  ToolTip="{Binding tool }" HorizontalAlignment="Right" Margin="0,5">
 
                                             <Image Height="100"  Width="100"  Source="{Binding icon}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                                            
-                                            <TextBlock  Width="180" TextWrapping="Wrap" Text="{Binding Name}" FontSize="12" Name="txtScrolling" HorizontalAlignment="Left"/>
+
+                                            <TextBlock Width="182" TextWrapping="Wrap" Text="{Binding Name}" FontSize="12" Name="txtScrolling" HorizontalAlignment="Stretch" Background="{DynamicResource AccentColorBrush}" />
 
                                         </StackPanel>
                                     </Border>
@@ -469,15 +471,15 @@
                                 <RowDefinition Height="50"/>
                             </Grid.RowDefinitions>
 
-                            <TextBox x:Name="textBoxtid" MinWidth="100" IsReadOnly="False" Grid.Row="0" HorizontalAlignment="Left" Height="23" Margin="10,0,0,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.Watermark="Title ID" mah:TextBoxHelper.AutoWatermark="True" HorizontalContentAlignment="Center"/>
-                            <TextBox x:Name="textBoxcid" MinWidth="120" IsReadOnly="False" Grid.Row="0" HorizontalAlignment="Left" Height="23" Margin="120,0,0,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Content ID" HorizontalContentAlignment="Center"/>
-                            <TextBox x:Name="textBoxtask" MinWidth="120" IsReadOnly="True" Grid.Row="0" HorizontalAlignment="Right" Height="23" Margin="0,0,20,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.Watermark="Task ID" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.WatermarkAlignment="Center" HorizontalContentAlignment="Center"/>
+                            <TextBox x:Name="textBoxtid" TextChanged="textBoxtid_TextChanged" MinWidth="100" IsReadOnly="False" Grid.Row="0" HorizontalAlignment="Left" Height="23" Margin="10,0,0,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.Watermark="Title ID" mah:TextBoxHelper.AutoWatermark="True" HorizontalContentAlignment="Center" Background="Transparent"/>
+                            <TextBox x:Name="textBoxcid" TextChanged="textBoxcid_TextChanged" MinWidth="120" IsReadOnly="False" Grid.Row="0" HorizontalAlignment="Left" Height="23" Margin="120,0,0,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Content ID" HorizontalContentAlignment="Center" Background="Transparent"/>
+                            <TextBox x:Name="textBoxtask" MinWidth="120" IsReadOnly="True" Grid.Row="0" HorizontalAlignment="Right" Height="23" Margin="0,0,20,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.Watermark="Task ID" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.WatermarkAlignment="Center" HorizontalContentAlignment="Center" Background="Transparent"/>
                             <TextBox x:Name="textBoxname" Visibility="Collapsed" MinWidth="120" IsReadOnly="True" Grid.Row="0" HorizontalAlignment="Right" Height="23" Margin="0,0,20,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.Watermark="Task ID" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.WatermarkAlignment="Center" HorizontalContentAlignment="Center"/>
                             <TextBox x:Name="textBoxfile_type" Visibility="Collapsed" MinWidth="120" IsReadOnly="True" Grid.Row="0" HorizontalAlignment="Right" Height="23" Margin="0,0,20,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.Watermark="Task ID" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.WatermarkAlignment="Center" HorizontalContentAlignment="Center"/>
                             <TextBox x:Name="textBoxlink_type" Visibility="Collapsed" MinWidth="120" IsReadOnly="True" Grid.Row="0" HorizontalAlignment="Right" Height="23" Margin="0,0,20,0" TextWrapping="Wrap"  VerticalAlignment="Center" mah:TextBoxHelper.Watermark="Task ID" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.WatermarkAlignment="Center" HorizontalContentAlignment="Center"/>
 
 
-                            <ListBox Background="Transparent" Grid.Row="1" HorizontalContentAlignment="Stretch" Margin="0" VerticalContentAlignment="Stretch">
+                            <ListBox Name="LB1" Visibility="Hidden" Background="Transparent" Grid.Row="1" HorizontalContentAlignment="Stretch" Margin="0" VerticalContentAlignment="Stretch">
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
                                         <Setter Property="Background" Value="Transparent"/>
@@ -991,12 +993,12 @@
 
                                 <Border BorderThickness="1" Visibility="Visible" BorderBrush="{DynamicResource AccentColorBrush}">
                                     <Grid>
-                                        <TextBox Height="23" TextChanged="textBox2_TextChanged" ToolTip="DoubleClick to Scan for First Open Port" HorizontalAlignment="Left" Margin="247,17,0,0" Name="textBox2" MouseDoubleClick="textBox2_MouseDoubleClick"  VerticalAlignment="Top" Width="39" Text="" />
+                                        <TextBox Height="23" TextChanged="textBox2_TextChanged" ToolTip="DoubleClick to Scan for First Open Port" HorizontalAlignment="Left" Margin="247,17,0,0" Name="textBox2" MouseDoubleClick="textBox2_MouseDoubleClick"  VerticalAlignment="Top" Width="39" Text=""  Background="Transparent"/>
                                         <TextBox Height="23" HorizontalAlignment="Left" Margin="68,17,0,0" Name="textBox3" VerticalAlignment="Top" Width="98" Text="" />
                                         <Label Content="Port" FontSize="16" Height="34" HorizontalAlignment="Left" Margin="202,17,0,0" Name="label1" VerticalAlignment="Top" />
-                                        <Label Content="PC IP" FontSize="16" Height="34" HorizontalAlignment="Left" Margin="15,17,0,0" Name="label2" VerticalAlignment="Top" />
+                                        <Label Content="PC  IP" FontSize="16" Height="34" HorizontalAlignment="Left" Margin="15,17,0,0" Name="label2" VerticalAlignment="Top" />
 
-                                        <ComboBox Height="23" HorizontalAlignment="Left" Margin="68,17,0,0" Name="comboBox1" VerticalAlignment="Top" Width="121" Text="999.999.999.999" IsEditable="True" />
+                                        <ComboBox Height="23" HorizontalAlignment="Left" Margin="68,17,0,0" Name="comboBox1" VerticalAlignment="Top" Width="121" Text="999.999.999.999" IsEditable="True" Background="Transparent"  />
 
                                         <Border BorderThickness="1" BorderBrush="Transparent" CornerRadius="10" Padding="2" HorizontalAlignment="Left" Margin="307,17,0,0" VerticalAlignment="Top" >
 
@@ -1871,7 +1873,7 @@
                     </Border>
                 </Grid>
             </TabItem>
-
+           
         </Controls:MetroAnimatedSingleRowTabControl>
         <StatusBar Name="SB1" Grid.Row="1" BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}">
             <StatusBarItem>PS4 PKG Linker</StatusBarItem>
