@@ -13,17 +13,19 @@ Release Thread is at [psx-place Resource](http://www.psx-place.com/resources/ps4
   
   
 I've moved away from the installer for now & fixed a few things. From my test everything seems to be working so here is PS4 PKG Linker v1.0.
+
+Visual C++ Redistributable for Visual Studio 2015 is required for Apache You can Find it [here](https://www.microsoft.com/en-ca/download/details.aspx?id=48145)
  * Extract somewhere with no spaces in the path.
  * Input you PS4's IP.
  * Double click the directory box to select your folder with your pkg's.
  * Start the server.
  * Select a pkg to install or uninstall.
  
-* ![](https://i.imgur.com/onhRVHGl.png)
-* ![](https://i.imgur.com/gKfUQlZl.png)
-* ![](https://i.imgur.com/8W7aF6yl.png)
-* ![](https://i.imgur.com/4K0ZnWCl.png)
-* ![](https://i.imgur.com/qFR51LDl.png)
+* ![](https://i.imgur.com/onhRVHGm.png)
+* ![](https://i.imgur.com/gKfUQlZm.png)
+* ![](https://i.imgur.com/8W7aF6ym.png)
+* ![](https://i.imgur.com/4K0ZnWCm.png)
+* ![](https://i.imgur.com/qFR51LDm.png)
 
 
  #### 11/17/2018
