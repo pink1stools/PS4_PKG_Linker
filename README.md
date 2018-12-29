@@ -19,11 +19,11 @@ I've moved away from the installer for now & fixed a few things. From my test ev
  * Start the server.
  * Select a pkg to install or uninstall.
  
-* ![](https://i.imgur.com/onhRVHG.png)
-* ![](https://i.imgur.com/gKfUQlZ.png)
-* ![](https://i.imgur.com/8W7aF6y.png)
-* ![](https://i.imgur.com/4K0ZnWC.png)
-* ![](https://i.imgur.com/qFR51LD.png)
+* ![](https://i.imgur.com/onhRVHGl.png)
+* ![](https://i.imgur.com/gKfUQlZl.png)
+* ![](https://i.imgur.com/8W7aF6yl.png)
+* ![](https://i.imgur.com/4K0ZnWCl.png)
+* ![](https://i.imgur.com/qFR51LDl.png)
 
 
  #### 11/17/2018
