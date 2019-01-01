@@ -1000,7 +1000,11 @@
 
                                         <ComboBox Height="23" HorizontalAlignment="Left" Margin="68,17,0,0" Name="comboBox1" VerticalAlignment="Top" Width="121" Text="999.999.999.999" IsEditable="True" Background="Transparent"  />
 
-                                        <Border BorderThickness="1" BorderBrush="Transparent" CornerRadius="10" Padding="2" HorizontalAlignment="Left" Margin="307,17,0,0" VerticalAlignment="Top" >
+                                        <RadioButton Content="Uniserver" Name="Uniserver" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,70,0,0" Checked="Uniserver_Checked"/>
+
+                                        <RadioButton Content="Node.js serve" Name="Nodejs_serve" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,100,0,0" Checked="Nodejs_serve_Checked" />
+
+                                        <Border Name="b6" BorderThickness="1" BorderBrush="Transparent" CornerRadius="10" Padding="2" HorizontalAlignment="Left" Margin="307,17,0,0" VerticalAlignment="Top" >
 
                                             <Grid>
 
@@ -1029,7 +1033,7 @@
                                                 </StackPanel>
                                             </Grid>
                                         </Border>
-                                        <Border BorderThickness="1" BorderBrush="Transparent" CornerRadius="10" Padding="2" HorizontalAlignment="Left" Margin="307,49,0,0" VerticalAlignment="Top" >
+                                        <Border Name="b8" BorderThickness="1" BorderBrush="Transparent" CornerRadius="10" Padding="2" HorizontalAlignment="Left" Margin="307,49,0,0" VerticalAlignment="Top" >
 
                                             <Grid>
                                                 <Border Background="{DynamicResource WhiteBrush}" CornerRadius="8"/>

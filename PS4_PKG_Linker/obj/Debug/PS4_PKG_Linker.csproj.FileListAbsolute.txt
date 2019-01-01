@@ -33,3 +33,4 @@ C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\P
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker.csproj.CopyComplete
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker.exe
 C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker.pdb
+C:\Users\Home\source\repos\pink1stools\PS4_PKG_Linker\PS4_PKG_Linker\obj\Debug\PS4_PKG_Linker.csprojAssemblyReference.cache

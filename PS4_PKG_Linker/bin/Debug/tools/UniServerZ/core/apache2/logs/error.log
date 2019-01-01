@@ -565,3 +565,84 @@
 [Tue Dec 18 16:56:02.616211 2018] [core:notice] [pid 4052:tid 156] AH00094: Command line: 'C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\bin\\httpd_z.exe -d C:/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/core/apache2 -f C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\conf\\httpd.conf -d C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2'
 [Tue Dec 18 16:56:02.625000 2018] [mpm_winnt:notice] [pid 4052:tid 156] AH00418: Parent: Created child process 8060
 [Tue Dec 18 16:56:03.916015 2018] [mpm_winnt:notice] [pid 8060:tid 356] AH00354: Child: Starting 150 worker threads.
+[Sun Dec 30 05:47:42.646988 2018] [core:warn] [pid 6232:tid 160] AH00098: pid file //USER-PC/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/core/apache2/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Sun Dec 30 05:47:55.584875 2018] [mpm_winnt:notice] [pid 6232:tid 160] AH00455: Apache/2.4.25 (Win32) PHP/7.1.1 configured -- resuming normal operations
+[Sun Dec 30 05:47:55.797887 2018] [mpm_winnt:notice] [pid 6232:tid 160] AH00456: Apache Lounge VC14 Server built: Dec 17 2016 10:42:52
+[Sun Dec 30 05:47:55.816888 2018] [core:notice] [pid 6232:tid 160] AH00094: Command line: '\\\\USER-PC\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\bin\\httpd_z.exe -d //USER-PC/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/core/apache2 -f \\\\USER-PC\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\conf\\httpd.conf -d \\\\USER-PC\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2'
+[Sun Dec 30 05:47:56.370919 2018] [mpm_winnt:notice] [pid 6232:tid 160] AH00418: Parent: Created child process 6152
+[Sun Dec 30 05:48:11.292773 2018] [mpm_winnt:notice] [pid 6152:tid 368] AH00354: Child: Starting 150 worker threads.
+[Sun Dec 30 05:48:12.525844 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 127.0.0.1:28084] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:12.557845 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 127.0.0.1:28084] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:12.591847 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 127.0.0.1:28084] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:12.619849 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 127.0.0.1:28084] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:12.635850 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 127.0.0.1:28084] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:12.682852 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 127.0.0.1:28084] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:12.709854 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 127.0.0.1:28084] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:12.716854 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 127.0.0.1:28084] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:12.738856 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 127.0.0.1:28084] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:25.584978 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:25.675983 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:25.774989 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:25.829992 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:25.859993 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:25.889995 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:25.910996 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:25.943998 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:25.976000 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:31.827627 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:31.850629 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:31.868630 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:31.879630 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:31.887631 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:31.894631 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:31.911632 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:31.919633 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:48:31.926633 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28123] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:50:00.206839 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28152] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:50:00.216839 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28152] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:50:00.225840 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28152] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:50:00.233840 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28152] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:50:00.242841 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28152] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:50:00.249841 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28152] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:50:00.258842 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28152] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:50:00.267842 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28152] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:50:00.285843 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.5:28152] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:13.328934 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.4:57731] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:13.344534 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.4:57731] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:13.344534 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.4:57731] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:13.375734 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.4:57731] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:13.375734 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.4:57731] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:13.391334 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.4:57731] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:13.406934 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.4:57731] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:13.406934 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.4:57731] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:13.422534 2018] [core:error] [pid 6152:tid 1608] (OS 5)Access is denied.  : [client 192.168.1.4:57731] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:20.901276 2018] [core:error] [pid 6152:tid 1600] (OS 5)Access is denied.  : [client 192.168.1.5:28159] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:20.913276 2018] [core:error] [pid 6152:tid 1600] (OS 5)Access is denied.  : [client 192.168.1.5:28159] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:20.921277 2018] [core:error] [pid 6152:tid 1600] (OS 5)Access is denied.  : [client 192.168.1.5:28159] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:20.931277 2018] [core:error] [pid 6152:tid 1600] (OS 5)Access is denied.  : [client 192.168.1.5:28159] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:20.938278 2018] [core:error] [pid 6152:tid 1600] (OS 5)Access is denied.  : [client 192.168.1.5:28159] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:20.946278 2018] [core:error] [pid 6152:tid 1600] (OS 5)Access is denied.  : [client 192.168.1.5:28159] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:20.955279 2018] [core:error] [pid 6152:tid 1600] (OS 5)Access is denied.  : [client 192.168.1.5:28159] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:20.964279 2018] [core:error] [pid 6152:tid 1600] (OS 5)Access is denied.  : [client 192.168.1.5:28159] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 05:51:20.981280 2018] [core:error] [pid 6152:tid 1600] (OS 5)Access is denied.  : [client 192.168.1.5:28159] AH00127: Cannot map GET / HTTP/1.1 to file
+[Sun Dec 30 20:46:08.708101 2018] [core:warn] [pid 7184:tid 156] AH00098: pid file C:/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/core/apache2/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Sun Dec 30 20:46:09.854586 2018] [mpm_winnt:notice] [pid 7184:tid 156] AH00455: Apache/2.4.25 (Win32) PHP/7.1.1 configured -- resuming normal operations
+[Sun Dec 30 20:46:09.854586 2018] [mpm_winnt:notice] [pid 7184:tid 156] AH00456: Apache Lounge VC14 Server built: Dec 17 2016 10:42:52
+[Sun Dec 30 20:46:09.854586 2018] [core:notice] [pid 7184:tid 156] AH00094: Command line: 'C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\bin\\httpd_z.exe -d C:/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/core/apache2 -f C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\conf\\httpd.conf -d C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2'
+[Sun Dec 30 20:46:09.893648 2018] [mpm_winnt:notice] [pid 7184:tid 156] AH00418: Parent: Created child process 4904
+[Sun Dec 30 20:46:11.191500 2018] [mpm_winnt:notice] [pid 4904:tid 352] AH00354: Child: Starting 150 worker threads.
+[Sun Dec 30 20:50:41.537203 2018] [access_compat:error] [pid 4904:tid 1580] [client 192.168.1.10:61973] AH01797: client denied by server configuration: //USER-PC/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/home/us_splash/index.php
+[Sun Dec 30 20:52:19.987398 2018] [php7:notice] [pid 4904:tid 1572] [client ::1:61999] PHP Notice:  Undefined variable: cacheInfos in \\\\USER-PC\\USERS\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\home\\us_extra\\xcache\\diagnosis\\index.php on line 222, referer: http://localhost/tools/UniServerZ/home/us_extra/
+[Sun Dec 30 20:52:19.987398 2018] [php7:warn] [pid 4904:tid 1572] [client ::1:61999] PHP Warning:  Invalid argument supplied for foreach() in \\\\USER-PC\\USERS\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\home\\us_extra\\xcache\\diagnosis\\index.php on line 222, referer: http://localhost/tools/UniServerZ/home/us_extra/
+[Mon Dec 31 08:58:01.747070 2018] [core:warn] [pid 6720:tid 156] AH00098: pid file C:/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/core/apache2/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Mon Dec 31 08:58:01.783203 2018] [mpm_winnt:notice] [pid 6720:tid 156] AH00455: Apache/2.4.25 (Win32) PHP/7.1.1 configured -- resuming normal operations
+[Mon Dec 31 08:58:01.783203 2018] [mpm_winnt:notice] [pid 6720:tid 156] AH00456: Apache Lounge VC14 Server built: Dec 17 2016 10:42:52
+[Mon Dec 31 08:58:01.783203 2018] [core:notice] [pid 6720:tid 156] AH00094: Command line: 'C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\bin\\httpd_z.exe -d C:/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/core/apache2 -f C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\conf\\httpd.conf -d C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2'
+[Mon Dec 31 08:58:01.791992 2018] [mpm_winnt:notice] [pid 6720:tid 156] AH00418: Parent: Created child process 9212
+[Mon Dec 31 08:58:03.178711 2018] [mpm_winnt:notice] [pid 9212:tid 352] AH00354: Child: Starting 150 worker threads.
+[Mon Dec 31 09:36:23.756836 2018] [core:warn] [pid 8224:tid 156] AH00098: pid file C:/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/core/apache2/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Mon Dec 31 09:36:23.786132 2018] [mpm_winnt:notice] [pid 8224:tid 156] AH00455: Apache/2.4.25 (Win32) PHP/7.1.1 configured -- resuming normal operations
+[Mon Dec 31 09:36:23.786132 2018] [mpm_winnt:notice] [pid 8224:tid 156] AH00456: Apache Lounge VC14 Server built: Dec 17 2016 10:42:52
+[Mon Dec 31 09:36:23.786132 2018] [core:notice] [pid 8224:tid 156] AH00094: Command line: 'C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\bin\\httpd_z.exe -d C:/Users/Home/source/repos/pink1stools/PS4_PKG_Linker/PS4_PKG_Linker/bin/Debug/tools/UniServerZ/core/apache2 -f C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2\\conf\\httpd.conf -d C:\\Users\\Home\\source\\repos\\pink1stools\\PS4_PKG_Linker\\PS4_PKG_Linker\\bin\\Debug\\tools\\UniServerZ\\core\\apache2'
+[Mon Dec 31 09:36:23.789062 2018] [mpm_winnt:notice] [pid 8224:tid 156] AH00418: Parent: Created child process 8788
+[Mon Dec 31 09:36:25.666992 2018] [mpm_winnt:notice] [pid 8788:tid 352] AH00354: Child: Starting 150 worker threads.

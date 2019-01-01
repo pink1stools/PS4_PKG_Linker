@@ -75,6 +75,7 @@ namespace PS4_PKG_Linker
             LoadSettings();
             ChangeAppStyle();
             set_colors();
+            Check_serve();
             MyNotifyIcon = new System.Windows.Forms.NotifyIcon();
             Assembly myAssembly = Assembly.GetExecutingAssembly();
             Stream myStream = myAssembly.GetManifestResourceStream("PS4_PKG_Linker.tools.resources." + "0.ico");
@@ -145,6 +146,8 @@ namespace PS4_PKG_Linker
             set_ip();
             Load();
             Set_cursor();
+            Check_server();
+
             //this.child01.IsOpen = true;
         }
 
@@ -325,8 +328,46 @@ namespace PS4_PKG_Linker
             sva.DataContext = t;
             spl.DataContext = t;
         }
-       
 
+        public void Check_serve()
+        {
+            // Use ProcessStartInfo class.
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.CreateNoWindow = true;
+            startInfo.UseShellExecute = false;
+            startInfo.WorkingDirectory = @"C://";
+            startInfo.RedirectStandardError = true;
+            //startInfo.RedirectStandardInput = true;
+            startInfo.RedirectStandardOutput = true;
+            startInfo.FileName = @"cmd.exe";
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.Arguments = "/c serve -v";
+            Process exeProcess = Process.Start(startInfo);
+            string output = exeProcess.StandardOutput.ReadToEnd();
+            exeProcess.WaitForExit();
+
+
+            if(!output.Contains("'serve' is not recognized as an internal or external command,"))
+            {
+                Nodejs_serve.IsEnabled = true;
+            }
+            else
+            {
+                Nodejs_serve.IsEnabled = false;
+            }
+        }
+
+        public void Check_server()
+        {
+            if(Nodejs_serve.IsEnabled == true)
+            {
+                Nodejs_serve.IsChecked = true;
+            }
+            else
+            {
+                Uniserver.IsChecked = true;
+            }
+        }
 
         static string SizeSuffix(Int64 value, int decimalPlaces = 1)
         {
@@ -500,6 +541,49 @@ namespace PS4_PKG_Linker
 
         #region<<server>>
 
+        private void start_node_server()
+        {
+
+            
+
+            // Use ProcessStartInfo class.
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.CreateNoWindow = true;
+            startInfo.UseShellExecute = false;
+            //startInfo.WorkingDirectory = @"C://";
+            startInfo.RedirectStandardError = true;
+            //startInfo.RedirectStandardInput = true;
+            startInfo.RedirectStandardOutput = true;
+            startInfo.FileName = @"cmd.exe";
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.Arguments = "/c serve -l tcp://" + ip +":" + port;
+            Process exeProcess = Process.Start(startInfo);
+
+            Thread.Sleep(100);
+            test_server();
+            changicon();
+
+            
+        }
+
+        private void stop_node_server()
+        {
+            
+             Process[] processes = Process.GetProcessesByName("node");
+             foreach (var process in processes)
+             {
+                 process.Kill();
+             }
+            Process[] processes2 = Process.GetProcessesByName("ServiceHub.Host.Node.x86");
+            foreach (var process in processes2)
+            {
+                process.Kill();
+            }
+
+            changicon();
+        }
+
+
         private void start_server()
         {
 
@@ -576,10 +660,18 @@ namespace PS4_PKG_Linker
         {
             int procID;
             Process[] processes;
-            string procName = "httpd_z";
+            string procName = "";
+            if (Uniserver.IsChecked == true)
+            {
+                procName = "httpd_z";
+            }
+            else if (Nodejs_serve.IsChecked == true)
+            {
+                procName = "node";
+            }
             //processes = Process.GetProcesses();
             processes = Process.GetProcessesByName(procName);
-            if (processes.Length == 2)
+            if (processes.Length == 2 || processes.Length == 1)
             {
                 // System.Threading.Thread.Sleep(1000);
                 // WebRequest request = WebRequest.Create("http://" + ip);
@@ -1493,40 +1585,55 @@ namespace PS4_PKG_Linker
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //if (button1.Content.ToString() == "Start Server")
-            if (b1tb1.Text == "Start Server")
+            if (Uniserver.IsChecked == true)
             {
-                port = textBox2.Text;
-                /*textBox3.Text = comboBox1.Text;
-                ip = textBox3.Text;
+                if (b1tb1.Text == "Start Server")
+                {
+                    port = textBox2.Text;
+                    
 
-                textBox1.Text = ip;
-                w_settings();
-                w_s_conf();*/
+                    b1tb1.Text = "Stop Server";
+                    ip = comboBox1.Text;
+                    start_server();
+                    
 
-                //b1tb1.Content = "Stop Server";
-                b1tb1.Text = "Stop Server";
-                ip = comboBox1.Text;
-                start_server();
-                // MyNotifyIcon.Visible = true;
-                //Server_Running.BadgeBackground = Brushes.Green;
-                //Server_Running.BadgeForeground = Brushes.Green;
-                // MyNotifyIcon.ShowBalloonTip(10000, "Server Started", "Server Started", System.Windows.Forms.ToolTipIcon.Info);
-                // MyNotifyIcon.Visible = false;
+                }
+                else
+                {
+                    
+
+                    b1tb1.Text = "Start Server";
+                    stop_server();
+
+                    MyNotifyIcon.ShowBalloonTip(10000, "Server Stopped", "Server Stopped", System.Windows.Forms.ToolTipIcon.Info);
+                    
+
+                }
             }
-            else
+            else if(Nodejs_serve.IsChecked == true)
             {
-                //button1.Content = "Start Server";
-                //b1tb1.Text = "Start Server";
-                b1tb1.Text = "Start Server";
-                stop_server();
-                //MyNotifyIcon.Visible = true;
-                // b1tb1.Text = "Start Server";
-                //dispatcherTimer2.Stop();
-                MyNotifyIcon.ShowBalloonTip(10000, "Server Stopped", "Server Stopped", System.Windows.Forms.ToolTipIcon.Info);
-                // MyNotifyIcon.Visible = false;
-                // Server_Running.BadgeBackground = Brushes.Red;
-                // Server_Running.BadgeForeground = Brushes.Red;
+                if (b1tb1.Text == "Start Server")
+                {
+                    port = textBox2.Text;
+
+
+                    b1tb1.Text = "Stop Server";
+                    ip = comboBox1.Text;
+                    start_node_server();
+
+
+                }
+                else
+                {
+
+
+                    b1tb1.Text = "Start Server";
+                    stop_node_server();
+
+                    MyNotifyIcon.ShowBalloonTip(10000, "Server Stopped", "Server Stopped", System.Windows.Forms.ToolTipIcon.Info);
+
+
+                }
             }
         }
 
@@ -1979,7 +2086,7 @@ namespace PS4_PKG_Linker
 
         private void textBox2_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            port1 = GetAvailablePort(81);
+            port1 = GetAvailablePort(80);
             port = port1.ToString();
             textBox2.Text = port;
         }
@@ -2723,6 +2830,18 @@ namespace PS4_PKG_Linker
             {
                 LB1.Visibility = Visibility.Hidden;
             }
+        }
+
+        private void Uniserver_Checked(object sender, RoutedEventArgs e)
+        {
+            b6.Visibility = Visibility.Visible;
+            b8.Visibility = Visibility.Visible;
+        }
+
+        private void Nodejs_serve_Checked(object sender, RoutedEventArgs e)
+        {
+            b6.Visibility = Visibility.Hidden;
+            b8.Visibility = Visibility.Hidden;
         }
     }
 
