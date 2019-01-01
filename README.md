@@ -7,6 +7,13 @@ Follow the progress at [psx-place](http://www.psx-place.com/threads/wip-ps4-pkg-
 
 Release Thread is at [psx-place Resource](http://www.psx-place.com/resources/ps4-pkg-linker.730/)
 
+ #### 1/1/2019
+ ## Second Test Build
+ Added support for [Node.js serve](https://www.npmjs.com/package/serve)
+ 
+ * ![](https://i.imgur.com/GyyQedql.png)
+
+
  #### 12/18/2018
  ## First Release 
   * PS4 PKG Linker V1.0 https://mega.nz/#!oyRWRCjD!-wdHe_oBhtx17T10iDa-4y8qRGpVqg1cccviMTtEvzQ.
