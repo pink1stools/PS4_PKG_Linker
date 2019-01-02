@@ -31,6 +31,7 @@ using System.Text.RegularExpressions;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows.Resources;
 using System.ComponentModel;
+using AutoUpdaterDotNET;
 
 namespace PS4_PKG_Linker
 {
@@ -147,6 +148,7 @@ namespace PS4_PKG_Linker
             Load();
             Set_cursor();
             Check_server();
+            Get_Version();
 
             //this.child01.IsOpen = true;
         }
@@ -314,6 +316,23 @@ namespace PS4_PKG_Linker
         #endregion<<settings>>
 
         #region<<set_up>>
+
+        public void Get_Version()
+        {
+            AutoUpdater.LetUserSelectRemindLater = true;
+            AutoUpdater.RemindLaterTimeSpan = RemindLaterFormat.Minutes;
+            AutoUpdater.RemindLaterAt = 1;
+            AutoUpdater.ReportErrors = true;
+            AutoUpdater.DownloadPath = Environment.CurrentDirectory;
+
+            AutoUpdater.Start("https://raw.githubusercontent.com/pink1stools/PS4_PKG_Linker/master/Updater.xml");
+            
+
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            string version = fvi.FileVersion;
+            FVersion.Content += "  v" + version;
+        }
 
         public void Set_cursor()
         {
@@ -823,6 +842,21 @@ namespace PS4_PKG_Linker
                     tempProc.WaitForExit();
                 }
             }
+
+            Process[] processes2 = Process.GetProcessesByName("node");
+            foreach (var process in processes2)
+            {
+                process.Kill();
+                process.WaitForExit();
+            }
+            Process[] processes3 = Process.GetProcessesByName("ServiceHub.Host.Node.x86");
+            foreach (var process in processes3)
+            {
+                process.Kill();
+                process.WaitForExit();
+            }
+
+
         }
 
         #endregion<<>>

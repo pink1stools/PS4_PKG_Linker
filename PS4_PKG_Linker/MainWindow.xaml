@@ -1880,7 +1880,7 @@
            
         </Controls:MetroAnimatedSingleRowTabControl>
         <StatusBar Name="SB1" Grid.Row="1" BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}">
-            <StatusBarItem>PS4 PKG Linker</StatusBarItem>
+            <StatusBarItem Name="FVersion">PS4 PKG Linker</StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right" >
             <StackPanel Name="spl" Orientation="Horizontal">
                     <local:ClickableLabel Padding="0" x:Name="github_lable" Cursor="{Binding Cursor1}" Click="github_lable_Click">

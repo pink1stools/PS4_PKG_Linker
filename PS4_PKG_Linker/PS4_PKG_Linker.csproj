@@ -58,6 +58,9 @@
     <StartupObject>PS4_PKG_Linker.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoUpdater.NET, Version=1.4.11.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autoupdater.NET.Official.1.4.11\lib\net40\AutoUpdater.NET.dll</HintPath>
+    </Reference>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
     </Reference>
@@ -199,6 +202,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="tools\resources\aero-middle-finger-2.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Updater.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\libcurl.NET.x86.1.4.1.0\build\libcurl.NET.x86.targets" Condition="Exists('..\packages\libcurl.NET.x86.1.4.1.0\build\libcurl.NET.x86.targets')" />
