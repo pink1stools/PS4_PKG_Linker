@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <item>
-    <version>1.0.1.0</version>
+    <version>1.0.3.0</version>
     <url>https://github.com/pink1stools/PS4_PKG_Linker/releases/download/v1.0.1/PS4_PKG_Linker_v1.0.1.zip</url>
     <changelog>https://github.com/pink1stools/PS4_PKG_Linker/releases</changelog>
     <mandatory>false</mandatory>
