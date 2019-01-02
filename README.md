@@ -7,6 +7,11 @@ Follow the progress at [psx-place](http://www.psx-place.com/threads/wip-ps4-pkg-
 
 Release Thread is at [psx-place Resource](http://www.psx-place.com/resources/ps4-pkg-linker.730/)
 
+ #### 1/2/2019
+ ## Third Test Build
+ Fixed bug with node server not exiting with app & added an update checker.
+ 
+
  #### 1/1/2019
  ## Second Test Build
  Added support for [Node.js serve](https://www.npmjs.com/package/serve)
