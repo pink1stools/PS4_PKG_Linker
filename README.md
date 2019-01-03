@@ -8,6 +8,11 @@ Follow the progress at [psx-place](http://www.psx-place.com/threads/wip-ps4-pkg-
 Release Thread is at [psx-place Resource](http://www.psx-place.com/resources/ps4-pkg-linker.730/)
 
  #### 1/2/2019
+ ## Test Build 4
+ Added the Node.js Server as an exe thanks to leeful74.
+
+ I'm marking this as a pre-release because it and the updater still need testing.
+ 
  ## Third Test Build
  Fixed bug with node server not exiting with app & added an update checker.
  
