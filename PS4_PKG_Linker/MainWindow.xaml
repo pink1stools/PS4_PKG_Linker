@@ -1829,8 +1829,19 @@
                                     </Label>
                                 </StackPanel>
 
-
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,400,0,0" Height="50" VerticalAlignment="Top">
+
+
+                                    <local:ClickableLabel x:Name="leeful74" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="{Binding Cursor1}" Click="leeful74_Click">
+                                        leeful74
+                                    </local:ClickableLabel>
+                                    <Label FontSize="20">
+                                        for the Node.js Server &amp; Testing
+                                    </Label>
+                                </StackPanel>
+
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,450,0,0" Height="50" VerticalAlignment="Top">
                                     <local:ClickableLabel x:Name="mah" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" Cursor="{Binding Cursor1}" Click="mah_MouseDoubleClick">
                                         MahApps.Metro,
                                     </local:ClickableLabel>
@@ -1843,13 +1854,13 @@
                                     </local:ClickableLabel>
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,450,0,0" Height="50" VerticalAlignment="Top">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,500,0,0" Height="50" VerticalAlignment="Top">
                                     <Label FontSize="20">
                                         Web Sites
                                     </Label>
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal" Height="70" HorizontalAlignment="Center" Margin="0,500,0,0" VerticalAlignment="Top">
+                                <StackPanel Orientation="Horizontal" Height="70" HorizontalAlignment="Center" Margin="0,550,0,0" VerticalAlignment="Top">
 
                                     <local:ClickableLabel x:Name="place" FontSize="20" Height="60" Foreground="{DynamicResource AccentColorBrush}" Cursor="{Binding Cursor1}" Click="place_MouseDoubleClick">
                                         <Image  Source="/PS4_PKG_Linker;component/tools/resources/logo.png " />
@@ -1862,7 +1873,7 @@
                                     </local:ClickableLabel>
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,600,0,0" Height="50" VerticalAlignment="Top">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,650,0,0" Height="50" VerticalAlignment="Top">
                                     <Label FontSize="20">
                                         For help and support with uniformserver
                                     </Label>

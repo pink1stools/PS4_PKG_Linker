@@ -76,7 +76,7 @@ namespace PS4_PKG_Linker
             LoadSettings();
             ChangeAppStyle();
             set_colors();
-            Check_serve();
+            //Check_serve();
             MyNotifyIcon = new System.Windows.Forms.NotifyIcon();
             Assembly myAssembly = Assembly.GetExecutingAssembly();
             Stream myStream = myAssembly.GetManifestResourceStream("PS4_PKG_Linker.tools.resources." + "0.ico");
@@ -351,16 +351,16 @@ namespace PS4_PKG_Linker
         public void Check_serve()
         {
             // Use ProcessStartInfo class.
-            ProcessStartInfo startInfo = new ProcessStartInfo();
+           ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.CreateNoWindow = true;
             startInfo.UseShellExecute = false;
-            startInfo.WorkingDirectory = @"C://";
+            //startInfo.WorkingDirectory = @"C://";
             startInfo.RedirectStandardError = true;
             //startInfo.RedirectStandardInput = true;
             startInfo.RedirectStandardOutput = true;
-            startInfo.FileName = @"cmd.exe";
+            startInfo.FileName = " PKGserve";//@"cmd.exe";
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.Arguments = "/c serve -v";
+            startInfo.Arguments = "-v";//"/c PKGserve -v";//"/c serve -v";
             Process exeProcess = Process.Start(startInfo);
             string output = exeProcess.StandardOutput.ReadToEnd();
             exeProcess.WaitForExit();
@@ -378,7 +378,9 @@ namespace PS4_PKG_Linker
 
         public void Check_server()
         {
-            if(Nodejs_serve.IsEnabled == true)
+            Nodejs_serve.IsEnabled = true;
+
+            if (Nodejs_serve.IsEnabled == true)
             {
                 Nodejs_serve.IsChecked = true;
             }
@@ -573,9 +575,9 @@ namespace PS4_PKG_Linker
             startInfo.RedirectStandardError = true;
             //startInfo.RedirectStandardInput = true;
             startInfo.RedirectStandardOutput = true;
-            startInfo.FileName = @"cmd.exe";
+            startInfo.FileName = "PKGserve";//@"cmd.exe";
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.Arguments = "/c serve -l tcp://" + ip +":" + port;
+            startInfo.Arguments = "-l tcp://" + ip + ":" + port; //" /c PKGserve -l tcp://" + ip + ":" + port;//"/c serve -l tcp://" + ip +":" + port;
             Process exeProcess = Process.Start(startInfo);
 
             Thread.Sleep(100);
@@ -587,8 +589,8 @@ namespace PS4_PKG_Linker
 
         private void stop_node_server()
         {
-            
-             Process[] processes = Process.GetProcessesByName("node");
+
+            Process[] processes = Process.GetProcessesByName("PKGserve");//"node");
              foreach (var process in processes)
              {
                  process.Kill();
@@ -686,41 +688,19 @@ namespace PS4_PKG_Linker
             }
             else if (Nodejs_serve.IsChecked == true)
             {
-                procName = "node";
+                procName = "PKGserve";//"node";
             }
-            //processes = Process.GetProcesses();
+            
+
             processes = Process.GetProcessesByName(procName);
             if (processes.Length == 2 || processes.Length == 1)
             {
-                // System.Threading.Thread.Sleep(1000);
-                // WebRequest request = WebRequest.Create("http://" + ip);
-                // try
-                // {
-                //    using (WebResponse response = request.GetResponse())
-                //   {
-                //Load Webpage
+                
                 b1tb1.Text = "Stop Server";
                 MyNotifyIcon.ShowBalloonTip(10000, "Server Started", "Server Started", System.Windows.Forms.ToolTipIcon.Info);
-                // dispatcherTimer2.Start();
-                //Process.Start(new ProcessStartInfo("http://" + ip + ":" + port));
-                //e.Handled = true;
+                
             }
-            // }
-            /* catch (WebException erf)
-              {
-                  using (WebResponse response = erf.Response)
-                  {
-                      b1tb1.Text = "Start Server";
-                      MyNotifyIcon.ShowBalloonTip(10000, "Error Starting Server", "Error Starting Server", System.Windows.Forms.ToolTipIcon.Error);
-
-                      //Process.Start(new ProcessStartInfo("http://" + ip+":"+  port));
-
-                      //var errorForm = new error();
-                      //errorForm.Show();
-                      //this.Close();
-                  }
-              }
-          }*/
+            
             else
             {
                 b1tb1.Text = "Start Server";
@@ -837,13 +817,12 @@ namespace PS4_PKG_Linker
                     Process tempProc = Process.GetProcessById(procID);
                     tempProc.CloseMainWindow();
                     tempProc.Kill();
-                    //SetForegroundWindow(tempProc);
-                    // IInputElement focusedElement = FocusManager.GetFocusedElement(tempProc.);
+
                     tempProc.WaitForExit();
                 }
             }
 
-            Process[] processes2 = Process.GetProcessesByName("node");
+            Process[] processes2 = Process.GetProcessesByName("PKGserve");//("node");
             foreach (var process in processes2)
             {
                 process.Kill();
@@ -2459,6 +2438,11 @@ namespace PS4_PKG_Linker
 
         }
 
+        private void leeful74_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://twitter.com/leeful74"));
+        }
+
         #endregion<<>>
 
 
@@ -2877,6 +2861,7 @@ namespace PS4_PKG_Linker
             b6.Visibility = Visibility.Hidden;
             b8.Visibility = Visibility.Hidden;
         }
+
     }
 
 

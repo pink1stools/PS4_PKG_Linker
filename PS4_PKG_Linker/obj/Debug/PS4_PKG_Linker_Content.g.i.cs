@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("updater.xml")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("0.ico")]
 
 
