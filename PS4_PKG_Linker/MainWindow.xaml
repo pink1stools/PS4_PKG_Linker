@@ -8,7 +8,7 @@
         mc:Ignorable="d"
          xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-        Title="" Loaded="MetroWindow_Loaded"  ShowIconOnTitleBar="False" StateChanged="Window_StateChanged" Closed="MetroWindow_Closed" Closing="MetroWindow_Closing" Height="450" Width="800" Icon="tools/resources/blue1.ico"   >
+        Title="" Loaded="MetroWindow_Loaded"  ShowIconOnTitleBar="False"  StateChanged="Window_StateChanged" Closed="MetroWindow_Closed" Closing="MetroWindow_Closing" Height="450" Width="800" Icon="tools/resources/blue1.ico"   >
     
     <Controls:MetroWindow.LeftWindowCommands>
         <Controls:WindowCommands>
@@ -1894,6 +1894,13 @@
             <StatusBarItem Name="FVersion">PS4 PKG Linker</StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right" >
             <StackPanel Name="spl" Orientation="Horizontal">
+                    <local:ClickableLabel Padding="0" ToolTip="Check for Updates" x:Name="update_lable" Cursor="{Binding Cursor1}" Click="update_lable_Click">
+                        <Rectangle Width="20" Height="20" Fill="White" Margin="5,1,3,1" >
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill" Visual="{iconPacks:FontAwesome Kind=ArrowAltCircleDownRegular}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </local:ClickableLabel>
                     <local:ClickableLabel Padding="0" x:Name="github_lable" Cursor="{Binding Cursor1}" Click="github_lable_Click">
                         <Rectangle Width="20" Height="20" Fill="White" Margin="5,1,3,1" >
                             <Rectangle.OpacityMask>

@@ -138,10 +138,9 @@ namespace PS4_PKG_Linker
 
             appPath = appPath.Replace("PS4_PKG_Linker.exe", "");
             UgTask.Visibility = Visibility.Collapsed;
+            AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
+            //AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
 
-            /*Add_pkg();
-            Load_Links();
-            Wjson();*/
             scan();
 
             set_ip();
@@ -149,6 +148,7 @@ namespace PS4_PKG_Linker
             Set_cursor();
             Check_server();
             Get_Version();
+            
 
             //this.child01.IsOpen = true;
         }
@@ -319,20 +319,16 @@ namespace PS4_PKG_Linker
 
         public void Get_Version()
         {
-            AutoUpdater.LetUserSelectRemindLater = true;
-            AutoUpdater.RemindLaterTimeSpan = RemindLaterFormat.Minutes;
-            AutoUpdater.RemindLaterAt = 1;
-            AutoUpdater.ReportErrors = true;
-            AutoUpdater.DownloadPath = Environment.CurrentDirectory;
-
-            AutoUpdater.Start("https://raw.githubusercontent.com/pink1stools/PS4_PKG_Linker/master/Updater.xml");
-            
 
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             string version = fvi.FileVersion;
             FVersion.Content += "  v" + version;
+            
+
         }
+
+        
 
         public void Set_cursor()
         {
@@ -2862,9 +2858,100 @@ namespace PS4_PKG_Linker
             b8.Visibility = Visibility.Hidden;
         }
 
+        private void MetroWindow_Loaded_1(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void update_lable_Click(object sender, RoutedEventArgs e)
+        {
+            AutoUpdater.LetUserSelectRemindLater = true;
+            //AutoUpdater.RemindLaterTimeSpan = RemindLaterFormat.Minutes;
+            //AutoUpdater.RemindLaterAt = 1;
+            AutoUpdater.OpenDownloadPage = true;
+            AutoUpdater.ReportErrors = true;
+            AutoUpdater.DownloadPath = Environment.CurrentDirectory;
+
+            AutoUpdater.Start("https://raw.githubusercontent.com/pink1stools/PS4_PKG_Linker/master/Updater.xml");
+            
+        }
+
+        private void AutoUpdater_ApplicationExitEvent()
+        {
+            
+        }
+
+
+        // AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
+
+        /*private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
+        {
+            if (args != null)
+            {
+                if (args.IsUpdateAvailable)
+                {
+
+                    DialogResult dialogResult;
+                    if (args.Mandatory)
+                    {
+                        dialogResult =
+
+                            MessageBox.Show(
+                                $@"There is new version {args.CurrentVersion} available. You are using version {args.InstalledVersion}. This is required update. Press Ok to begin updating the application.", @"Update Available",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        dialogResult =
+                            MessageBox.Show(
+                                $@"There is new version {args.CurrentVersion} available. You are using version {
+                                        args.InstalledVersion
+                                    }. Do you want to update the application now?", @"Update Available",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Information);
+                    }
+
+                    // Uncomment the following line if you want to show standard update dialog instead.
+                    // AutoUpdater.ShowUpdateForm();
+
+                    if (dialogResult.Equals(DialogResult.Yes))
+                    {
+                        try
+                        {
+                            if (AutoUpdater.DownloadUpdate())
+                            {
+                                Application.Exit();
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            MessageBox.Show(exception.Message, exception.GetType().ToString(), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(@"There is no update available please try again later.", @"No update available",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            else
+            {
+                MessageBox.Show(
+                        @"There is a problem reaching update server please check your internet connection and try again later.",
+                        @"Update check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }*/
+
+
+
+
+
     }
 
-
+     
     class TestObject : INotifyPropertyChanged
     {
         private Cursor _cursor;
